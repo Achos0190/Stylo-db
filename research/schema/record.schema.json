@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/Achos0190/stylo2-haptics/research/schema/record.schema.json",
+  "$id": "https://github.com/Achos0190/Stylo-db/research/schema/record.schema.json",
   "title": "Stylus haptics research record",
   "description": "One entry in research/data/<type>s.json. research/tools/validate.py enforces the same rules without needing a JSON Schema library.",
   "type": "object",
