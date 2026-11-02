@@ -11,6 +11,10 @@ privileged (`/system/priv-app`) install, or firmware modification. Where the
 device does not grant an ordinary app the access a route needs, the library
 says so honestly instead of pretending to work.
 
+> **Continuing on a device?** A coding agent should start from
+> [`../PICKUP.md`](../PICKUP.md) (handoff briefing) and follow
+> [`docs/G-local-continuation.md`](docs/G-local-continuation.md) (step-by-step).
+
 ## Status at a glance
 
 | Thing | Status |
