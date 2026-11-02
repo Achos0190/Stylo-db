@@ -16,16 +16,25 @@ permission is granted — it attempts the bind regardless and records exactly
 what the platform does. That unprivileged attempt is the fast, decisive test the
 existing Magisk-based project never ran cleanly.
 
-> **Not built in the authoring environment** (no Android SDK there). It is a
-> complete, dependency-light standalone Gradle project (plain `Activity` +
-> `android.widget`, no androidx/Compose). Build it on your machine.
+> Compile-verified (`:stylo2-poc:assembleDebug`), **not device-tested**. It is a
+> dependency-light module of the repo-root Gradle build (plain `Activity` +
+> `android.widget`, no androidx/Compose).
 
 ## Build & install
 
+This is the `:stylo2-poc` module of the single Gradle build at the repo root
+(open the repo root in Android Studio, or use the root wrapper). Run from the
+**repo root**, with `ANDROID_HOME` pointing at your Android SDK (or a
+`local.properties` with `sdk.dir`):
+
 ```bash
-cd android/stylo2-poc
-./gradlew :app:installDebug      # or :app:assembleDebug then adb install
+./gradlew :stylo2-poc:installDebug      # build + install on the connected device
+# or build only, then sideload the APK:
+./gradlew :stylo2-poc:assembleDebug
+adb install -r android/stylo2-poc/build/outputs/apk/debug/stylo2-poc-debug.apk
 ```
+
+On Windows use `gradlew.bat` instead of `./gradlew`.
 
 Install it like any app (sideload / `adb install`) — do **not** place it in
 `/system` and do **not** use Magisk; the whole point is the unprivileged test.

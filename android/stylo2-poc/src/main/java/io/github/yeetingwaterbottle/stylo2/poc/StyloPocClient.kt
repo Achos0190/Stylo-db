@@ -7,6 +7,7 @@ import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import com.oplus.ipemanager.sdk.ISdkAidlInterface
 import com.oplus.ipemanager.sdk.Vibration
 
@@ -30,6 +31,7 @@ class StyloPocClient(private val context: Context) {
         const val ACTION = "com.oplus.ipemanager.ACTION.PENCIL_SDK"
         const val DESCRIPTOR = "com.oplus.ipemanager.sdk.ISdkAidlInterface"
         const val PERM = "com.oplus.permission.safe.IOT"
+        const val LOG_TAG = "Stylo2Poc"
     }
 
     /** UI log sink; set by the Activity. */
@@ -41,7 +43,12 @@ class StyloPocClient(private val context: Context) {
     private var sdk: ISdkAidlInterface? = null
     private var bound = false
 
-    private fun log(s: String) = onLog(s)
+    /** Every on-screen log line is mirrored to logcat so a host script can run
+     *  `adb logcat -d -s Stylo2Poc` to capture the result. */
+    private fun log(s: String) {
+        Log.i(LOG_TAG, s)
+        onLog(s)
+    }
 
     private val conn = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, binder: IBinder) {

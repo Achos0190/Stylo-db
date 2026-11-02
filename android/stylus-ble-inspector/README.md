@@ -38,20 +38,22 @@ subset.
 
 ## Status
 
-> **Source only — not built in the reconnaissance environment** (no Android
-> SDK there). It is a complete, self-contained Gradle project. The pure helpers
-> (`HexCodec`, `StylusHeuristics`) have JVM unit tests; the BLE paths require a
-> physical device to exercise.
+> Compile-verified (`:stylus-ble-inspector:assembleDebug`) and the JVM unit
+> tests pass; **not device-tested**. The pure helpers (`HexCodec`,
+> `StylusHeuristics`) have JVM unit tests; the BLE paths require a physical
+> device to exercise.
 
 ## Build & run
 
-Open `android/stylus-ble-inspector/` in Android Studio, or:
+This is the `:stylus-ble-inspector` module of the single Gradle build at the
+repo root. Open the **repo root** in Android Studio, or run from the repo root
+(with `ANDROID_HOME` pointing at your Android SDK, or a `local.properties` with
+`sdk.dir`; use `gradlew.bat` on Windows):
 
 ```bash
-cd android/stylus-ble-inspector
-./gradlew :app:assembleDebug        # build the APK
-./gradlew :app:testDebugUnitTest    # run the JVM unit tests
-./gradlew :app:installDebug         # install on a connected device
+./gradlew :stylus-ble-inspector:assembleDebug        # build the APK
+./gradlew :stylus-ble-inspector:testDebugUnitTest    # run the JVM unit tests
+./gradlew :stylus-ble-inspector:installDebug         # install on a connected device
 ```
 
 `minSdk 33`, `targetSdk 36` — the OnePlus Pad 3 (Android 16) is well within

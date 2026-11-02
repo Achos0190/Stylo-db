@@ -67,7 +67,7 @@ interface), **[H]ypothesis** (open).
 | --- | --- | --- |
 | `stylo2` workspace compiles; 26 tests pass; clippy clean (x86_64) | [V] | `cargo test`/`clippy` run in this session |
 | `jni` feature type-checks against `jni 0.21` | [V] | `cargo check --features jni` |
-| Android modules (`stylo2-bridge`, `stylus-ble-inspector`) compile | [H] | **not built — no Android SDK in the authoring env** |
+| Android modules (`stylo2-poc`, `stylus-ble-inspector`, `stylo2-bridge`) compile; inspector unit tests pass | [V] | `./gradlew :stylo2-poc:assembleDebug :stylus-ble-inspector:assembleDebug :stylus-ble-inspector:testDebugUnitTest :stylo2-bridge:assembleDebug` from the repo root (AGP 8.13, compileSdk 36), 2 Nov 2026; host only, not run on a device |
 
 ## Open questions → the exact experiment that answers each (deliverable 9)
 

@@ -22,7 +22,7 @@ says so honestly instead of pretending to work.
 | `stylo2-core` portable model + policy | **Implemented, compiles, 22 tests pass on host** |
 | Backend scaffolds (`oplus`, `ble`, `android`) | **Implemented as honest adapters** (inert/"unavailable" until a device transport + verified protocol are attached) |
 | `stylo2-ffi` C ABI + JNI entry points | **Implemented**; C ABI tested on host, JNI module type-checks against `jni 0.21` |
-| Kotlin bridge | Source provided (`../android/stylo2-bridge`), not built here (needs Android SDK) |
+| Kotlin bridge | `:stylo2-bridge` module (`../android/stylo2-bridge`), compiles from the repo-root Gradle build; not run on a device |
 | A working haptic command **on a physical pen** | **Not demonstrated** — requires the device and a proven access route (see `docs/B-feasibility.md`) |
 
 Everything marked "compiles/tests" was verified on an `x86_64-linux` host. **No
