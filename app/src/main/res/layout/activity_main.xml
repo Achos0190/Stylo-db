@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="0dp">
+
+    <!-- Top app bar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:title="Stylo2 Haptics"
+        android:contentDescription="App toolbar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Status card: chip + bind/unbind buttons -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_status"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        app:cardElevation="2dp"
+        app:layout_constraintTop_toBottomOf="@id/topAppBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_status"
+                style="@style/Widget.Material3.Chip.Assist.Elevated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Disconnected"
+                android:contentDescription="Connection status"
+                app:chipIconVisible="false"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <!-- Bind button uses theme attr so it follows your theme (best practice) -->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_bind"
+                style="?attr/materialButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:contentDescription="Bind to pencil SDK"
+                android:text="Bind"
+                app:layout_constraintBottom_toBottomOf="@id/chip_status"
+                app:layout_constraintEnd_toStartOf="@id/btn_unbind"
+                app:layout_constraintHorizontal_bias="0.974"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@id/chip_status"
+                app:layout_constraintTop_toTopOf="@id/chip_status"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <!-- Unbind button; outlined variant via theme attr -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_unbind"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unbind"
+                android:contentDescription="Unbind from pencil SDK"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/btn_bind"
+                app:layout_constraintBottom_toBottomOf="@id/btn_bind" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Vibration preset dropdown (Exposed Dropdown Menu) -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_vibration"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:hint="Vibration preset"
+        android:contentDescription="Choose a vibration preset"
+        app:endIconMode="dropdown_menu"
+        app:layout_constraintTop_toBottomOf="@id/card_status"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/dropdown_vibration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:importantForAutofill="no"
+            android:focusable="false"
+            android:contentDescription="Vibration preset dropdown" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Enable haptics switch -->
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/switch_enable"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Enable haptics"
+        android:contentDescription="Toggle haptic feedback"
+        app:layout_constraintTop_toBottomOf="@id/input_vibration"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
