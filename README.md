@@ -70,6 +70,7 @@ The records feed a searchable page ([`research/site/`](research/site)). Vendor f
 README.md                 This file: basis and scope
 PICKUP.md                 Playbook for the local session with the Pad 3 attached
 CLAUDE.md                 Ground rules loaded automatically by Claude Code
+.claude/skills/           Claude Code skills: /pad3-readout, /route-a-poc, /record-findings
 research/                 The database, its schema and tools, write-ups, reference material
   tools/pad3_readout.py   Read-only ADB read-out of the tablet (firmware, driver, service, logs)
   tools/fwinfo.py         Inspects pulled cps8601_firmware.bin files
@@ -96,7 +97,13 @@ Clone the repository on the computer the tablet is plugged into, start Claude Co
 
 > Read `PICKUP.md` and follow it. Ask me before anything that changes the tablet.
 
-`PICKUP.md` takes the session through the tablet read-out and firmware retrieval, the Route A run, and, with the owner's go-ahead, the Bluetooth capture for Route B. It also says where each result goes in the database.
+`PICKUP.md` takes the session through the tablet read-out and firmware retrieval, the Route A run, and, with the owner's go-ahead, the Bluetooth capture for Route B. It also says where each result goes in the database. The same steps are available as Claude Code skills:
+
+| Skill | What it does |
+| --- | --- |
+| `/pad3-readout` | Read-only tablet read-out: project number, firmware pull and hashes, modules, driver, pen service and `safe.IOT` protection level, handshake |
+| `/route-a-poc` | Installs (after asking) and runs the Route A PoC, captures its log, and maps the outcome to a trust boundary |
+| `/record-findings` | Writes results into `research/data/` and the docs with honest status labels, validates, and commits |
 
 ## Credits and licences
 

@@ -34,6 +34,8 @@ The status labels below match the database (`research/data/`).
 
 ### Ground rules
 
+The skills `/pad3-readout` (Steps 1, 2 and 4), `/route-a-poc` (Step 3) and `/record-findings` (Step 6) carry out the steps below. Use them, or follow the steps directly.
+
 Everything in `CLAUDE.md` applies. In short:
 
 - The tablet is read-only.

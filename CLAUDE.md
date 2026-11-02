@@ -1,6 +1,6 @@
 # Working in this repository
 
-Open Stylo 2 haptics research. The scope is in `README.md`, and the on-device playbook is in `PICKUP.md`. Read both before working with the tablet.
+Open Stylo 2 haptics research. The scope is in `README.md`, and the on-device playbook is in `PICKUP.md`. Read both before working with the tablet. The playbook's steps are also available as the skills `pad3-readout`, `route-a-poc` and `record-findings` in `.claude/skills/`.
 
 ## Rules that always apply
 
