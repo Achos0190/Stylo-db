@@ -30,4 +30,5 @@ Each record has:
 - `if-oplus-sdk-interface` and `if-oplus-call-sequence`: the service interface this app uses, as implemented here.
 - `c-three-subsystems` and `c-feedback-models`: how pen input, the Bluetooth side channel and the pen's motor fit together.
 - `if-windows-haptic-pen-device` and `if-hid-haptics-page`: the only fully public, vendor-neutral haptic pen protocol found, useful as a model for a common API.
+- `c-pen-attach-handshake`: how the pen's magnetic charger hands its Bluetooth address to the tablet, and why that breaks after a regional ROM conversion. Full write-up in [`pen-attach-handshake.md`](pen-attach-handshake.md).
 - `gap-*`: what is still unknown.

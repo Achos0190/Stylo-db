@@ -28,7 +28,10 @@
       "priority": "critical",
       "url": "https://github.com/Achos0190/stylo2-haptics",
       "links": [
-        { "label": "Upstream project named in the README", "url": "https://github.com/YeetingWaterbottle/stylo2-haptics" }
+        {
+          "label": "Upstream project named in the README",
+          "url": "https://github.com/YeetingWaterbottle/stylo2-haptics"
+        }
       ],
       "summary": "The Magisk module and companion app behind the XDA thread. It contains the only working third-party client for the Stylo 2 haptics service found so far.",
       "details": [
@@ -39,8 +42,18 @@
         "Known defect: unbind() calls stopVibration() after unbindService(), so the stop command can go to a binder that is already released. Stop first, then unbind.",
         "Known defect: getSupportFeatureList() is declared but has no transaction code and always throws."
       ],
-      "tags": ["kotlin", "aidl", "binder", "magisk"],
-      "related": ["src-xda-stylo2", "if-oplus-ipemanager", "if-oplus-sdk-interface", "if-oplus-call-sequence"],
+      "tags": [
+        "kotlin",
+        "aidl",
+        "binder",
+        "magisk"
+      ],
+      "related": [
+        "src-xda-stylo2",
+        "if-oplus-ipemanager",
+        "if-oplus-sdk-interface",
+        "if-oplus-call-sequence"
+      ],
       "basis": "Read in full from the repository on 2 Nov 2026."
     },
     {
@@ -59,8 +72,16 @@
         "App: binds to com.oplus.ipemanager with the action com.oplus.ipemanager.ACTION.PENCIL_SDK and calls setVibrationType and startFeedBackVibration.",
         "Tested only on a OnePlus Pad 3 running Global OxygenOS (converted from OPD2413 ColorOS to OPD2415), Android 16."
       ],
-      "tags": ["magisk", "root", "priv-app"],
-      "related": ["repo-stylo2-haptics", "dev-oneplus-pad3", "if-oplus-ipemanager"],
+      "tags": [
+        "magisk",
+        "root",
+        "priv-app"
+      ],
+      "related": [
+        "repo-stylo2-haptics",
+        "dev-oneplus-pad3",
+        "if-oplus-ipemanager"
+      ],
       "basis": "Repository README checked on 2 Nov 2026. The thread itself was not re-read."
     },
     {
@@ -78,8 +99,16 @@
         "Reports that HiPaint contains SDK code for Stylo 2 haptics and tool switching.",
         "Reports that an independently recreated implementation reproduced the haptics but ran into permission restrictions, which the author got past with root."
       ],
-      "tags": ["notes", "hipaint", "permission"],
-      "related": ["src-hipaint", "if-oplus-ipemanager", "repo-stylo2-haptics"],
+      "tags": [
+        "notes",
+        "hipaint",
+        "permission"
+      ],
+      "related": [
+        "src-hipaint",
+        "if-oplus-ipemanager",
+        "repo-stylo2-haptics"
+      ],
       "basis": "Summarised in the research inventory. Not re-read."
     },
     {
@@ -96,8 +125,14 @@
         "A contributor suspects that the Oplus client class PencilManagerUnitClient checks the calling app's package signature. Nobody has confirmed this.",
         "If it holds, access to haptics depends on which app is calling, not only on a permission."
       ],
-      "tags": ["starnote", "app-identity"],
-      "related": ["if-oplus-pencilmanagerunitclient", "gap-oneplus-sdk-access"],
+      "tags": [
+        "starnote",
+        "app-identity"
+      ],
+      "related": [
+        "if-oplus-pencilmanagerunitclient",
+        "gap-oneplus-sdk-access"
+      ],
       "basis": "Summarised in the research inventory. Not re-read."
     },
     {
@@ -114,8 +149,14 @@
         "Not confirmed to be the same package or version as com.oplus.ipemanager on the Pad 3.",
         "The copy on your own tablet is the one that matters. Compare its declared services and permissions with adb shell dumpsys package com.oplus.ipemanager."
       ],
-      "tags": ["apk", "ipemanager"],
-      "related": ["if-oplus-ipemanager", "c-observing-on-device"],
+      "tags": [
+        "apk",
+        "ipemanager"
+      ],
+      "related": [
+        "if-oplus-ipemanager",
+        "c-observing-on-device"
+      ],
       "basis": "Link from the research inventory."
     },
     {
@@ -133,8 +174,15 @@
         "Unverified: the Reddit investigation reports that HiPaint contains SDK code for haptics and tool switching.",
         "This is the clearest evidence of an officially supported route for third-party apps."
       ],
-      "tags": ["hipaint", "partner-sdk"],
-      "related": ["if-oneplus-partner-sdk", "src-reddit-stylo2", "gap-oneplus-sdk-access"],
+      "tags": [
+        "hipaint",
+        "partner-sdk"
+      ],
+      "related": [
+        "if-oneplus-partner-sdk",
+        "src-reddit-stylo2",
+        "gap-oneplus-sdk-access"
+      ],
       "basis": "README statement checked. HiPaint package not inspected."
     },
     {
@@ -147,11 +195,26 @@
       "priority": "critical",
       "url": "https://dev.mi.com/xiaomihyperos/ability/Pencil-Engine",
       "links": [
-        { "label": "Overview", "url": "https://dev.mi.com/xiaomihyperos/ability/Pencil-Engine" },
-        { "label": "Integration and download", "url": "https://dev.mi.com/xiaomihyperos/documentation/detail?pId=1883" },
-        { "label": "SDK versions", "url": "https://dev.mi.com/xiaomihyperos/documentation/detail?pId=1886" },
-        { "label": "Capabilities", "url": "https://dev.mi.com/xiaomihyperos/documentation/detail?pId=1882" },
-        { "label": "Additional integration notes", "url": "https://dev.mi.com/xiaomihyperos/documentation/detail?pId=1884" }
+        {
+          "label": "Overview",
+          "url": "https://dev.mi.com/xiaomihyperos/ability/Pencil-Engine"
+        },
+        {
+          "label": "Integration and download",
+          "url": "https://dev.mi.com/xiaomihyperos/documentation/detail?pId=1883"
+        },
+        {
+          "label": "SDK versions",
+          "url": "https://dev.mi.com/xiaomihyperos/documentation/detail?pId=1886"
+        },
+        {
+          "label": "Capabilities",
+          "url": "https://dev.mi.com/xiaomihyperos/documentation/detail?pId=1882"
+        },
+        {
+          "label": "Additional integration notes",
+          "url": "https://dev.mi.com/xiaomihyperos/documentation/detail?pId=1884"
+        }
       ],
       "summary": "Xiaomi's official stylus SDK for HyperOS: the most complete public vendor SDK found, though it documents no haptic motor command.",
       "details": [
@@ -159,8 +222,15 @@
         "Requires a Xiaomi developer account with enterprise verification and app registration.",
         "See the interface record for the package list and capabilities."
       ],
-      "tags": ["hyperos", "aar", "sdk"],
-      "related": ["if-xiaomi-pen-engine", "gap-xiaomi-motor-control"],
+      "tags": [
+        "hyperos",
+        "aar",
+        "sdk"
+      ],
+      "related": [
+        "if-xiaomi-pen-engine",
+        "gap-xiaomi-motor-control"
+      ],
       "basis": "Research inventory. dev.mi.com pages not re-read."
     },
     {
@@ -181,8 +251,16 @@
         "No haptics support is mentioned.",
         "C++20, Apache-2.0, runs as root, needs a kernel with the Xiaomi THP nodes."
       ],
-      "tags": ["linux", "bluez", "uinput", "pressure"],
-      "related": ["c-three-subsystems", "dev-xiaomi-focus-pen-pro"],
+      "tags": [
+        "linux",
+        "bluez",
+        "uinput",
+        "pressure"
+      ],
+      "related": [
+        "c-three-subsystems",
+        "dev-xiaomi-focus-pen-pro"
+      ],
       "basis": "Project README read on 2 Nov 2026."
     },
     {
@@ -195,7 +273,10 @@
       "priority": "high",
       "url": "https://github.com/HMQYHM/FocusPenProX",
       "links": [
-        { "label": "Mirror in the Xposed modules repository", "url": "https://github.com/Xposed-Modules-Repo/io.github.hmqyhm.focuspenpro/" }
+        {
+          "label": "Mirror in the Xposed modules repository",
+          "url": "https://github.com/Xposed-Modules-Repo/io.github.hmqyhm.focuspenpro/"
+        }
       ],
       "summary": "LSPosed module that adds gestures, a stylus mouse and laser-brush options for the Focus Pen Pro on HyperOS 3 and 4.",
       "details": [
@@ -204,8 +285,15 @@
         "Needs root and LSPosed. GPL-3.0-only.",
         "Does not mention haptics or vibration control."
       ],
-      "tags": ["lsposed", "gestures", "hyperos"],
-      "related": ["dev-xiaomi-focus-pen-pro", "src-focuspen"],
+      "tags": [
+        "lsposed",
+        "gestures",
+        "hyperos"
+      ],
+      "related": [
+        "dev-xiaomi-focus-pen-pro",
+        "src-focuspen"
+      ],
       "basis": "Project README read on 2 Nov 2026."
     },
     {
@@ -225,8 +313,14 @@
         "Credits FocusPenProX for exploring Pro gestures, mouse and laser features.",
         "Does not mention haptics or vibration control."
       ],
-      "tags": ["lsposed", "settings", "hyperos"],
-      "related": ["src-focuspenprox"],
+      "tags": [
+        "lsposed",
+        "settings",
+        "hyperos"
+      ],
+      "related": [
+        "src-focuspenprox"
+      ],
       "basis": "Project README read on 2 Nov 2026."
     },
     {
@@ -239,16 +333,31 @@
       "priority": "medium",
       "url": "https://support.lenovo.com/pr/en/accessories/acc500381-overview-lenovo-tab-pen-pro-ap600u",
       "links": [
-        { "label": "Official specification", "url": "https://support.lenovo.com/pr/en/accessories/acc500381-overview-lenovo-tab-pen-pro-ap600u" },
-        { "label": "Specification mirror", "url": "https://datacentersupport.lenovo.com/zm/en/accessories/acc500381" },
-        { "label": "Support and drivers", "url": "https://support.lenovo.com/" }
+        {
+          "label": "Official specification",
+          "url": "https://support.lenovo.com/pr/en/accessories/acc500381-overview-lenovo-tab-pen-pro-ap600u"
+        },
+        {
+          "label": "Specification mirror",
+          "url": "https://datacentersupport.lenovo.com/zm/en/accessories/acc500381"
+        },
+        {
+          "label": "Support and drivers",
+          "url": "https://support.lenovo.com/"
+        }
       ],
       "summary": "Lenovo's spec pages for the AP600U, which name the LPP pen protocol and list the pen as having haptics.",
       "details": [
         "The parts listing describes the pen as \"Parker Pen; LPP3.0/2.0; AP600U; W/ Haptic\"."
       ],
-      "tags": ["lpp", "ble"],
-      "related": ["dev-lenovo-ap600u", "gap-lenovo-lpp"],
+      "tags": [
+        "lpp",
+        "ble"
+      ],
+      "related": [
+        "dev-lenovo-ap600u",
+        "gap-lenovo-lpp"
+      ],
       "basis": "Research inventory."
     },
     {
@@ -261,17 +370,34 @@
       "priority": "medium",
       "url": "https://consumer.huawei.com/uk/accessories/m-pencil-pro/",
       "links": [
-        { "label": "Product page", "url": "https://consumer.huawei.com/uk/accessories/m-pencil-pro/" },
-        { "label": "Tactile feedback and gestures (zh-CN)", "url": "https://consumer.huawei.com/cn/support/content/zh-cn16058712/" },
-        { "label": "Pressure and compatibility (zh-CN)", "url": "https://consumer.huawei.com/cn/support/content/zh-cn15974440/" },
-        { "label": "Huawei Developer portal", "url": "https://developer.huawei.com/consumer/en/" }
+        {
+          "label": "Product page",
+          "url": "https://consumer.huawei.com/uk/accessories/m-pencil-pro/"
+        },
+        {
+          "label": "Tactile feedback and gestures (zh-CN)",
+          "url": "https://consumer.huawei.com/cn/support/content/zh-cn16058712/"
+        },
+        {
+          "label": "Pressure and compatibility (zh-CN)",
+          "url": "https://consumer.huawei.com/cn/support/content/zh-cn15974440/"
+        },
+        {
+          "label": "Huawei Developer portal",
+          "url": "https://developer.huawei.com/consumer/en/"
+        }
       ],
       "summary": "Huawei's product and support pages for the M-Pencil Pro. They describe its haptics as tied to supported gestures and system behaviour.",
       "details": [
         "No public Android API for issuing arbitrary M-Pencil Pro haptic commands has been found."
       ],
-      "tags": ["nearlink"],
-      "related": ["dev-huawei-mpencil-pro", "gap-huawei-api"],
+      "tags": [
+        "nearlink"
+      ],
+      "related": [
+        "dev-huawei-mpencil-pro",
+        "gap-huawei-api"
+      ],
       "basis": "Research inventory."
     },
     {
@@ -284,15 +410,28 @@
       "priority": "critical",
       "url": "https://developer.android.com/develop/ui/views/touch-and-input/stylus-input",
       "links": [
-        { "label": "Stylus input overview", "url": "https://developer.android.com/develop/ui/views/touch-and-input/stylus-input" },
-        { "label": "Advanced stylus features", "url": "https://developer.android.com/develop/ui/views/touch-and-input/stylus-input/advanced-stylus-features" }
+        {
+          "label": "Stylus input overview",
+          "url": "https://developer.android.com/develop/ui/views/touch-and-input/stylus-input"
+        },
+        {
+          "label": "Advanced stylus features",
+          "url": "https://developer.android.com/develop/ui/views/touch-and-input/stylus-input/advanced-stylus-features"
+        }
       ],
       "summary": "Google's app-side guide to pressure, tilt, orientation, hover, palm rejection, low-latency rendering, motion prediction and ink recognition.",
       "details": [
         "The stylus pages do not cover haptics. Tactile feedback appears only as a separate topic in the site navigation."
       ],
-      "tags": ["motionevent", "latency", "ink"],
-      "related": ["if-android-motionevent", "if-android-low-latency"],
+      "tags": [
+        "motionevent",
+        "latency",
+        "ink"
+      ],
+      "related": [
+        "if-android-motionevent",
+        "if-android-low-latency"
+      ],
       "basis": "Both pages read on 2 Nov 2026."
     },
     {
@@ -309,8 +448,15 @@
         "Covers Bluetooth, Bluetooth LE and USB styluses. OEMs must support Bluetooth and should support Bluetooth LE.",
         "Contains no section on haptics or vibration."
       ],
-      "tags": ["hid", "bluetooth", "oem"],
-      "related": ["if-android-stylus-hid", "c-android-input-path"],
+      "tags": [
+        "hid",
+        "bluetooth",
+        "oem"
+      ],
+      "related": [
+        "if-android-stylus-hid",
+        "c-android-input-path"
+      ],
       "basis": "Read on 2 Nov 2026."
     },
     {
@@ -324,8 +470,14 @@
       "url": "https://source.android.com/docs/core/interaction/input",
       "summary": "How Android turns kernel input events into events delivered to app windows.",
       "details": [],
-      "tags": ["eventhub", "inputreader", "inputdispatcher"],
-      "related": ["c-android-input-path"],
+      "tags": [
+        "eventhub",
+        "inputreader",
+        "inputdispatcher"
+      ],
+      "related": [
+        "c-android-input-path"
+      ],
       "basis": "Read on 2 Nov 2026."
     },
     {
@@ -338,15 +490,32 @@
       "priority": "high",
       "url": "https://developer.android.com/reference/android/view/InputDevice",
       "links": [
-        { "label": "InputDevice", "url": "https://developer.android.com/reference/android/view/InputDevice" },
-        { "label": "VibrationEffect", "url": "https://developer.android.com/reference/android/os/VibrationEffect" },
-        { "label": "VibrationEffect.Composition", "url": "https://developer.android.com/reference/android/os/VibrationEffect.Composition" },
-        { "label": "MotionEvent", "url": "https://developer.android.com/reference/android/view/MotionEvent" }
+        {
+          "label": "InputDevice",
+          "url": "https://developer.android.com/reference/android/view/InputDevice"
+        },
+        {
+          "label": "VibrationEffect",
+          "url": "https://developer.android.com/reference/android/os/VibrationEffect"
+        },
+        {
+          "label": "VibrationEffect.Composition",
+          "url": "https://developer.android.com/reference/android/os/VibrationEffect.Composition"
+        },
+        {
+          "label": "MotionEvent",
+          "url": "https://developer.android.com/reference/android/view/MotionEvent"
+        }
       ],
       "summary": "Reference pages used to check API levels and constant values in this database.",
       "details": [],
-      "tags": ["api-levels"],
-      "related": ["if-android-inputdevice", "if-android-vibrator"],
+      "tags": [
+        "api-levels"
+      ],
+      "related": [
+        "if-android-inputdevice",
+        "if-android-vibrator"
+      ],
       "basis": "Read on 2 Nov 2026."
     },
     {
@@ -360,8 +529,14 @@
       "url": "https://learn.microsoft.com/en-us/windows/apps/develop/input/pen-haptics",
       "summary": "App-side API for pen haptics on Windows 11. It is the clearest example of a vendor-neutral pen haptics API.",
       "details": [],
-      "tags": ["windows", "reference-api"],
-      "related": ["if-windows-pen-haptics-api", "c-feedback-models"],
+      "tags": [
+        "windows",
+        "reference-api"
+      ],
+      "related": [
+        "if-windows-pen-haptics-api",
+        "c-feedback-models"
+      ],
       "basis": "Read on 2 Nov 2026 (page dated 10 Jul 2026)."
     },
     {
@@ -374,15 +549,29 @@
       "priority": "critical",
       "url": "https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/haptic-pen-implementation-guide",
       "links": [
-        { "label": "Haptic Pen Implementation Guide", "url": "https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/haptic-pen-implementation-guide" },
-        { "label": "Input Device Haptics Implementation Guide (touchpads and mice)", "url": "https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/input-haptics-implementation-guide" }
+        {
+          "label": "Haptic Pen Implementation Guide",
+          "url": "https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/haptic-pen-implementation-guide"
+        },
+        {
+          "label": "Input Device Haptics Implementation Guide (touchpads and mice)",
+          "url": "https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/input-haptics-implementation-guide"
+        }
       ],
       "summary": "Microsoft's public device-side contract for haptic pens: HID over Bluetooth, standard waveforms, and how the host correlates the pen with digitizer input.",
       "details": [
         "This is the only fully public, vendor-neutral specification found for how a host talks to a pen's haptic motor."
       ],
-      "tags": ["hid", "bluetooth", "windows"],
-      "related": ["if-windows-haptic-pen-device", "if-hid-haptics-page", "c-pen-identity"],
+      "tags": [
+        "hid",
+        "bluetooth",
+        "windows"
+      ],
+      "related": [
+        "if-windows-haptic-pen-device",
+        "if-hid-haptics-page",
+        "c-pen-identity"
+      ],
       "basis": "Read on 2 Nov 2026 (page dated 25 Mar 2026)."
     },
     {
@@ -395,15 +584,26 @@
       "priority": "medium",
       "url": "https://usb.org/sites/default/files/hutrr63b_-_haptics_page_redline_0.pdf",
       "links": [
-        { "label": "HUTRR63b: Haptics page", "url": "https://usb.org/sites/default/files/hutrr63b_-_haptics_page_redline_0.pdf" },
-        { "label": "HUTRR118: Haptics expansion (Collide, Align, Step, Grow)", "url": "https://usb.org/sites/default/files/hutrr118-hapticsexpansion_1.pdf" }
+        {
+          "label": "HUTRR63b: Haptics page",
+          "url": "https://usb.org/sites/default/files/hutrr63b_-_haptics_page_redline_0.pdf"
+        },
+        {
+          "label": "HUTRR118: Haptics expansion (Collide, Align, Step, Grow)",
+          "url": "https://usb.org/sites/default/files/hutrr118-hapticsexpansion_1.pdf"
+        }
       ],
       "summary": "The HID Usage Tables proposals that define the Haptics page (0x0E) used by Windows haptic pens.",
       "details": [
         "Linked from Microsoft's guide. The PDFs themselves have not been read."
       ],
-      "tags": ["hid", "standard"],
-      "related": ["if-hid-haptics-page"],
+      "tags": [
+        "hid",
+        "standard"
+      ],
+      "related": [
+        "if-hid-haptics-page"
+      ],
       "basis": "Links found through Microsoft's documentation."
     },
     {
@@ -416,13 +616,25 @@
       "priority": "medium",
       "url": "https://developer.apple.com/documentation/uikit/uicanvasfeedbackgenerator",
       "links": [
-        { "label": "UICanvasFeedbackGenerator", "url": "https://developer.apple.com/documentation/uikit/uicanvasfeedbackgenerator" },
-        { "label": "Playing haptic feedback in your app", "url": "https://developer.apple.com/documentation/applepencil/playing-haptic-feedback-in-your-app" }
+        {
+          "label": "UICanvasFeedbackGenerator",
+          "url": "https://developer.apple.com/documentation/uikit/uicanvasfeedbackgenerator"
+        },
+        {
+          "label": "Playing haptic feedback in your app",
+          "url": "https://developer.apple.com/documentation/applepencil/playing-haptic-feedback-in-your-app"
+        }
       ],
       "summary": "Apple's semantic haptics API for drawing canvases, which plays on Apple Pencil Pro.",
       "details": [],
-      "tags": ["ipados", "reference-api"],
-      "related": ["if-apple-canvas-feedback", "dev-apple-pencil-pro"],
+      "tags": [
+        "ipados",
+        "reference-api"
+      ],
+      "related": [
+        "if-apple-canvas-feedback",
+        "dev-apple-pencil-pro"
+      ],
       "basis": "Apple documentation via search results, 2 Nov 2026."
     },
     {
@@ -435,8 +647,14 @@
       "priority": "medium",
       "url": "https://en.wikipedia.org/wiki/Universal_Stylus_Initiative",
       "links": [
-        { "label": "Overview", "url": "https://en.wikipedia.org/wiki/Universal_Stylus_Initiative" },
-        { "label": "USI press releases", "url": "https://universalstylus.org/press-releases" }
+        {
+          "label": "Overview",
+          "url": "https://en.wikipedia.org/wiki/Universal_Stylus_Initiative"
+        },
+        {
+          "label": "USI press releases",
+          "url": "https://universalstylus.org/press-releases"
+        }
       ],
       "summary": "Open active-stylus standard used mainly on Chromebooks and some Android tablets.",
       "details": [
@@ -444,8 +662,14 @@
         "The full specification is available only to members.",
         "No public source found that USI defines pen haptics."
       ],
-      "tags": ["usi", "standard"],
-      "related": ["c-pen-sensing", "gap-usi-haptics"],
+      "tags": [
+        "usi",
+        "standard"
+      ],
+      "related": [
+        "c-pen-sensing",
+        "gap-usi-haptics"
+      ],
       "basis": "Search results from Wikipedia and press coverage, 2 Nov 2026."
     },
     {
@@ -458,16 +682,32 @@
       "priority": "high",
       "url": "https://www.wireshark.org/",
       "links": [
-        { "label": "Wireshark: reads HCI, ATT, GATT and SMP traffic", "url": "https://www.wireshark.org/" },
-        { "label": "Nordic nRF Sniffer for Bluetooth LE: over-the-air capture", "url": "https://github.com/NordicSemiconductor/nRF-Sniffer-for-Bluetooth-LE" },
-        { "label": "BlueZ: Linux Bluetooth stack, includes btmon", "url": "https://github.com/bluez/bluez" }
+        {
+          "label": "Wireshark: reads HCI, ATT, GATT and SMP traffic",
+          "url": "https://www.wireshark.org/"
+        },
+        {
+          "label": "Nordic nRF Sniffer for Bluetooth LE: over-the-air capture",
+          "url": "https://github.com/NordicSemiconductor/nRF-Sniffer-for-Bluetooth-LE"
+        },
+        {
+          "label": "BlueZ: Linux Bluetooth stack, includes btmon",
+          "url": "https://github.com/bluez/bluez"
+        }
       ],
       "summary": "Tools for seeing what an already-paired pen and the tablet exchange over Bluetooth.",
       "details": [
         "Because the Stylo 2 is already connected, Android's own HCI snoop log is the first choice. An external sniffer is a fallback if the log is not detailed enough."
       ],
-      "tags": ["hci", "gatt", "capture"],
-      "related": ["c-observing-on-device", "gap-oneplus-transport"],
+      "tags": [
+        "hci",
+        "gatt",
+        "capture"
+      ],
+      "related": [
+        "c-observing-on-device",
+        "gap-oneplus-transport"
+      ],
       "basis": "Research inventory."
     },
     {
@@ -480,18 +720,28 @@
       "priority": "low",
       "url": "https://github.com/NordicSemiconductor/Android-BLE-Library",
       "links": [
-        { "label": "Nordic Android BLE Library", "url": "https://github.com/NordicSemiconductor/Android-BLE-Library" },
-        { "label": "Android connectivity samples", "url": "https://github.com/android/connectivity-samples" }
+        {
+          "label": "Nordic Android BLE Library",
+          "url": "https://github.com/NordicSemiconductor/Android-BLE-Library"
+        },
+        {
+          "label": "Android connectivity samples",
+          "url": "https://github.com/android/connectivity-samples"
+        }
       ],
       "summary": "General-purpose libraries and samples for Bluetooth LE on Android.",
       "details": [
         "Useful for accessories you control. A pen whose link is owned by a system service is normally not reachable this way from an ordinary app."
       ],
-      "tags": ["ble", "android"],
-      "related": ["c-vendor-service-pattern"],
+      "tags": [
+        "ble",
+        "android"
+      ],
+      "related": [
+        "c-vendor-service-pattern"
+      ],
       "basis": "Research inventory."
     },
-
     {
       "id": "dev-oneplus-stylo2",
       "type": "device",
@@ -507,8 +757,15 @@
         "Internal linear haptic motor with feedback that changes with the selected tool.",
         "Verified in the README: the accessory service com.oplus.ipemanager/.btadsorb.CoreService talks to the pen over Bluetooth."
       ],
-      "tags": ["linear-motor", "bluetooth"],
-      "related": ["dev-oneplus-pad3", "if-oplus-ipemanager", "if-oplus-vibration-presets"],
+      "tags": [
+        "linear-motor",
+        "bluetooth"
+      ],
+      "related": [
+        "dev-oneplus-pad3",
+        "if-oplus-ipemanager",
+        "if-oplus-vibration-presets"
+      ],
       "basis": "Vendor specifications from the research inventory, plus the repository README."
     },
     {
@@ -523,10 +780,19 @@
       "summary": "The only tablet the repository has been tested on.",
       "details": [
         "Global OxygenOS, converted from OPD2413 (ColorOS) to OPD2415, Android 16.",
-        "Other OnePlus and Oppo devices with the same accessory service may work but are untested."
+        "Other OnePlus and Oppo devices with the same accessory service may work but are untested.",
+        "A converted tablet also needs the stylus charger firmware for its hardware before the pen will pair. See the pen attach handshake record."
       ],
-      "tags": ["android-16", "oxygenos"],
-      "related": ["dev-oneplus-stylo2", "repo-stylo2-haptics"],
+      "tags": [
+        "android-16",
+        "oxygenos"
+      ],
+      "related": [
+        "dev-oneplus-stylo2",
+        "repo-stylo2-haptics",
+        "c-pen-attach-handshake",
+        "src-xda-regional-stylus-fix"
+      ],
       "basis": "Repository README."
     },
     {
@@ -544,8 +810,15 @@
         "Verified: it has a separate posture sensor, read through libssc in xiaomi-sheng-thp.",
         "Verified: FocusPenProX was tested with it on a Pad 8 Pro (25091RP04C)."
       ],
-      "tags": ["gestures", "posture-sensor"],
-      "related": ["if-xiaomi-pen-engine", "src-xiaomi-sheng-thp", "src-focuspenprox"],
+      "tags": [
+        "gestures",
+        "posture-sensor"
+      ],
+      "related": [
+        "if-xiaomi-pen-engine",
+        "src-xiaomi-sheng-thp",
+        "src-focuspenprox"
+      ],
       "basis": "Vendor specifications plus the two project READMEs."
     },
     {
@@ -564,8 +837,15 @@
         "80 mAh battery, Qi wireless charging.",
         "Having Bluetooth LE and LPP does not show that the motor is controlled through a publicly accessible Bluetooth characteristic."
       ],
-      "tags": ["lpp", "ble", "qi"],
-      "related": ["src-lenovo-ap600u", "gap-lenovo-lpp"],
+      "tags": [
+        "lpp",
+        "ble",
+        "qi"
+      ],
+      "related": [
+        "src-lenovo-ap600u",
+        "gap-lenovo-lpp"
+      ],
       "basis": "Lenovo specification pages via the research inventory."
     },
     {
@@ -584,8 +864,14 @@
         "NearLink connectivity on compatible hardware. NearLink is a radio link, not a haptics API.",
         "App and tablet compatibility varies."
       ],
-      "tags": ["nearlink", "gestures"],
-      "related": ["src-huawei-mpencil", "gap-huawei-api"],
+      "tags": [
+        "nearlink",
+        "gestures"
+      ],
+      "related": [
+        "src-huawei-mpencil",
+        "gap-huawei-api"
+      ],
       "basis": "Huawei product pages via the research inventory."
     },
     {
@@ -602,8 +888,12 @@
         "The system decides whether a haptic plays, based on device, app state and battery.",
         "A developer forum report says the pencil buzzes only for feedback tied to a pencil touch, not a finger touch. Not confirmed by Apple."
       ],
-      "tags": ["ipados"],
-      "related": ["if-apple-canvas-feedback"],
+      "tags": [
+        "ipados"
+      ],
+      "related": [
+        "if-apple-canvas-feedback"
+      ],
       "basis": "Apple documentation via search results, 2 Nov 2026."
     },
     {
@@ -620,11 +910,16 @@
         "Connects with HID over Bluetooth using inbox drivers.",
         "Must also meet the general Windows pen implementation guide."
       ],
-      "tags": ["windows", "hid"],
-      "related": ["if-windows-haptic-pen-device", "if-windows-pen-haptics-api"],
+      "tags": [
+        "windows",
+        "hid"
+      ],
+      "related": [
+        "if-windows-haptic-pen-device",
+        "if-windows-pen-haptics-api"
+      ],
       "basis": "Microsoft Haptic Pen Implementation Guide."
     },
-
     {
       "id": "if-oplus-ipemanager",
       "type": "interface",
@@ -644,8 +939,16 @@
         "Callers never send Bluetooth packets. The service talks to the pen.",
         "Who gets access (from the README): the stock Notes app holds the permission and binds through a bundled SDK; approved third-party apps use a separate OnePlus developer SDK; any other app is refused."
       ],
-      "tags": ["binder", "permission", "bindService"],
-      "related": ["if-oplus-sdk-interface", "if-oneplus-partner-sdk", "c-vendor-service-pattern"],
+      "tags": [
+        "binder",
+        "permission",
+        "bindService"
+      ],
+      "related": [
+        "if-oplus-sdk-interface",
+        "if-oneplus-partner-sdk",
+        "c-vendor-service-pattern"
+      ],
       "basis": "AndroidManifest.xml, OplusPencilSdkClient.kt and README in this repository."
     },
     {
@@ -675,8 +978,15 @@
         "All calls are two-way (flags 0) and read an exception header from the reply. Booleans travel as int 0 or 1.",
         "getSupportFeatureList() returning List<String> is declared in the Java interface but has no transaction code."
       ],
-      "tags": ["aidl", "transaction-codes"],
-      "related": ["if-oplus-callback", "if-oplus-vibration-presets", "gap-oneplus-feature-semantics"],
+      "tags": [
+        "aidl",
+        "transaction-codes"
+      ],
+      "related": [
+        "if-oplus-callback",
+        "if-oplus-vibration-presets",
+        "gap-oneplus-feature-semantics"
+      ],
       "basis": "app/src/main/java/com/oplus/ipemanager/sdk/ISdkAidlInterface.java"
     },
     {
@@ -698,8 +1008,13 @@
         "All four are one-way (FLAG_ONEWAY), so the service never waits on the app.",
         "Registered with transaction 9 and removed with transaction 10. The current app does not register one yet."
       ],
-      "tags": ["aidl", "callback"],
-      "related": ["if-oplus-sdk-interface"],
+      "tags": [
+        "aidl",
+        "callback"
+      ],
+      "related": [
+        "if-oplus-sdk-interface"
+      ],
       "basis": "app/src/main/java/com/oplus/ipemanager/sdk/ISDKAidlCallback.java"
     },
     {
@@ -722,8 +1037,14 @@
         "The README says these profiles come from the stock Notes app.",
         "Whether 4 is meaningful for setVibrationType, or belongs to startVibration(int), is not documented."
       ],
-      "tags": ["presets", "ordinals"],
-      "related": ["c-effect-mapping", "gap-oneplus-feature-semantics"],
+      "tags": [
+        "presets",
+        "ordinals"
+      ],
+      "related": [
+        "c-effect-mapping",
+        "gap-oneplus-feature-semantics"
+      ],
       "basis": "app/src/main/java/com/oplus/ipemanager/sdk/Vibration.java and OplusPencilSdkClient.kt"
     },
     {
@@ -742,8 +1063,13 @@
         "FEEDBACK_VIBRATION = 2",
         "It is not used by any call in the current interface. It is likely related to the feature list."
       ],
-      "tags": ["parcelable"],
-      "related": ["if-oplus-sdk-interface", "gap-oneplus-feature-semantics"],
+      "tags": [
+        "parcelable"
+      ],
+      "related": [
+        "if-oplus-sdk-interface",
+        "gap-oneplus-feature-semantics"
+      ],
       "basis": "app/src/main/java/com/oplus/ipemanager/sdk/IpeFeature.java"
     },
     {
@@ -766,8 +1092,15 @@
         "7. unbindService(). The current code does this before step 6, which should be swapped.",
         "Connection states exposed to the UI: DISCONNECTED, CONNECTING, CONNECTED_SDK, CONNECTED_WRONG_IFACE, ERROR."
       ],
-      "tags": ["sequence", "kotlin"],
-      "related": ["repo-stylo2-haptics", "if-oplus-sdk-interface", "c-feedback-models"],
+      "tags": [
+        "sequence",
+        "kotlin"
+      ],
+      "related": [
+        "repo-stylo2-haptics",
+        "if-oplus-sdk-interface",
+        "c-feedback-models"
+      ],
       "basis": "OplusPencilSdkClient.kt and MainActivity.kt"
     },
     {
@@ -784,8 +1117,14 @@
         "Named in ReVanced issue #180 as the possible place where the calling app's signature is checked.",
         "Not present in this repository and not checked against any installed package."
       ],
-      "tags": ["sdk", "client"],
-      "related": ["src-revanced-180", "if-oneplus-partner-sdk"],
+      "tags": [
+        "sdk",
+        "client"
+      ],
+      "related": [
+        "src-revanced-180",
+        "if-oneplus-partner-sdk"
+      ],
       "basis": "Research inventory."
     },
     {
@@ -802,8 +1141,14 @@
         "Verified in the README: approved third-party apps such as HiPaint go through it, and the stock Notes app uses a different, bundled SDK.",
         "Unknown: whether it is publicly available, how an app applies, and what it requires."
       ],
-      "tags": ["partner", "authentication"],
-      "related": ["src-hipaint", "gap-oneplus-sdk-access"],
+      "tags": [
+        "partner",
+        "authentication"
+      ],
+      "related": [
+        "src-hipaint",
+        "gap-oneplus-sdk-access"
+      ],
       "basis": "Repository README."
     },
     {
@@ -822,8 +1167,16 @@
         "Includes authentication classes. Apps must be registered with Xiaomi.",
         "Most useful as an example of how to structure a vendor-neutral, app-facing API."
       ],
-      "tags": ["aar", "gestures", "posture"],
-      "related": ["src-xiaomi-pencil-engine-docs", "gap-xiaomi-motor-control", "plan-architecture"],
+      "tags": [
+        "aar",
+        "gestures",
+        "posture"
+      ],
+      "related": [
+        "src-xiaomi-pencil-engine-docs",
+        "gap-xiaomi-motor-control",
+        "plan-architecture"
+      ],
       "basis": "Research inventory, from dev.mi.com."
     },
     {
@@ -847,8 +1200,16 @@
         "Android 14 and later also send stylus button presses as KeyEvents (from the AOSP stylus spec).",
         "Nothing in MotionEvent controls feedback. It is input only."
       ],
-      "tags": ["pressure", "tilt", "hover", "palm-rejection"],
-      "related": ["src-android-stylus-guide", "c-android-input-path"],
+      "tags": [
+        "pressure",
+        "tilt",
+        "hover",
+        "palm-rejection"
+      ],
+      "related": [
+        "src-android-stylus-guide",
+        "c-android-input-path"
+      ],
       "basis": "Android developer guide and MotionEvent reference, read on 2 Nov 2026."
     },
     {
@@ -870,8 +1231,15 @@
         "getVibratorManager() (API 31): vibrators that belong to the input device. getVibrator() is deprecated since API 31.",
         "No source has been found showing a stylus motor exposed through getVibratorManager()."
       ],
-      "tags": ["inputdevice", "battery", "vibrator"],
-      "related": ["c-android-haptics-path", "gap-android-hid-haptics"],
+      "tags": [
+        "inputdevice",
+        "battery",
+        "vibrator"
+      ],
+      "related": [
+        "c-android-haptics-path",
+        "gap-android-hid-haptics"
+      ],
       "basis": "InputDevice reference, read on 2 Nov 2026."
     },
     {
@@ -892,8 +1260,15 @@
         "API 36 adds composition delay types (DELAY_TYPE_PAUSE, DELAY_TYPE_RELATIVE_START_OFFSET), createRepeatingEffect(), and envelope builders (BasicEnvelopeBuilder, WaveformEnvelopeBuilder) for more consistent feel across devices.",
         "VibratorManager (API 31) lists the device's vibrators. InputDevice.getVibratorManager() returns one for an input device."
       ],
-      "tags": ["vibrator", "primitives", "api-36"],
-      "related": ["c-android-haptics-path", "c-effect-mapping"],
+      "tags": [
+        "vibrator",
+        "primitives",
+        "api-36"
+      ],
+      "related": [
+        "c-android-haptics-path",
+        "c-effect-mapping"
+      ],
       "basis": "VibrationEffect and Composition reference, read on 2 Nov 2026."
     },
     {
@@ -915,8 +1290,16 @@
         "May also carry battery level and charging status.",
         "Defines no output report for haptics."
       ],
-      "tags": ["hid", "descriptor", "bluetooth"],
-      "related": ["src-aosp-stylus", "c-pen-identity", "if-hid-haptics-page"],
+      "tags": [
+        "hid",
+        "descriptor",
+        "bluetooth"
+      ],
+      "related": [
+        "src-aosp-stylus",
+        "c-pen-identity",
+        "if-hid-haptics-page"
+      ],
       "basis": "AOSP stylus page, read on 2 Nov 2026."
     },
     {
@@ -937,8 +1320,16 @@
         "ML Kit Digital Ink Recognition: handwriting to text and gesture recognition.",
         "Latency sources named by Google: pen registration with the touchscreen, touch sampling rate (60 to 1000 Hz), app processing, rendering."
       ],
-      "tags": ["latency", "front-buffer", "prediction", "ink"],
-      "related": ["src-android-stylus-guide", "c-feedback-models"],
+      "tags": [
+        "latency",
+        "front-buffer",
+        "prediction",
+        "ink"
+      ],
+      "related": [
+        "src-android-stylus-guide",
+        "c-feedback-models"
+      ],
       "basis": "Advanced stylus features guide, read on 2 Nov 2026."
     },
     {
@@ -960,8 +1351,16 @@
         "Optional settings, each with a support check: intensity, play count, play duration, replay pause interval.",
         "Windows 11 only. Check that the SimpleHapticsController property exists before using it."
       ],
-      "tags": ["windows", "waveforms", "reference-api"],
-      "related": ["if-hid-haptics-page", "c-effect-mapping", "plan-architecture"],
+      "tags": [
+        "windows",
+        "waveforms",
+        "reference-api"
+      ],
+      "related": [
+        "if-hid-haptics-page",
+        "c-effect-mapping",
+        "plan-architecture"
+      ],
       "basis": "Microsoft Learn page, read on 2 Nov 2026."
     },
     {
@@ -986,8 +1385,18 @@
         "The pen digitizer protocol is left open. A protocol with an uplink from screen to pen can be used to modulate the haptics.",
         "Optional tail button over Bluetooth LE keyboard reports: WIN+F20 click, WIN+F19 double-click, WIN+F18 press and hold."
       ],
-      "tags": ["hid", "bluetooth", "manual-trigger", "transducer-serial"],
-      "related": ["if-hid-haptics-page", "c-pen-identity", "c-feedback-models", "gap-oneplus-transport"],
+      "tags": [
+        "hid",
+        "bluetooth",
+        "manual-trigger",
+        "transducer-serial"
+      ],
+      "related": [
+        "if-hid-haptics-page",
+        "c-pen-identity",
+        "c-feedback-models",
+        "gap-oneplus-transport"
+      ],
       "basis": "Microsoft Haptic Pen Implementation Guide, read on 2 Nov 2026."
     },
     {
@@ -1008,8 +1417,15 @@
         "0x1012 to 0x1015 were added by the HUTRR118 expansion.",
         "The app API calls 0x1011 GalaxyPenContinuous; the hardware guide calls it SparkleContinuous. Both describe a multi-coloured special brush."
       ],
-      "tags": ["hid", "waveform-ids"],
-      "related": ["if-windows-haptic-pen-device", "src-usb-hid-haptics", "c-effect-mapping"],
+      "tags": [
+        "hid",
+        "waveform-ids"
+      ],
+      "related": [
+        "if-windows-haptic-pen-device",
+        "src-usb-hid-haptics",
+        "c-effect-mapping"
+      ],
       "basis": "Microsoft haptic pen and input haptics guides, read on 2 Nov 2026."
     },
     {
@@ -1029,11 +1445,16 @@
         "Plays on Apple Pencil Pro with a compatible iPad. Playback is not guaranteed; the system weighs device, app state and battery.",
         "There is no continuous texture API. That is the opposite of the OnePlus and Windows inking model."
       ],
-      "tags": ["ipados", "semantic"],
-      "related": ["c-feedback-models", "c-effect-mapping"],
+      "tags": [
+        "ipados",
+        "semantic"
+      ],
+      "related": [
+        "c-feedback-models",
+        "c-effect-mapping"
+      ],
       "basis": "Apple documentation via search results, 2 Nov 2026."
     },
-
     {
       "id": "c-three-subsystems",
       "type": "concept",
@@ -1049,10 +1470,21 @@
         "Side channel: a Bluetooth LE link carries what the screen cannot sense, such as buttons, battery, often pressure, settings and haptic commands. Xiaomi pressure arrives as Bluetooth HID; the OnePlus service talks to the pen over Bluetooth; Windows haptic pens use HID over Bluetooth.",
         "Actuator: a small motor (the Stylo 2 has a linear motor) and its driver chip in the pen play the waveform locally.",
         "Joining them: Android correlates timing between touch input and Bluetooth stylus data. Windows matches the transducer serial number and vendor ID reported on both channels.",
-        "Consequence: pressure and tilt reach apps through standard Android APIs, but haptics travel the Bluetooth side channel, which on Android belongs to a vendor service."
+        "Consequence: pressure and tilt reach apps through standard Android APIs, but haptics travel the Bluetooth side channel, which on Android belongs to a vendor service.",
+        "Before any of this works, the magnetic charger has to hand the pen's Bluetooth address to the tablet. That attach handshake runs through the CPS8601 charger chip."
       ],
-      "tags": ["architecture", "bluetooth", "digitizer"],
-      "related": ["src-xiaomi-sheng-thp", "if-windows-haptic-pen-device", "c-android-input-path", "c-vendor-service-pattern"],
+      "tags": [
+        "architecture",
+        "bluetooth",
+        "digitizer"
+      ],
+      "related": [
+        "src-xiaomi-sheng-thp",
+        "if-windows-haptic-pen-device",
+        "c-android-input-path",
+        "c-vendor-service-pattern",
+        "c-pen-attach-handshake"
+      ],
       "basis": "Combined from the verified Xiaomi, OnePlus, AOSP and Microsoft sources."
     },
     {
@@ -1072,8 +1504,17 @@
         "Verified for USI: version 2.0 (2022) added NFC wireless charging, in-cell panel support and more tilt. No public source shows haptics in USI.",
         "Verified for Windows: Microsoft says a pen protocol with a screen-to-pen uplink may be used to modulate haptics, but does not require it."
       ],
-      "tags": ["emr", "aes", "mpp", "usi"],
-      "related": ["src-usi", "if-windows-haptic-pen-device", "gap-usi-haptics"],
+      "tags": [
+        "emr",
+        "aes",
+        "mpp",
+        "usi"
+      ],
+      "related": [
+        "src-usi",
+        "if-windows-haptic-pen-device",
+        "gap-usi-haptics"
+      ],
       "basis": "Background knowledge, with USI and Microsoft points checked."
     },
     {
@@ -1095,8 +1536,16 @@
         "6. InputDispatcher delivers the event to the focused window, where the app sees a MotionEvent.",
         "Every step runs in one direction, toward the app. No step carries feedback back to the pen."
       ],
-      "tags": ["eventhub", "inputreader", "evdev"],
-      "related": ["src-aosp-input", "if-android-stylus-hid", "if-android-motionevent"],
+      "tags": [
+        "eventhub",
+        "inputreader",
+        "evdev"
+      ],
+      "related": [
+        "src-aosp-input",
+        "if-android-stylus-hid",
+        "if-android-motionevent"
+      ],
       "basis": "AOSP input and stylus pages, read on 2 Nov 2026. The mapper class name is from AOSP source."
     },
     {
@@ -1117,8 +1566,16 @@
         "So stylus haptics on Android are vendor-specific: OnePlus, Xiaomi and Huawei each use their own system software.",
         "Playing the tablet's own vibrator instead is not equivalent. The plan is to report a missing capability, not imitate it."
       ],
-      "tags": ["vibrator-hal", "gap"],
-      "related": ["if-android-vibrator", "if-android-inputdevice", "gap-android-hid-haptics", "plan-architecture"],
+      "tags": [
+        "vibrator-hal",
+        "gap"
+      ],
+      "related": [
+        "if-android-vibrator",
+        "if-android-inputdevice",
+        "gap-android-hid-haptics",
+        "plan-architecture"
+      ],
       "basis": "Combined from verified Android references and the AOSP stylus spec."
     },
     {
@@ -1139,8 +1596,16 @@
         "Verified for OnePlus (com.oplus.ipemanager). Xiaomi's SDK includes an auth package, which suggests a similar gate. Not established for Huawei or Lenovo.",
         "Design consequence: a cross-vendor library needs one adapter per vendor service, and it must say clearly when the current app has no access."
       ],
-      "tags": ["binder", "permission", "privileged"],
-      "related": ["if-oplus-ipemanager", "if-xiaomi-pen-engine", "plan-architecture"],
+      "tags": [
+        "binder",
+        "permission",
+        "privileged"
+      ],
+      "related": [
+        "if-oplus-ipemanager",
+        "if-xiaomi-pen-engine",
+        "plan-architecture"
+      ],
       "basis": "Combined from the OnePlus code and README and the Xiaomi SDK package list."
     },
     {
@@ -1159,8 +1624,17 @@
         "Why textures run in the pen: a Bluetooth round trip is too slow and uneven to time each pulse to each stroke sample. Sending which texture to use and letting the pen start and stop on contact avoids that. Microsoft's rule that continuous waveforms play at the device's discretion fits this explanation.",
         "API consequence: a common library should expose \"set texture, enable, disable\" separately from \"play event\", not one vibrate call."
       ],
-      "tags": ["continuous", "discrete", "latency"],
-      "related": ["if-windows-haptic-pen-device", "if-oplus-call-sequence", "if-apple-canvas-feedback", "c-effect-mapping"],
+      "tags": [
+        "continuous",
+        "discrete",
+        "latency"
+      ],
+      "related": [
+        "if-windows-haptic-pen-device",
+        "if-oplus-call-sequence",
+        "if-apple-canvas-feedback",
+        "c-effect-mapping"
+      ],
       "basis": "Microsoft guides (verified) compared with the OnePlus interface (verified). The explanation is inferred."
     },
     {
@@ -1185,8 +1659,16 @@
         "Click: HID Click 0x1003. OnePlus FUNCTION_VIBRATION (4) is a candidate. On the tablet itself: Android PRIMITIVE_CLICK.",
         "Stop: OnePlus stopFeedBackVibration() = Windows StopFeedback() = HID Stop 0x1002."
       ],
-      "tags": ["mapping", "semantic-effects"],
-      "related": ["if-oplus-vibration-presets", "if-hid-haptics-page", "if-apple-canvas-feedback", "plan-architecture"],
+      "tags": [
+        "mapping",
+        "semantic-effects"
+      ],
+      "related": [
+        "if-oplus-vibration-presets",
+        "if-hid-haptics-page",
+        "if-apple-canvas-feedback",
+        "plan-architecture"
+      ],
       "basis": "Inferred from the names and descriptions of verified constants."
     },
     {
@@ -1204,8 +1686,14 @@
         "Android: the AOSP example stylus descriptor includes a 128-bit Transducer Serial Number feature report, and the platform correlates stylus data with touch timing.",
         "On OnePlus the vendor service handles this internally. Apps never see a pen identifier."
       ],
-      "tags": ["transducer-serial", "multi-pen"],
-      "related": ["if-windows-haptic-pen-device", "if-android-stylus-hid"],
+      "tags": [
+        "transducer-serial",
+        "multi-pen"
+      ],
+      "related": [
+        "if-windows-haptic-pen-device",
+        "if-android-stylus-hid"
+      ],
       "basis": "Microsoft haptic pen guide and AOSP stylus page."
     },
     {
@@ -1227,11 +1715,19 @@
         "Developer options, Enable Bluetooth HCI snoop log: record a session with OnePlus Notes, then open the log in Wireshark to see which Bluetooth traffic accompanies haptics.",
         "In an app: InputDevice.getMotionRange(MotionEvent.AXIS_PRESSURE) shows the pressure range and resolution apps actually get."
       ],
-      "tags": ["adb", "dumpsys", "getevent", "hci-snoop"],
-      "related": ["src-bluetooth-analysis-tools", "gap-pressure-delivered", "gap-oneplus-transport"],
+      "tags": [
+        "adb",
+        "dumpsys",
+        "getevent",
+        "hci-snoop"
+      ],
+      "related": [
+        "src-bluetooth-analysis-tools",
+        "gap-pressure-delivered",
+        "gap-oneplus-transport"
+      ],
       "basis": "Standard Android tooling. Not run on the Pad 3 yet."
     },
-
     {
       "id": "plan-architecture",
       "type": "plan",
@@ -1250,8 +1746,17 @@
         "Report unsupported capabilities explicitly. Don't imitate them with the tablet's vibrator.",
         "Model the effect vocabulary on the HID Haptics page and the Windows waveform names, which are already vendor-neutral."
       ],
-      "tags": ["rust", "adapter", "api-design"],
-      "related": ["c-effect-mapping", "c-feedback-models", "if-windows-pen-haptics-api", "plan-reusability"],
+      "tags": [
+        "rust",
+        "adapter",
+        "api-design"
+      ],
+      "related": [
+        "c-effect-mapping",
+        "c-feedback-models",
+        "if-windows-pen-haptics-api",
+        "plan-reusability"
+      ],
       "basis": "Research inventory section 7, extended with the verified Windows model."
     },
     {
@@ -1273,8 +1778,12 @@
         "Xiaomi Bluetooth and HID implementation: Xiaomi only. Protocol-analysis reference.",
         "Lenovo LPP and Huawei NearLink: unknown. Research separately."
       ],
-      "tags": ["assessment"],
-      "related": ["plan-architecture"],
+      "tags": [
+        "assessment"
+      ],
+      "related": [
+        "plan-architecture"
+      ],
       "basis": "Research inventory section 7."
     },
     {
@@ -1295,11 +1804,16 @@
         "5. Xiaomi Pencil Engine AAR: check whether it exposes real haptic output. Not started.",
         "6. The common abstraction: start with OnePlus and add vendors only once their haptic interfaces are verified. Not started."
       ],
-      "tags": ["roadmap"],
-      "related": ["plan-architecture", "gap-oneplus-transport", "gap-xiaomi-motor-control"],
+      "tags": [
+        "roadmap"
+      ],
+      "related": [
+        "plan-architecture",
+        "gap-oneplus-transport",
+        "gap-xiaomi-motor-control"
+      ],
       "basis": "Research inventory section 8, with progress as of 2 Nov 2026."
     },
-
     {
       "id": "gap-oneplus-sdk-access",
       "type": "gap",
@@ -1315,8 +1829,15 @@
         "Unknown: whether the SDK is public, how to apply, what it checks and what it costs.",
         "Next step: ask OnePlus developer relations or HiPaint's developer."
       ],
-      "tags": ["partner", "access"],
-      "related": ["if-oneplus-partner-sdk", "src-hipaint", "src-revanced-180"],
+      "tags": [
+        "partner",
+        "access"
+      ],
+      "related": [
+        "if-oneplus-partner-sdk",
+        "src-hipaint",
+        "src-revanced-180"
+      ],
       "basis": "Repository README and ReVanced issue."
     },
     {
@@ -1333,8 +1854,15 @@
         "The interface shape (set type, start, stop) and the Windows model both suggest the pen plays the texture locally on contact.",
         "Next step: an HCI snoop log of a writing session in OnePlus Notes would show the pattern."
       ],
-      "tags": ["bluetooth", "timing"],
-      "related": ["c-feedback-models", "c-observing-on-device", "if-windows-haptic-pen-device"],
+      "tags": [
+        "bluetooth",
+        "timing"
+      ],
+      "related": [
+        "c-feedback-models",
+        "c-observing-on-device",
+        "if-windows-haptic-pen-device"
+      ],
       "basis": "Open question from the research order."
     },
     {
@@ -1354,8 +1882,15 @@
         "getPencilConnectState(): what the integer states mean.",
         "Demo mode: what enableDemoMode changes."
       ],
-      "tags": ["aidl", "semantics"],
-      "related": ["if-oplus-sdk-interface", "if-oplus-vibration-presets", "if-oplus-ipefeature"],
+      "tags": [
+        "aidl",
+        "semantics"
+      ],
+      "related": [
+        "if-oplus-sdk-interface",
+        "if-oplus-vibration-presets",
+        "if-oplus-ipefeature"
+      ],
       "basis": "Repository code."
     },
     {
@@ -1371,8 +1906,13 @@
       "details": [
         "Next step: read InputDevice.getMotionRange(AXIS_PRESSURE) and getevent -lp on the Pad 3 with the Stylo 2."
       ],
-      "tags": ["pressure"],
-      "related": ["c-observing-on-device", "dev-oneplus-stylo2"],
+      "tags": [
+        "pressure"
+      ],
+      "related": [
+        "c-observing-on-device",
+        "dev-oneplus-stylo2"
+      ],
       "basis": "Research inventory, section 9."
     },
     {
@@ -1389,8 +1929,13 @@
         "Don't mistake gesture support for haptic output control.",
         "Next step: inspect the AAR once developer access is granted."
       ],
-      "tags": ["sdk", "haptics"],
-      "related": ["if-xiaomi-pen-engine"],
+      "tags": [
+        "sdk",
+        "haptics"
+      ],
+      "related": [
+        "if-xiaomi-pen-engine"
+      ],
       "basis": "Research inventory, section 9."
     },
     {
@@ -1407,8 +1952,13 @@
         "Treat LPP as a research target, not an established standard.",
         "Possible lead: LPP code in Lenovo system packages or firmware source releases."
       ],
-      "tags": ["lpp"],
-      "related": ["dev-lenovo-ap600u", "src-lenovo-ap600u"],
+      "tags": [
+        "lpp"
+      ],
+      "related": [
+        "dev-lenovo-ap600u",
+        "src-lenovo-ap600u"
+      ],
       "basis": "Research inventory, section 9."
     },
     {
@@ -1424,8 +1974,13 @@
       "details": [
         "Useful mainly for studying another system-managed feedback design."
       ],
-      "tags": ["nearlink"],
-      "related": ["dev-huawei-mpencil-pro", "src-huawei-mpencil"],
+      "tags": [
+        "nearlink"
+      ],
+      "related": [
+        "dev-huawei-mpencil-pro",
+        "src-huawei-mpencil"
+      ],
       "basis": "Research inventory, section 9."
     },
     {
@@ -1442,8 +1997,16 @@
         "If they did, a pen built to the Windows guide could work on Android without a vendor service.",
         "Next step: check AOSP inputflinger and the Linux HID subsystem for Haptics page support."
       ],
-      "tags": ["hid", "aosp", "linux"],
-      "related": ["c-android-haptics-path", "if-hid-haptics-page", "if-android-inputdevice"],
+      "tags": [
+        "hid",
+        "aosp",
+        "linux"
+      ],
+      "related": [
+        "c-android-haptics-path",
+        "if-hid-haptics-page",
+        "if-android-inputdevice"
+      ],
       "basis": "No source found on 2 Nov 2026."
     },
     {
@@ -1457,9 +2020,280 @@
       "url": "",
       "summary": "Public USI 2.0 coverage mentions no haptics, and the full spec is members-only.",
       "details": [],
-      "tags": ["usi"],
-      "related": ["src-usi", "c-pen-sensing"],
+      "tags": [
+        "usi"
+      ],
+      "related": [
+        "src-usi",
+        "c-pen-sensing"
+      ],
       "basis": "Search results, 2 Nov 2026."
+    },
+    {
+      "id": "src-cxzlw-pen-enabler",
+      "type": "source",
+      "title": "oplus-global-pen-enabler (stylus firmware fix module)",
+      "vendor": "OnePlus",
+      "category": "Community implementation",
+      "status": "verified",
+      "priority": "critical",
+      "url": "https://github.com/cxzlw/oplus-global-pen-enabler",
+      "links": [],
+      "summary": "KernelSU module that restores the Stylo pen after converting a Chinese OnePlus Pad Pro to a global ROM, by adding the missing CPS8601 pen-charger firmware directories.",
+      "details": [
+        "Targets the OnePlus Pad Pro (caihong) and Pad 2 (rainbow) with the Stylo 2 (Chinese name: OnePlus Smart Stylus Pro).",
+        "Ships odm/firmware/wireless_pen/{23926,23927,23976,23978,24926}/cps8601_firmware.bin plus module.prop. There is no install script.",
+        "The four 239xx files are identical. 24926 is a different build, added on 12 Apr 2026 by contributor FRTI64.",
+        "The README explains the method: kernel module info for oplus_wireless_pen.ko, the cps8601 kernel log on attach, and the finding that ROM regions use different firmware directory names.",
+        "Swapping the Chinese ROM's odm.img confirmed the cause before the module was written.",
+        "Full write-up: research/pen-attach-handshake.md"
+      ],
+      "tags": [
+        "kernelsu",
+        "firmware",
+        "regional-rom",
+        "cps8601"
+      ],
+      "related": [
+        "if-oplus-wireless-pen-driver",
+        "if-cps8601-firmware",
+        "c-pen-attach-handshake",
+        "src-xda-regional-stylus-fix"
+      ],
+      "basis": "Repository read at commit 1869c22 on 2 Nov 2026."
+    },
+    {
+      "id": "src-crdroid-caihong",
+      "type": "source",
+      "title": "crDroid device tree for caihong: proprietary file list",
+      "vendor": "OnePlus",
+      "category": "Device tree",
+      "status": "verified",
+      "priority": "medium",
+      "url": "https://github.com/crdroidandroid/android_device_oneplus_caihong/blob/16.0/proprietary-files.txt",
+      "links": [],
+      "summary": "Custom-ROM file list showing how the Pad Pro's pen firmware is laid out: two real directories, each with a second name linked to it.",
+      "details": [
+        "odm/firmware/wireless_pen/23976/cps8601_firmware.bin;SYMLINK=odm/firmware/wireless_pen/23926/cps8601_firmware.bin",
+        "odm/firmware/wireless_pen/23978/cps8601_firmware.bin;SYMLINK=odm/firmware/wireless_pen/23927/cps8601_firmware.bin",
+        "So a custom ROM covers both directory names with one file each, which is what the community module does by copying."
+      ],
+      "tags": [
+        "device-tree",
+        "firmware"
+      ],
+      "related": [
+        "if-cps8601-firmware",
+        "src-cxzlw-pen-enabler"
+      ],
+      "basis": "File read on 2 Nov 2026 (branch 16.0)."
+    },
+    {
+      "id": "src-xda-regional-stylus-fix",
+      "type": "source",
+      "title": "XDA: Stylus Fix for OnePlus on Different Regional ROM",
+      "vendor": "OnePlus",
+      "category": "Community implementation",
+      "status": "unverified",
+      "priority": "high",
+      "url": "https://xdaforums.com/t/magisk-module-stylus-fix-for-oneplus-on-different-regional-rom.4753007/",
+      "links": [
+        {
+          "label": "Stylus Fix for OnePlus on Different Regional ROM",
+          "url": "https://xdaforums.com/t/magisk-module-stylus-fix-for-oneplus-on-different-regional-rom.4753007/"
+        },
+        {
+          "label": "Found the way to fix stylus for OnePlus Pad 3 COS to OOS",
+          "url": "https://xdaforums.com/t/found-the-way-to-fix-stylus-for-oneplus-pad-3-cos-to-oos.4749818/"
+        },
+        {
+          "label": "Did anyone find a way to fix the stylus after converting to OxygenOS from COS?",
+          "url": "https://xdaforums.com/t/did-anyone-found-a-way-to-fix-the-stylus-after-converting-to-oxygen-os-from-cos.4749547/"
+        },
+        {
+          "label": "Stylus not recognized on OPPO Pad 4 Pro (OPD2413) after converting to OPD2415",
+          "url": "https://xdaforums.com/t/title-q-stylus-not-recognized-on-oppo-pad-4-pro-opd2413-after-converting-to-oneplus-pad-3-global-rom-opd2415.4780653/"
+        },
+        {
+          "label": "Stylo 2 doesn't work with OnePlus Pad 3 COS",
+          "url": "https://xdaforums.com/t/oneplus-stylus-2-doesnt-work-with-oneplus-pad-3-cos.4777470/"
+        }
+      ],
+      "summary": "Magisk module thread by jjjhitel for the same problem: the stylus stops working after converting between Chinese and global ROMs.",
+      "details": [
+        "Listed for the OnePlus Pad 2 Pro (China) and the Pad 3.",
+        "The author says the pen firmware is the same across regions and only the loading path differs, which matches the cxzlw module's finding.",
+        "Mixed user reports: one user swapped only odm.img (ColorOS .501 onto OxygenOS .500 EU) and it worked. Another found the KernelSU module did not work and the odm.img swap caused boot crashes. A third says the pen stopped charging after a later global update.",
+        "Not read directly: XDA refuses automated access. These points come from search-result excerpts only."
+      ],
+      "tags": [
+        "magisk",
+        "regional-rom",
+        "odm"
+      ],
+      "related": [
+        "src-cxzlw-pen-enabler",
+        "c-pen-attach-handshake",
+        "dev-oneplus-pad3"
+      ],
+      "basis": "Search-result excerpts, 2 Nov 2026."
+    },
+    {
+      "id": "dev-oneplus-pad-pro-caihong",
+      "type": "device",
+      "title": "OnePlus Pad Pro (caihong) / Pad 2 (rainbow)",
+      "vendor": "OnePlus",
+      "category": "Tablet",
+      "status": "verified",
+      "priority": "medium",
+      "url": "",
+      "links": [],
+      "summary": "The 2024 OnePlus tablets the original stylus firmware fix was written for.",
+      "details": [
+        "Codename caihong: OnePlus Pad Pro (China). Codename rainbow: OnePlus Pad 2 (global).",
+        "Kernel 6.1.68-android14, from the oplus_wireless_pen.ko module info.",
+        "Pen firmware directories 23926, 23927, 23976 and 23978 under /odm/firmware/wireless_pen/."
+      ],
+      "tags": [
+        "caihong",
+        "rainbow"
+      ],
+      "related": [
+        "src-cxzlw-pen-enabler",
+        "src-crdroid-caihong",
+        "if-cps8601-firmware"
+      ],
+      "basis": "cxzlw README and crDroid device tree."
+    },
+    {
+      "id": "if-oplus-wireless-pen-driver",
+      "type": "interface",
+      "title": "oplus_wireless_pen kernel driver",
+      "vendor": "OnePlus",
+      "category": "Kernel driver",
+      "status": "verified",
+      "priority": "high",
+      "url": "https://github.com/cxzlw/oplus-global-pen-enabler",
+      "links": [],
+      "summary": "Kernel module for the pen's magnetic wireless charger (CPS8601). It detects attach and passes the pen's Bluetooth address on for pairing.",
+      "details": [
+        "File: /vendor/lib/modules/oplus_wireless_pen.ko",
+        "Descriptions: \"Wireless Pen Charger Cps8601\" and \"QTI Glink wireless pen driver\". Licence GPL v2.",
+        "alias i2c:cps-wls-charger, so the chip sits on an I2C bus.",
+        "Depends on panel_event_notifier, oplus_bsp_boot_projectinfo and pmic_glink. The project-info dependency suggests it selects firmware by hardware variant.",
+        "vermagic 6.1.68-android14-11-o-g2ba5638f614f (Pad Pro / Pad 2). The Pad 3 may differ.",
+        "Log prefix [cps8601]. Key lines: Rx attach!, tx wakeup!, receive ask pkt!, [cps_wls_get_ask_packet]get ble addr, cps8601_valid_check, report 1.",
+        "Because it is GPL v2, its source should appear in OnePlus's kernel releases."
+      ],
+      "tags": [
+        "kernel",
+        "i2c",
+        "glink",
+        "dmesg"
+      ],
+      "related": [
+        "if-cps8601-firmware",
+        "c-pen-attach-handshake",
+        "gap-pen-firmware-directory"
+      ],
+      "basis": "modinfo output and kernel log quoted in the cxzlw README."
+    },
+    {
+      "id": "if-cps8601-firmware",
+      "type": "interface",
+      "title": "cps8601_firmware.bin (pen charger firmware)",
+      "vendor": "OnePlus",
+      "category": "Firmware",
+      "status": "verified",
+      "priority": "high",
+      "url": "https://github.com/cxzlw/oplus-global-pen-enabler/tree/main/odm/firmware/wireless_pen",
+      "links": [],
+      "summary": "15 KB firmware for the tablet-side pen charging chip. It covers power transfer and the pen's in-band packets, with nothing about haptics.",
+      "details": [
+        "Path: /odm/firmware/wireless_pen/<number>/cps8601_firmware.bin. Numbers seen: 23926, 23927, 23976, 23978, 24926.",
+        "Every copy is 15,360 bytes. The 239xx copies share SHA-256 cfac67370d543b8b31a914a240dca5b043743388da539465260e6df6400f9e81. 24926 has 33a4ab21db5e92af7f144fecf3d86f64137079d22e4890902d6da24dd6aa1ee4.",
+        "Looks like 8051 code: long jumps at the reset, INT0 and Timer0 vector slots (0x0000, 0x0003, 0x000B), and Keil C51 %bu format strings.",
+        "The strings show a Qi-style transmitter: cmd enter tx mode, Ping:Freq=…, ploss fod trigger, q cali, save Q value, RX remove, low power, start crc check, equipment (factory) mode, ver%bu.%bu.",
+        "No strings about vibration, haptics or Bluetooth.",
+        "The directory numbers look like Oplus project numbers for each hardware variant. Inferred, not confirmed."
+      ],
+      "tags": [
+        "firmware",
+        "8051",
+        "qi",
+        "odm"
+      ],
+      "related": [
+        "if-oplus-wireless-pen-driver",
+        "src-cxzlw-pen-enabler",
+        "src-crdroid-caihong",
+        "gap-pen-firmware-directory"
+      ],
+      "basis": "Files from the cxzlw repo, hashed and string-scanned on 2 Nov 2026."
+    },
+    {
+      "id": "c-pen-attach-handshake",
+      "type": "concept",
+      "title": "Pen attach handshake: charging link to Bluetooth pairing",
+      "vendor": "OnePlus",
+      "category": "Pairing",
+      "status": "inferred",
+      "priority": "critical",
+      "url": "",
+      "links": [],
+      "summary": "When the pen snaps on, the charger chip receives the pen's Bluetooth LE address over the charging link. That starts pairing, so it must succeed before any haptics can work.",
+      "details": [
+        "1. The magnetic charger detects the pen (Rx attach!) and starts transmitting power (tx wakeup!).",
+        "2. The pen answers by modulating the charging load (Qi ASK packets: receive ask pkt!).",
+        "3. One packet carries the pen's Bluetooth LE address (get ble addr). The driver validates it and reports it.",
+        "4. The accessory service then presumably pairs over Bluetooth LE. Haptic commands from com.oplus.ipemanager use that link.",
+        "On converted tablets the charger firmware for the hardware's directory is missing, so step 2 or 3 fails and the pen never pairs.",
+        "Fixes: provide the missing firmware directories (overlay module), or flash the matching region's odm.img. Results vary.",
+        "Useful for capture: attaching the pen marks the moment Bluetooth LE pairing should begin in an HCI snoop log.",
+        "Full write-up: research/pen-attach-handshake.md"
+      ],
+      "tags": [
+        "pairing",
+        "qi",
+        "ble",
+        "regional-rom"
+      ],
+      "related": [
+        "if-oplus-wireless-pen-driver",
+        "if-cps8601-firmware",
+        "c-three-subsystems",
+        "if-oplus-ipemanager",
+        "gap-oneplus-transport"
+      ],
+      "basis": "Kernel log and findings in the cxzlw README; the sequence and its link to haptics are inferred."
+    },
+    {
+      "id": "gap-pen-firmware-directory",
+      "type": "gap",
+      "title": "How does the driver choose the pen firmware directory?",
+      "vendor": "OnePlus",
+      "category": "Firmware",
+      "status": "open",
+      "priority": "high",
+      "url": "",
+      "links": [],
+      "summary": "It is unknown which number maps to which hardware, and which one the Pad 3 / OPD2413 / OPD2415 needs.",
+      "details": [
+        "Next step: read the GPL source of oplus_wireless_pen in OnePlus's kernel release.",
+        "On the device: list /odm/firmware/wireless_pen/, read the project number from system properties, and watch dmesg | grep cps8601 while attaching the pen.",
+        "Also unknown: what changed in the 24926 build, which the kernel's ver%bu.%bu log line would show.",
+        "Also unknown: whether the root manager in use mounts a module's odm/ folder onto /odm."
+      ],
+      "tags": [
+        "firmware",
+        "pad-3"
+      ],
+      "related": [
+        "if-oplus-wireless-pen-driver",
+        "if-cps8601-firmware",
+        "dev-oneplus-pad3"
+      ],
+      "basis": "Open question from the 2 Nov 2026 firmware review."
     }
   ]
 }
