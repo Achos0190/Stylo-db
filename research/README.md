@@ -18,17 +18,19 @@ research/
 │   └── record.schema.json   JSON Schema for one record
 ├── tools/
 │   ├── validate.py          Checks every record and cross-reference
-│   └── build.py             Combined file and per-record documents, in build/
+│   ├── build.py             Combined file and per-record documents, in build/
+│   └── fwinfo.py            Inspects cps8601_firmware.bin files (hash, known build, 8051 vectors, strings)
 ├── site/
 │   └── stylus-haptics-db.html    Source of the searchable database page (runs on claude.ai)
 ├── docs/
-│   └── pen-attach-handshake.md   Pen charger handshake and the regional-ROM stylus fix
+│   ├── pen-attach-handshake.md   Pen charger handshake and the regional-ROM stylus fix
+│   └── local-session-pickup.md   Instructions for a local session with the tablet connected
 └── reference/
     ├── fix-odm-oplus-pad2pro/      jjhitel's module scripts (GPL-3.0), unmodified, with PROVENANCE.md
     └── oplus-global-pen-enabler/   MANIFEST.md: cxzlw's firmware files by path and SHA-256 (binaries not stored)
 ```
 
-`build/` is generated and ignored by git.
+`build/` is generated, and `local/` holds files pulled from a tablet (firmware, logs). Git ignores both.
 
 ## Records
 
