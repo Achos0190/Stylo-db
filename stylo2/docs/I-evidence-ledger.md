@@ -67,7 +67,7 @@ interface), **[H]ypothesis** (open).
 | --- | --- | --- |
 | `stylo2` workspace compiles; 26 tests pass; clippy clean (x86_64) | [V] | `cargo test`/`clippy` run in this session |
 | `jni` feature type-checks against `jni 0.21` | [V] | `cargo check --features jni` |
-| Android modules (`stylo2-bridge`, `stylus-ble-inspector`) compile | [H] | **not built — no Android SDK in the authoring env** |
+| Android modules (`stylo2-poc`, `stylus-ble-inspector`, `stylo2-bridge`) compile; inspector unit tests pass | [V] | `./gradlew :stylo2-poc:assembleDebug :stylus-ble-inspector:assembleDebug :stylus-ble-inspector:testDebugUnitTest :stylo2-bridge:assembleDebug` from the repo root (AGP 8.13, compileSdk 36), 2 Nov 2026; host only, not run on a device |
 
 ## Open questions → the exact experiment that answers each (deliverable 9)
 
@@ -76,7 +76,7 @@ interface), **[H]ypothesis** (open).
 | Q1 | Protection level of `safe.IOT`? | `dumpsys package com.oplus.permission.safe.IOT`; framework XML `protectionLevel` | B1; decides if binder route is possible at all |
 | Q2 | Can an ordinary app discover + bind the service? | Isolating experiment steps 1–2 (H) | B2 |
 | Q3 | If bind succeeds, do calls pass caller validation? | Isolating experiment step 3 (H) | B2 vs B4 |
-| Q4 | Is haptic control carried over GATT, or another channel? | HCI snoop of Notes, one "pencil" stroke + start/stop (J §4) | B4; picks BLE vs not |
+| Q4 | Is haptic control carried over GATT, or another channel? | HCI snoop of Notes, one "pencil" stroke + start/stop (G §4; J scenarios) | B4; picks BLE vs not |
 | Q5 | Exact bytes per profile and for start/stop? | Snoop scenarios 2–7, correlate markers↔ATT writes (J) | `Stylo2GattProfile.encode`, `wire::reported_code` |
 | Q6 | Can a 2nd app connect to the pen's GATT? | Inspector connect while system connected (G §6) | B3 |
 | Q7 | Does a 2nd connection disrupt the system link/Notes? | Inspector connected + draw in Notes | B3; E 11–12 (gating) |

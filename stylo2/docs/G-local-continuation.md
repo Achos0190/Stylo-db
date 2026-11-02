@@ -57,20 +57,23 @@ until the capture shows it.
 ## 2. Get the code and confirm the host baseline
 
 ```bash
-git clone https://github.com/Achos0190/stylo2-haptics
-cd stylo2-haptics
-git checkout ccr-9fb81d0a-059pa6        # or master once PR #1 is merged
+# from a clone of the repository, on the working branch (see ../../PICKUP.md)
 cd stylo2 && cargo test --workspace      # expect 26 passing
 cargo run -p stylo2-core --example demo --features mock
+cd ..
 ```
 
-Build and install the inspector:
+Build and install the inspector (all Android modules share the Gradle build at
+the repository root):
 
 ```bash
-cd ../android/stylus-ble-inspector
-./gradlew :app:testDebugUnitTest         # pure-logic unit tests
-./gradlew :app:installDebug              # installs on the connected pad
+./gradlew :stylus-ble-inspector:testDebugUnitTest   # pure-logic unit tests
+./gradlew :stylus-ble-inspector:installDebug        # installs on the connected pad (ask the owner first)
 ```
+
+The tablet read-out in §3 is automated, read-only, by
+`python3 research/tools/pad3_readout.py all` (see `../../PICKUP.md` Step 2); the
+commands below are what it runs, kept for reference.
 
 ## 3. Device inventory (read-only ADB)
 
