@@ -46,3 +46,13 @@ Open the project in Android Studio and build the `app` module, or run:
 ```
 
 Kotlin, minimum SDK 30, target SDK 36.
+
+## Research database
+
+[`research/`](research/README.md) holds the structured research behind this project:
+- 78 records on stylus haptics on Android: sources, devices, interfaces, concepts, plans and open questions, each marked verified, unverified, inferred or open;
+- the pen attach-handshake and firmware analysis;
+- reference copies of the community regional-ROM stylus fixes;
+- a pickup prompt for reading firmware off the tablet.
+
+Check the data with `python3 research/tools/validate.py`.

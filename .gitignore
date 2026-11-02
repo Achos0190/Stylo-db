@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Research database (research/)
+/research/build/
+/research/local/
+__pycache__/
