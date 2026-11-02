@@ -12,7 +12,7 @@ subject to the access routes in `B-feasibility.md`.)
 | Build configuration | `stylo2/Cargo.toml`, per-crate `Cargo.toml` | Done |
 | Integration documentation | this file + `D-implementation-plan.md` | Done |
 | API documentation | `cargo doc -p stylo2-core --no-deps` | Generated from doc-comments |
-| Test suite | `cargo test --workspace` (22 tests) | Passing on host |
+| Test suite | `cargo test --workspace` (26 tests) | Passing on host |
 | Example | `cargo run -p stylo2-core --example demo --features mock` | Runs |
 | Install instructions | below (no root) | Done |
 

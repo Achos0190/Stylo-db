@@ -1,9 +1,7 @@
-// Android library module for the stylo2 Kotlin bridge.
+// Android library module for the stylo2 Kotlin bridge (`:stylo2-bridge`).
 //
-// Not wired into the root Gradle build (`settings.gradle.kts`) yet: it is the
-// integration layer delivered alongside the Rust workspace. Add
-// `include(":android:stylo2-bridge")` and the native `jniLibs` (see README) to
-// consume it from an app.
+// Included from the root `settings.gradle.kts`. The native `jniLibs` produced by
+// `cargo ndk` (see README) are only needed at runtime, not to compile.
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -31,5 +29,5 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation(libs.kotlinx.coroutines.core)
 }

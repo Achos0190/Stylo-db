@@ -5,8 +5,8 @@ Stylo 2** stylus's advanced haptic feedback, with a minimal Kotlin/Android
 bridge. It targets a **stock, non-rooted OnePlus Pad 3** (OxygenOS, Android 16).
 
 This workspace is the independent, interoperability-focused reworking requested
-in the project specification. It is **separate from** the existing
-root/Magisk-based app at the repository root: nothing here requires root, a
+in the project specification. It is **separate from** the upstream
+root/Magisk-based app in [`../app`](../app): nothing here requires root, a
 privileged (`/system/priv-app`) install, or firmware modification. Where the
 device does not grant an ordinary app the access a route needs, the library
 says so honestly instead of pretending to work.
@@ -19,10 +19,10 @@ says so honestly instead of pretending to work.
 
 | Thing | Status |
 | --- | --- |
-| `stylo2-core` portable model + policy | **Implemented, compiles, 22 tests pass on host** |
+| `stylo2-core` portable model + policy | **Implemented, compiles; 26 workspace tests pass on host (15 in core)** |
 | Backend scaffolds (`oplus`, `ble`, `android`) | **Implemented as honest adapters** (inert/"unavailable" until a device transport + verified protocol are attached) |
 | `stylo2-ffi` C ABI + JNI entry points | **Implemented**; C ABI tested on host, JNI module type-checks against `jni 0.21` |
-| Kotlin bridge | Source provided (`../android/stylo2-bridge`), not built here (needs Android SDK) |
+| Kotlin bridge | `:stylo2-bridge` module (`../android/stylo2-bridge`), compiles from the repo-root Gradle build; not run on a device |
 | A working haptic command **on a physical pen** | **Not demonstrated** — requires the device and a proven access route (see `docs/B-feasibility.md`) |
 
 Everything marked "compiles/tests" was verified on an `x86_64-linux` host. **No
@@ -64,7 +64,7 @@ experiment.
 
 ```bash
 cd stylo2
-cargo test --workspace                                   # 22 tests, no device needed
+cargo test --workspace                                   # 26 tests, no device needed
 cargo run -p stylo2-core --example demo --features mock  # end-to-end demo on the mock backend
 ```
 

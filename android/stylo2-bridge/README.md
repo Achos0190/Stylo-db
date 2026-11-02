@@ -6,9 +6,22 @@ The minimal Android integration layer over the Rust `stylo2` core. It exposes
 `StateFlow<ConnectionState>`, mirroring the existing app's ergonomics. All
 sequencing policy lives in the native core; this layer only marshals.
 
-> Source module. It is **not built in the reconnaissance environment** (needs
-> the Android SDK/NDK). The Rust side it binds to is built and tested
-> (`../../stylo2`).
+> The `:stylo2-bridge` module of the repo-root Gradle build. The Kotlin
+> compiles without the native library (`:stylo2-bridge:assembleDebug`); the Rust
+> `.so` is only needed at runtime. Not exercised on a device. The Rust side it
+> binds to is built and tested (`../../stylo2`).
+
+## Build the Kotlin module
+
+From the **repo root** (with `ANDROID_HOME` pointing at your Android SDK, or a
+`local.properties` with `sdk.dir`; use `gradlew.bat` on Windows):
+
+```bash
+./gradlew :stylo2-bridge:assembleDebug
+```
+
+To consume it from an app module, add
+`implementation(project(":stylo2-bridge"))` to that module's `dependencies`.
 
 ## Build the native library
 
