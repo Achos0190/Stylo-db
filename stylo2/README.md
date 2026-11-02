@@ -79,6 +79,7 @@ See [`docs/`](docs/):
 - **D** — [`D-implementation-plan.md`](docs/D-implementation-plan.md): crate responsibilities, API, Kotlin boundary, permissions, concurrency, tests, distribution.
 - **E** — [`E-prototype.md`](docs/E-prototype.md): what the prototype demonstrates, and the physical-device test matrix.
 - **F** — [`F-crate.md`](docs/F-crate.md): integration and reuse.
+- **G** — [`G-local-continuation.md`](docs/G-local-continuation.md): how to continue on a local machine with the Pad 3 over ADB — device inventory, HCI-snoop capture of OnePlus Notes, the Notes + observer split-screen tandem method, independent GATT + non-interference testing, and feeding results back into the code.
 - **Legal** — [`LEGAL.md`](docs/LEGAL.md): EU/Dutch interoperability framing (not legal advice).
 
 ## License
