@@ -23,7 +23,11 @@ The playbook for a Claude Code session on the computer the Pad 3 and Stylo 2 are
 
 The status labels below match the database (`research/data/`).
 
-- Haptics: apps → `com.oplus.ipemanager` (`.btadsorb.CoreService`, action `com.oplus.ipemanager.ACTION.PENCIL_SDK`, permission `com.oplus.permission.safe.IOT`) → Bluetooth LE → pen. OnePlus Notes holds the permission. *Verified from the upstream app code and community sources. Not yet read from this tablet.*
+- Haptics: apps → `com.oplus.ipemanager` (`.btadsorb.CoreService`, action `com.oplus.ipemanager.ACTION.PENCIL_SDK`, permission `com.oplus.permission.safe.IOT`) → Bluetooth → pen. OnePlus Notes holds the permission.
+  - The service, action and permission names are *verified* against the upstream app code. They have not yet been read from this tablet.
+  - The permission's protection level, and what Android does with an unprivileged bind, are *open*. The repo's own client stops at a permission pre-check before binding.
+  - That the Bluetooth leg is LE GATT is *inferred* (the charger log shows a BLE address); the snoop in Step 5 decides it.
+  - That haptics work in Notes on this tablet is the owner's report, *unverified* until Step 3.
 - Before any of that, the pen's magnetic charger chip pairs it. The chip is the **CPS8601**, driven by `oplus_wireless_pen.ko`. On attach, it receives the pen's BLE address over the charging link (`Rx attach!` → `tx wakeup!` → `receive ask pkt!` → `get ble addr` → `report 1`). Write-up: [`research/docs/pen-attach-handshake.md`](research/docs/pen-attach-handshake.md).
 - The chip loads `/odm/firmware/wireless_pen/<ro.boot.prjname>/cps8601_firmware.bin`. After a Chinese-to-global ROM conversion, that folder can be missing, and the pen never pairs. Community modules fix this by copying firmware into the right folder.
   - Known project numbers: `23926`, `23927`, `23976` and `23978` (Pad Pro / Pad 2), plus `24926` and `24976` (Pad 2 Pro, probably the same family as the Pad 3).
@@ -165,7 +169,23 @@ If the session has the Artifact tools, sync the changed records to the database 
 
 ### Open questions, in the order a device session answers them
 
-<!-- gap-list -->
+These are records in `research/data/gaps.json`. Each one's `details` ends with the exact "Next step" and links its plan.
+
+1. **Step 2 (read-out):** `gap-pen-firmware-directory`, `gap-iot-permission-level`.
+2. **Step 3 (Route A):** `gap-service-discovery-and-bind`, `gap-caller-validation-after-bind`, `gap-unprivileged-execution`, then `gap-profile-integer-feel` (only if the pen vibrated).
+3. **Step 5 (Route B):**
+   - `gap-haptic-over-gatt`
+   - `gap-haptic-command-bytes` and `gap-oneplus-transport` (same captures)
+   - `gap-session-handshake`
+   - `gap-second-gatt-client-access`
+   - `gap-second-gatt-client-disruption`
+   - `gap-captured-write-buzzes-pen`, last, and only once the disruption gap shows a second connection is safe.
+4. **Not device steps:**
+   - `gap-aidl-matches-firmware`: only the read-only partial checks. The full comparison needs decompiling, which is off unless the owner decides otherwise.
+   - `gap-oneplus-sdk-access`: an enquiry to OnePlus by the owner.
+5. **Narrow along the way:** `gap-oneplus-feature-semantics`.
+
+Close a gap only with direct evidence. Otherwise narrow it and leave it `open`.
 
 ### Report back
 

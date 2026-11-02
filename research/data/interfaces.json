@@ -281,7 +281,9 @@
       ],
       "related": [
         "src-hipaint",
-        "gap-oneplus-sdk-access"
+        "gap-oneplus-sdk-access",
+        "plan-route-feasibility",
+        "gap-caller-validation-after-bind"
       ],
       "basis": "Repository README.",
       "updated": "2026-11-02"
@@ -305,7 +307,10 @@
         "5. startFeedBackVibration(). The README describes this as turning on writing feedback system-wide; the service handles the pen.",
         "6. stopFeedBackVibration() to turn it off.",
         "7. unbindService(). The current code does this before step 6, which should be swapped.",
-        "Connection states exposed to the UI: DISCONNECTED, CONNECTING, CONNECTED_SDK, CONNECTED_WRONG_IFACE, ERROR."
+        "Connection states exposed to the UI: DISCONNECTED, CONNECTING, CONNECTED_SDK, CONNECTED_WRONG_IFACE, ERROR.",
+        "Step 1 returns before any bind. The client never reaches bindService without the permission, so the repository shows what the client does, not what Android does with an unprivileged bind.",
+        "The Route A PoC (android/stylo2-poc) runs a different order: environment line, discovery by queryIntentServices, bindService attempted whether or not the permission is granted, descriptor check, a getPencilConnectState query as an authorization probe, then setVibrationType, startFeedBackVibration and stopFeedBackVibration, then unbind.",
+        "The route docs expect an ordinary install to end in PermissionDenied (stylo2/docs/E-prototype.md). With this client that outcome would come from step 1, not from the platform."
       ],
       "tags": [
         "sequence",
@@ -314,9 +319,12 @@
       "related": [
         "repo-stylo2-haptics",
         "if-oplus-sdk-interface",
-        "c-feedback-models"
+        "c-feedback-models",
+        "plan-route-a-poc-run",
+        "gap-service-discovery-and-bind",
+        "src-stylo2-e-prototype"
       ],
-      "basis": "OplusPencilSdkClient.kt and MainActivity.kt",
+      "basis": "OplusPencilSdkClient.kt and MainActivity.kt. Extended on 2 Nov 2026 from android/stylo2-poc and stylo2/docs/E-prototype.md.",
       "updated": "2026-11-02"
     },
     {
@@ -337,16 +345,19 @@
         "3 onFunctionFeedbackStateChange(boolean)",
         "4 onDemoModeEnableChange(boolean)",
         "All four are one-way (FLAG_ONEWAY), so the service never waits on the app.",
-        "Registered with transaction 9 and removed with transaction 10. The current app does not register one yet."
+        "Registered with transaction 9 and removed with transaction 10. The current app does not register one yet.",
+        "No button, double-tap or battery callback exists in this interface. The route notes treat such events as hypothetical until a backend shows them (stylo2/docs/C-protocol.md section 1.4)."
       ],
       "tags": [
         "aidl",
         "callback"
       ],
       "related": [
-        "if-oplus-sdk-interface"
+        "if-oplus-sdk-interface",
+        "gap-aidl-matches-firmware",
+        "src-stylo2-c-protocol"
       ],
-      "basis": "app/src/main/java/com/oplus/ipemanager/sdk/ISDKAidlCallback.java",
+      "basis": "app/src/main/java/com/oplus/ipemanager/sdk/ISDKAidlCallback.java. Extended on 2 Nov 2026 from stylo2/docs/C-protocol.md.",
       "updated": "2026-11-02"
     },
     {
@@ -394,7 +405,11 @@
         "Required permission: com.oplus.permission.safe.IOT. The README calls it a restricted system permission that ordinary apps cannot be granted.",
         "On Android 11 and later the client manifest needs <queries> entries for the package and the action to see the service.",
         "Callers never send Bluetooth packets. The service talks to the pen.",
-        "Who gets access (from the README): the stock Notes app holds the permission and binds through a bundled SDK; approved third-party apps use a separate OnePlus developer SDK; any other app is refused."
+        "Who gets access (from the README): the stock Notes app holds the permission and binds through a bundled SDK; approved third-party apps use a separate OnePlus developer SDK; any other app is refused.",
+        "Not established on any device: whether the service is exported and visible to an ordinary app, whether it has a bind-time permission, the protection level of the permission, and whether it checks callers after a bind. See gap-service-discovery-and-bind, gap-iot-permission-level and gap-caller-validation-after-bind. The README's 'ordinary apps cannot be granted' and 'any other app is refused' are its statements, not test results.",
+        "The route notes read the component name .btadsorb as the magnetic attach relationship, so the haptic path to the pen may not be a plain GATT write. Inferred from the name only (gap-haptic-over-gatt).",
+        "The Route A PoC (android/stylo2-poc) attempts discovery and bind from an ordinary app and logs, for each service match, whether it is exported and which bind permission it needs.",
+        "Once read from the tablet, record the installed version, the confirmed names and the protection level of the permission here (PICKUP.md Step 6)."
       ],
       "tags": [
         "binder",
@@ -404,9 +419,19 @@
       "related": [
         "if-oplus-sdk-interface",
         "if-oneplus-partner-sdk",
-        "c-vendor-service-pattern"
+        "c-vendor-service-pattern",
+        "c-trust-boundaries",
+        "gap-iot-permission-level",
+        "gap-service-discovery-and-bind",
+        "gap-caller-validation-after-bind",
+        "gap-haptic-over-gatt",
+        "plan-route-a-poc-run",
+        "plan-pad3-readout",
+        "src-stylo2-i-evidence-ledger",
+        "src-stylo2-c-protocol",
+        "src-stylo2-a-reconnaissance"
       ],
-      "basis": "AndroidManifest.xml, OplusPencilSdkClient.kt and README in this repository.",
+      "basis": "AndroidManifest.xml, OplusPencilSdkClient.kt and README in this repository. Extended on 2 Nov 2026 from stylo2/docs/I-evidence-ledger.md and H-trust-boundaries.md; the added lines are open questions, not checked on a device.",
       "updated": "2026-11-02"
     },
     {
@@ -430,7 +455,8 @@
       ],
       "related": [
         "src-revanced-180",
-        "if-oneplus-partner-sdk"
+        "if-oneplus-partner-sdk",
+        "gap-caller-validation-after-bind"
       ],
       "basis": "Research inventory.",
       "updated": "2026-11-02"
@@ -461,7 +487,10 @@
         "11 startFeedBackVibration()",
         "12 stopFeedBackVibration()",
         "All calls are two-way (flags 0) and read an exception header from the reply. Booleans travel as int 0 or 1.",
-        "getSupportFeatureList() returning List<String> is declared in the Java interface but has no transaction code."
+        "getSupportFeatureList() returning List<String> is declared in the Java interface but has no transaction code.",
+        "Scope of verified: this table matches the repository's reconstruction. The files are marked as cleaned, and the route notes call them a community reproduction. They have not been compared with the installed service on any device (gap-aidl-matches-firmware). The route notes label the descriptor, the 12 codes and the callbacks reported for that reason.",
+        "The reconstruction has no parameter for intensity, duration, frequency, waveform or custom patterns. Whether the real interface has any is unknown.",
+        "The Rust library uses only setVibrationType, startFeedBackVibration, stopFeedBackVibration and the two callback calls (stylo2/docs/C-protocol.md section 1.2)."
       ],
       "tags": [
         "aidl",
@@ -470,9 +499,16 @@
       "related": [
         "if-oplus-callback",
         "if-oplus-vibration-presets",
-        "gap-oneplus-feature-semantics"
+        "gap-oneplus-feature-semantics",
+        "gap-aidl-matches-firmware",
+        "src-stylo2-c-protocol",
+        "src-stylo2-i-evidence-ledger",
+        "src-stylo2-a-reconnaissance",
+        "repo-stylo2-interop-track",
+        "gap-profile-integer-feel",
+        "gap-haptic-command-bytes"
       ],
-      "basis": "app/src/main/java/com/oplus/ipemanager/sdk/ISdkAidlInterface.java",
+      "basis": "app/src/main/java/com/oplus/ipemanager/sdk/ISdkAidlInterface.java. Extended on 2 Nov 2026 from stylo2/docs/C-protocol.md and I-evidence-ledger.md; the added lines limit what verified covers.",
       "updated": "2026-11-02"
     },
     {
@@ -494,7 +530,9 @@
         "FUNCTION_VIBRATION = 4",
         "The client sends type.ordinal to setVibrationType(int).",
         "The README says these profiles come from the stock Notes app.",
-        "Whether 4 is meaningful for setVibrationType, or belongs to startVibration(int), is not documented."
+        "Whether 4 is meaningful for setVibrationType, or belongs to startVibration(int), is not documented.",
+        "Scope of verified: the ordinals are a code fact. Which feel each integer gives on the pen, and whether the service reads them this way, has not been checked on a device (gap-profile-integer-feel). The route notes call the integers reported and inferred from declaration order.",
+        "The Rust mapping repeats Pencil 0, Eraser 1, Ballpoint 2, Pen 3 (stylo2-oplus wire::reported_code) and keeps 4 apart as a feedback mode. That label is a code comment and a route note, not a finding (gap-oneplus-feature-semantics)."
       ],
       "tags": [
         "presets",
@@ -502,9 +540,12 @@
       ],
       "related": [
         "c-effect-mapping",
-        "gap-oneplus-feature-semantics"
+        "gap-oneplus-feature-semantics",
+        "gap-profile-integer-feel",
+        "src-stylo2-c-protocol",
+        "gap-aidl-matches-firmware"
       ],
-      "basis": "app/src/main/java/com/oplus/ipemanager/sdk/Vibration.java and OplusPencilSdkClient.kt",
+      "basis": "app/src/main/java/com/oplus/ipemanager/sdk/Vibration.java and OplusPencilSdkClient.kt. Extended on 2 Nov 2026 from stylo2/docs/C-protocol.md and the stylo2-oplus code; the added lines limit what verified covers.",
       "updated": "2026-11-02"
     },
     {

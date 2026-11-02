@@ -19,7 +19,7 @@ says so honestly instead of pretending to work.
 
 | Thing | Status |
 | --- | --- |
-| `stylo2-core` portable model + policy | **Implemented, compiles, 22 tests pass on host** |
+| `stylo2-core` portable model + policy | **Implemented, compiles; 26 workspace tests pass on host (15 in core)** |
 | Backend scaffolds (`oplus`, `ble`, `android`) | **Implemented as honest adapters** (inert/"unavailable" until a device transport + verified protocol are attached) |
 | `stylo2-ffi` C ABI + JNI entry points | **Implemented**; C ABI tested on host, JNI module type-checks against `jni 0.21` |
 | Kotlin bridge | `:stylo2-bridge` module (`../android/stylo2-bridge`), compiles from the repo-root Gradle build; not run on a device |
@@ -64,7 +64,7 @@ experiment.
 
 ```bash
 cd stylo2
-cargo test --workspace                                   # 22 tests, no device needed
+cargo test --workspace                                   # 26 tests, no device needed
 cargo run -p stylo2-core --example demo --features mock  # end-to-end demo on the mock backend
 ```
 

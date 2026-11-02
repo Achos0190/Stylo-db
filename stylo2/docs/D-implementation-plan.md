@@ -101,7 +101,7 @@ backend call actually succeeded.
 
 ## 8. Test strategy
 
-- **Host unit tests (done, 22 passing):** all `HapticManager` policy via a mock
+- **Host unit tests (done, 26 passing across the workspace):** all `HapticManager` policy via a mock
   backend; the oplus/ble/android backends' honest "unavailable" behaviour; the
   C ABI round-trip and null-safety.
 - **JNI type-check (done):** `--features jni` compiles against `jni 0.21`.

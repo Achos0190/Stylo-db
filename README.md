@@ -13,7 +13,7 @@ The difference is direction:
 - **Pen input** travels from the pen to the tablet. It uses Android's standard stylus stack, so every app gets it.
 - **Haptics** are a control command from the tablet to the pen. OnePlus routes it through its accessory service `com.oplus.ipemanager` (action `com.oplus.ipemanager.ACTION.PENCIL_SDK`), which is protected by the restricted permission `com.oplus.permission.safe.IOT`.
 
-The motor, the command path and the Bluetooth link are therefore known to work. What a third-party app lacks is **authorisation** to send the command. The question this project answers is whether a legitimate, open route to that command exists.
+So the motor, the command path and the Bluetooth link all work. What a third-party app lacks is **authorisation** to send the command. This rests on the owner's report that haptics fire in Notes, and the first on-device session confirms it. The question this project answers is whether a legitimate, open route to that command exists.
 
 ## Scope
 
@@ -110,4 +110,4 @@ Clone the repository on the computer the tablet is plugged into, start Claude Co
 - Forked from [YeetingWaterbottle/stylo2-haptics](https://github.com/YeetingWaterbottle/stylo2-haptics) by Devin Wang. The `app/` module and the reproduced `ISdkAidlInterface` come from there.
 - `android/stylus-ble-inspector` reuses code from [BlueShark](https://github.com/nphil/BlueShark) (MIT, by nphil). See its [`NOTICE`](android/stylus-ble-inspector/NOTICE).
 - `research/reference/fix-odm-oplus-pad2pro/` is an unmodified copy of jjhitel's GPL-3.0 module scripts, kept for analysis only.
-- This repository does not yet have a licence of its own. Until one is added, the default copyright rules apply to the new code.
+- **Licence: not settled.** The Rust workspace's Cargo manifests declare `Apache-2.0 OR MIT`, but the repository has no `LICENSE` files, and the rest of it declares no licence. Choosing one, and checking the upstream terms for `app/`, is the owner's decision.

@@ -77,4 +77,6 @@ system service that is already present; it sends no Bluetooth itself. If BIND or
 AUTHZ is refused, that is the finding — report it; do not try to escalate
 privilege. The reproduced AIDL is the repo's community reproduction; if the
 descriptor line doesn't match, that is itself evidence (the interface differs on
-this firmware) — capture it and verify against the installed APK with JADX.
+this firmware) — record it. Comparing against the installed APK would mean
+decompiling it, which this project does only with the owner's explicit go-ahead
+(see `../../CLAUDE.md`).

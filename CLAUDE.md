@@ -4,7 +4,8 @@ Open Stylo 2 haptics research. The scope is in `README.md`, and the on-device pl
 
 ## Rules that always apply
 
-- **No cracking.** Don't bypass signature, permission or app-authentication checks, extract vendor keys, certificates or tokens, or decompile or patch OnePlus apps or firmware. If a route needs any of that, record it as a finding and stop that route.
+- **No cracking.** Don't bypass signature, permission or app-authentication checks, or extract or reuse vendor signing keys, certificates or tokens. If a route needs any of that, record it as a finding and stop that route.
+- **No decompiling or patching** of OnePlus apps or firmware. Some route docs suggest JADX to confirm the reconstructed AIDL. That stays off unless the owner explicitly decides otherwise (EU law allows it under conditions; see `stylo2/docs/LEGAL.md`). Reading an APK's public signer fingerprint (`apksigner verify --print-certs`) also needs the owner's go-ahead.
 - **The tablet is read-only.** Only run reads (`getprop`, `ls`, `cat`, `dumpsys`, `pm path`/`pm list`, `logcat -d`, `dmesg`, `modinfo`, `sha256sum`, `find`, `adb pull`). Use `research/tools/pad3_readout.py` where it covers the step. It enforces this.
 - **Ask the owner first** before anything that changes the tablet: installing or uninstalling an app (including this repo's own apps), changing a setting (including the Bluetooth HCI snoop log), starting Shizuku, or writing to the pen.
 - **Root:** never needed for what this project ships. If the tablet is rooted, `su` may be used for reads only.

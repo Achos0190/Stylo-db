@@ -125,7 +125,9 @@
         "Global OxygenOS, converted from OPD2413 (ColorOS) to OPD2415, Android 16.",
         "Other OnePlus and Oppo devices with the same accessory service may work but are untested.",
         "A converted tablet also needs stylus charger firmware in /odm/firmware/wireless_pen/<prjname>/ before the pen will pair. See the pen attach handshake record.",
-        "It appears to be the same hardware family as the OnePlus Pad 2 Pro (China), whose project numbers are 24926 and 24976. The converted Pad 3 probably reports one of them; confirm with adb shell getprop ro.boot.prjname. Inferred."
+        "It appears to be the same hardware family as the OnePlus Pad 2 Pro (China), whose project numbers are 24926 and 24976. The converted Pad 3 probably reports one of them; confirm with adb shell getprop ro.boot.prjname. Inferred.",
+        "The route docs describe the test tablet as stock and non-rooted (stylo2/docs/MISSION.md). The upstream README's tablet was converted from OPD2413 to OPD2415, and PICKUP.md says it is not established whether this tablet is rooted or has a pen-fix module. Which applies to the tablet in the device session is not recorded. Check it first with the check step of pad3_readout.py (plan-pad3-readout).",
+        "None of the route experiments has been run on it. See plan-device-test-matrix."
       ],
       "tags": [
         "android-16",
@@ -137,9 +139,13 @@
         "c-pen-attach-handshake",
         "src-xda-regional-stylus-fix",
         "src-jjhitel-fix-odm",
-        "gap-pen-firmware-directory"
+        "gap-pen-firmware-directory",
+        "plan-pad3-readout",
+        "plan-device-test-matrix",
+        "src-stylo2-mission",
+        "src-stylo2-pickup"
       ],
-      "basis": "Repository README.",
+      "basis": "Repository README. Extended on 2 Nov 2026 from stylo2/docs/MISSION.md and PICKUP.md.",
       "updated": "2026-11-02"
     },
     {
@@ -156,7 +162,9 @@
       "details": [
         "Advertised: 16,000 pressure levels.",
         "Internal linear haptic motor with feedback that changes with the selected tool.",
-        "Verified in the README: the accessory service com.oplus.ipemanager/.btadsorb.CoreService talks to the pen over Bluetooth."
+        "Verified in the README: the accessory service com.oplus.ipemanager/.btadsorb.CoreService talks to the pen over Bluetooth.",
+        "Owner-reported, not tested by this project: detection, pressure, tilt, hover, normal input and the Bluetooth bond all work with every app, and haptics work inside OnePlus Notes. Only third-party haptics are missing (stylo2/docs/I-evidence-ledger.md). The ledger marks this verified. Here it is unverified, because nothing has been run on a device.",
+        "The motor is in the pen. The route notes list this as reported (README and retailer specifications)."
       ],
       "tags": [
         "linear-motor",
@@ -165,9 +173,12 @@
       "related": [
         "dev-oneplus-pad3",
         "if-oplus-ipemanager",
-        "if-oplus-vibration-presets"
+        "if-oplus-vibration-presets",
+        "c-trust-boundaries",
+        "plan-device-test-matrix",
+        "src-stylo2-i-evidence-ledger"
       ],
-      "basis": "Vendor specifications from the research inventory, plus the repository README.",
+      "basis": "Vendor specifications from the research inventory, plus the repository README. Extended on 2 Nov 2026 from stylo2/docs/I-evidence-ledger.md.",
       "updated": "2026-11-02"
     },
     {

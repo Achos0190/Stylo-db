@@ -61,7 +61,8 @@
       "related": [
         "src-aosp-input",
         "if-android-stylus-hid",
-        "if-android-motionevent"
+        "if-android-motionevent",
+        "c-trust-boundaries"
       ],
       "basis": "AOSP input and stylus pages, read on 2 Nov 2026. The mapper class name is from AOSP source.",
       "updated": "2026-11-02"
@@ -151,7 +152,12 @@
         "adb shell dumpsys vibrator_manager: the vibrators the system knows about (Android 12 and later).",
         "adb shell dumpsys package com.oplus.ipemanager: declared services, intent filters and permissions of the pen service.",
         "Developer options, Enable Bluetooth HCI snoop log: record a session with OnePlus Notes, then open the log in Wireshark to see which Bluetooth traffic accompanies haptics.",
-        "In an app: InputDevice.getMotionRange(MotionEvent.AXIS_PRESSURE) shows the pressure range and resolution apps actually get."
+        "In an app: InputDevice.getMotionRange(MotionEvent.AXIS_PRESSURE) shows the pressure range and resolution apps actually get.",
+        "adb shell dumpsys bluetooth_manager | sed -n '/Bonded devices/,/^$/p': the pen's bonding and connection state. Redact the address before recording it.",
+        "adb shell dumpsys activity services com.oplus.ipemanager: whether the accessory service is real and what descriptor it exports.",
+        "adb shell dumpsys package com.oplus.permission.safe.IOT and adb shell pm list permissions -d -g | grep -i -A2 'safe.IOT': the permission and its protection level. A grep for safe.IOT over /system/etc/permissions, /system_ext/etc/permissions, /vendor/etc/permissions and /product/etc/permissions finds the framework declaration.",
+        "research/tools/pad3_readout.py runs these reads and refuses anything not on its read-only allowlist (plan-pad3-readout).",
+        "Without root, the HCI snoop can be captured with BlueShark and Shizuku, or with Developer options plus adb bugreport. Both change a setting, so ask the owner first (plan-hci-snoop-capture)."
       ],
       "tags": [
         "adb",
@@ -162,9 +168,13 @@
       "related": [
         "src-bluetooth-analysis-tools",
         "gap-pressure-delivered",
-        "gap-oneplus-transport"
+        "gap-oneplus-transport",
+        "plan-pad3-readout",
+        "plan-hci-snoop-capture",
+        "gap-iot-permission-level",
+        "src-stylo2-g-local-continuation"
       ],
-      "basis": "Standard Android tooling. Not run on the Pad 3 yet.",
+      "basis": "Standard Android tooling. Not run on the Pad 3 yet. Extended on 2 Nov 2026 from stylo2/docs/G-local-continuation.md and research/tools/pad3_readout.py. Not run on the Pad 3 yet.",
       "updated": "2026-11-02"
     },
     {
@@ -186,7 +196,9 @@
         "On converted tablets the charger firmware for the hardware's directory is missing, so step 2 or 3 fails and the pen never pairs.",
         "Fixes: put a copy of existing firmware where the tablet looks, either by copying it at install time into a directory named after ro.boot.prjname (jjhitel's module) or by shipping copies for every known number (cxzlw's module). Flashing the matching region's odm.img also works for some users. Results vary.",
         "Useful for capture: attaching the pen marks the moment Bluetooth LE pairing should begin in an HCI snoop log.",
-        "Full write-up: research/docs/pen-attach-handshake.md"
+        "Full write-up: research/docs/pen-attach-handshake.md",
+        "Capture plan: scenarios 8 (detach and reattach, or toggle the pen's Bluetooth) and 9 (connect fresh from a powered-off pen with the snoop already running) are where the pairing should show (plan-hci-snoop-capture).",
+        "The route notes read the service name .btadsorb as the magnetic attach relationship. That matches the attach step above. Inferred from the name only."
       ],
       "tags": [
         "pairing",
@@ -200,9 +212,14 @@
         "c-three-subsystems",
         "if-oplus-ipemanager",
         "gap-oneplus-transport",
-        "src-jjhitel-fix-odm"
+        "src-jjhitel-fix-odm",
+        "plan-hci-snoop-capture",
+        "gap-haptic-over-gatt",
+        "src-stylo2-j-capture-plan",
+        "plan-pad3-readout",
+        "gap-session-handshake"
       ],
-      "basis": "Kernel log and findings in the cxzlw README; the sequence and its link to haptics are inferred.",
+      "basis": "Kernel log and findings in the cxzlw README; the sequence and its link to haptics are inferred. Extended on 2 Nov 2026 from stylo2/docs/J-capture-plan.md and G-local-continuation.md.",
       "updated": "2026-11-02"
     },
     {
@@ -281,7 +298,9 @@
         "Actuator: a small motor (the Stylo 2 has a linear motor) and its driver chip in the pen play the waveform locally.",
         "Joining them: Android correlates timing between touch input and Bluetooth stylus data. Windows matches the transducer serial number and vendor ID reported on both channels.",
         "Consequence: pressure and tilt reach apps through standard Android APIs, but haptics travel the Bluetooth side channel, which on Android belongs to a vendor service.",
-        "Before any of this works, the magnetic charger has to hand the pen's Bluetooth address to the tablet. That attach handshake runs through the CPS8601 charger chip."
+        "Before any of this works, the magnetic charger has to hand the pen's Bluetooth address to the tablet. That attach handshake runs through the CPS8601 charger chip.",
+        "Open: the consequence line above says haptics travel the Bluetooth side channel. Whether that is a GATT write, another L2CAP channel or something the vendor service brokers is not known (gap-haptic-over-gatt).",
+        "Route notes: the owner reports that pen input (detection, pressure, tilt, hover, the bond) works for every app and only third-party haptics are missing. That fits an open uplink and a gated downlink (c-trust-boundaries). Unverified."
       ],
       "tags": [
         "architecture",
@@ -293,9 +312,69 @@
         "if-windows-haptic-pen-device",
         "c-android-input-path",
         "c-vendor-service-pattern",
-        "c-pen-attach-handshake"
+        "c-pen-attach-handshake",
+        "c-trust-boundaries",
+        "gap-haptic-over-gatt"
       ],
-      "basis": "Combined from the verified Xiaomi, OnePlus, AOSP and Microsoft sources.",
+      "basis": "Combined from the verified Xiaomi, OnePlus, AOSP and Microsoft sources. Extended on 2 Nov 2026 from stylo2/docs/I-evidence-ledger.md and H-trust-boundaries.md.",
+      "updated": "2026-11-02"
+    },
+    {
+      "id": "c-trust-boundaries",
+      "type": "concept",
+      "title": "Trust boundaries between a third-party app and the pen's motor (B0 to B4)",
+      "vendor": "OnePlus",
+      "category": "Access model",
+      "status": "inferred",
+      "priority": "critical",
+      "url": "",
+      "links": [],
+      "summary": "Up to five checks may stand between an ordinary app and the motor. The route notes number them B0 to B4 and treat B1 and B2 as the prime suspects.",
+      "details": [
+        "Two candidate paths. Binder path: app, then the permission check, then com.oplus.ipemanager, then the system Bluetooth stack, then the pen. OnePlus Notes uses it. Direct path: an independent app reaches the system Bluetooth stack and the pen without the first two checks. It works only if the pen accepts a second client and the framing can be reproduced without app-level authentication.",
+        "B0, signing identity: Android verifies the APK signature at install. An ordinary app can present only its own certificate, which is outside OnePlus's signing family. Reported, not checked. H lists apksigner verify --print-certs on the vendor APK and on the test app, to identify signers only. CLAUDE.md rules out extracting vendor certificates, so ask the owner before running it; no other record depends on it.",
+        "B1, permission grant: Android's permission manager enforces com.oplus.permission.safe.IOT by its protection level. At least privileged is inferred from the root module's priv-app install. The level itself has not been read (gap-iot-permission-level).",
+        "B2, caller validation: inside CoreService (UID, package or signature) and perhaps an android:permission on the service. The bind may fail, or the bind may succeed and the calls be rejected. The layer of the error tells which. Hypothesis (gap-service-discovery-and-bind, gap-caller-validation-after-bind).",
+        "B3, Bluetooth bond and link encryption: the system stack owns the live link. A second app may or may not be allowed its own GATT connection, and that may disrupt the system link. Hypothesis (gap-second-gatt-client-access, gap-second-gatt-client-disruption).",
+        "B4, vendor framing and any session or app-level authentication on the link: even with a write path, the pen may need a handshake or per-command authentication. It is not known that this rides GATT at all. Hypothesis (gap-haptic-over-gatt, gap-haptic-command-bytes, gap-session-handshake).",
+        "Premise, owner-reported and unverified: every stylus function works for third-party apps except haptics, and OnePlus Notes makes the pen vibrate. If true, the motor, the link and the command path work, so B1 and B2 are the prime suspects, and B3 and B4 are about sharing or copying a path that already works. Pen input is out of scope. The root README states this premise as known to work; it stays unverified here until read on the device.",
+        "Reading rule: the first failing step of the isolating experiment names the boundary. A refusal at B1 says nothing about whether B4 is authenticated.",
+        "Where to test: plan-trust-boundary-isolation for the binder path; plan-hci-snoop-capture and plan-ble-independent-access-test for the direct path."
+      ],
+      "tags": [
+        "trust-boundary",
+        "authorization",
+        "binder",
+        "ble"
+      ],
+      "related": [
+        "if-oplus-ipemanager",
+        "c-vendor-service-pattern",
+        "c-three-subsystems",
+        "c-android-input-path",
+        "dev-oneplus-stylo2",
+        "plan-trust-boundary-isolation",
+        "plan-route-a-poc-run",
+        "plan-hci-snoop-capture",
+        "plan-ble-independent-access-test",
+        "gap-iot-permission-level",
+        "gap-service-discovery-and-bind",
+        "gap-caller-validation-after-bind",
+        "gap-second-gatt-client-access",
+        "gap-second-gatt-client-disruption",
+        "gap-haptic-over-gatt",
+        "gap-haptic-command-bytes",
+        "gap-session-handshake",
+        "src-stylo2-h-trust-boundaries",
+        "src-stylo2-i-evidence-ledger",
+        "src-project-rules",
+        "src-project-readme",
+        "src-stylo2-pickup",
+        "src-stylo2-mission",
+        "gap-unprivileged-execution",
+        "gap-captured-write-buzzes-pen"
+      ],
+      "basis": "Transcribed from stylo2/docs/H-trust-boundaries.md and I-evidence-ledger.md on 2 Nov 2026. The model is a working hypothesis. No boundary has been checked on a device.",
       "updated": "2026-11-02"
     },
     {
@@ -315,7 +394,9 @@
         "Access is gated by a system permission ordinary apps cannot hold, and sometimes by vendor authentication of the calling app.",
         "First-party apps and approved partners get access; everyone else is refused.",
         "Verified for OnePlus (com.oplus.ipemanager). Xiaomi's SDK includes an auth package, which suggests a similar gate. Not established for Huawei or Lenovo.",
-        "Design consequence: a cross-vendor library needs one adapter per vendor service, and it must say clearly when the current app has no access."
+        "Design consequence: a cross-vendor library needs one adapter per vendor service, and it must say clearly when the current app has no access.",
+        "Scope of the OnePlus line above: verified covers the service and permission names in this repository's code. That ordinary apps are refused, and by which check, is not established. The route notes list the permission level, bindability and caller validation as open (c-trust-boundaries).",
+        "The route notes split the gate into five boundaries, B0 to B4, with an experiment for each: c-trust-boundaries."
       ],
       "tags": [
         "binder",
@@ -325,9 +406,12 @@
       "related": [
         "if-oplus-ipemanager",
         "if-xiaomi-pen-engine",
-        "plan-architecture"
+        "plan-architecture",
+        "c-trust-boundaries",
+        "gap-iot-permission-level",
+        "plan-route-feasibility"
       ],
-      "basis": "Combined from the OnePlus code and README and the Xiaomi SDK package list.",
+      "basis": "Combined from the OnePlus code and README and the Xiaomi SDK package list. Extended on 2 Nov 2026 from stylo2/docs/H-trust-boundaries.md and I-evidence-ledger.md.",
       "updated": "2026-11-02"
     }
   ]
