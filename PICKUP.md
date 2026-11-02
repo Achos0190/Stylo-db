@@ -30,9 +30,12 @@ anything.
 - **Nothing has been tested on a device.** Every "verified" claim so far is
   host-only. Your job is the device half.
 - Open work lives on branch **`ccr-9fb81d0a-059pa6`** (PR #1, draft).
-- Read in this order: `stylo2/docs/G-local-continuation.md` (your step-by-step),
-  then `stylo2/docs/B-feasibility.md`, `stylo2/docs/C-protocol.md`,
-  `stylo2/docs/E-prototype.md`.
+- Canonical brief: `stylo2/docs/MISSION.md`. Then `G-local-continuation.md`
+  (step-by-step), `H-trust-boundaries.md` (the four-step experiment that
+  isolates which boundary blocks), `J-capture-plan.md` (the nine captures +
+  recording schema + tables), `I-evidence-ledger.md` (status + open
+  questions→experiments), with `B-feasibility.md` / `C-protocol.md` /
+  `E-prototype.md` for context and the test matrix.
 
 ## The one fact that shapes the whole approach
 
@@ -78,10 +81,14 @@ see `docs/G` §5.
    without an SDK to compile against) — keep fixes minimal and in-scope.
 3. **Device inventory** (`docs/G` §3), especially the **protection level of
    `com.oplus.permission.safe.IOT`**. That single value decides whether the
-   binder route is even open to an independent app.
+   binder route is even open to an independent app. Then run the four-step
+   isolating experiment in `docs/H-trust-boundaries.md` (discovery → binding →
+   authorization → execution) and record which step first fails.
 4. **One HCI snoop capture** of Notes doing a single stroke + start/stop
    (`docs/G` §4). This reveals whether haptics are ATT/GATT at all and what the
    bytes are. Invest further only after this tells you which route is live.
+   Then widen to the nine-scenario protocol + recording schema in
+   `docs/J-capture-plan.md` and fill its correlation tables.
 5. **Independent access + non-interference** test with the inspector
    (`docs/G` §6): connect, discover, export, and check whether a second
    connection breaks Notes.

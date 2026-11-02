@@ -77,6 +77,7 @@ cargo ndk -t arm64-v8a build -p stylo2-ffi --release --features jni
 
 See [`docs/`](docs/):
 
+- **Mission** — [`MISSION.md`](docs/MISSION.md): the canonical full-stack investigation brief, the deliverable map, and the (deliberate, evidence-driven) crate/state-layout decisions.
 - **A** — [`A-reconnaissance.md`](docs/A-reconnaissance.md): interfaces, APKs, AIDL, permissions, BLE, SDKs, sources, each classified *verified / reported / hypothetical*.
 - **B** — [`B-feasibility.md`](docs/B-feasibility.md): the four routes, feasibility, the preferred investigation order.
 - **C** — [`C-protocol.md`](docs/C-protocol.md): the reported AIDL/commands/profiles and the BLE unknowns, with an on-device recon procedure.
@@ -84,6 +85,9 @@ See [`docs/`](docs/):
 - **E** — [`E-prototype.md`](docs/E-prototype.md): what the prototype demonstrates, and the physical-device test matrix.
 - **F** — [`F-crate.md`](docs/F-crate.md): integration and reuse.
 - **G** — [`G-local-continuation.md`](docs/G-local-continuation.md): how to continue on a local machine with the Pad 3 over ADB — device inventory, HCI-snoop capture of OnePlus Notes, the Notes + observer split-screen tandem method, independent GATT + non-interference testing, and feeding results back into the code.
+- **H** — [`H-trust-boundaries.md`](docs/H-trust-boundaries.md): architecture diagram, the trust-boundary/enforcement-point table, the four-step experiment that isolates *which* boundary blocks third-party haptics, and the target state machine.
+- **I** — [`I-evidence-ledger.md`](docs/I-evidence-ledger.md): every claim with status (verified/reported/hypothesis), source, and how to upgrade it — plus open questions mapped to the exact experiment for each.
+- **J** — [`J-capture-plan.md`](docs/J-capture-plan.md): the nine controlled packet captures, the per-experiment recording schema, empty correlation tables, and how the results flow into the code.
 - **Legal** — [`LEGAL.md`](docs/LEGAL.md): EU/Dutch interoperability framing (not legal advice).
 
 ## License
