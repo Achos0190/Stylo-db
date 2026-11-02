@@ -19,18 +19,18 @@ research/
 ├── tools/
 │   ├── validate.py          Checks every record and cross-reference
 │   ├── build.py             Combined file and per-record documents, in build/
-│   └── fwinfo.py            Inspects cps8601_firmware.bin files (hash, known build, 8051 vectors, strings)
+│   ├── fwinfo.py            Inspects cps8601_firmware.bin files (hash, known build, 8051 vectors, strings)
+│   └── pad3_readout.py      Read-only ADB read-out of a tablet into local/pad3/ (see ../PICKUP.md)
 ├── site/
 │   └── stylus-haptics-db.html    Source of the searchable database page (runs on claude.ai)
 ├── docs/
-│   ├── pen-attach-handshake.md   Pen charger handshake and the regional-ROM stylus fix
-│   └── local-session-pickup.md   Instructions for a local session with the tablet connected
+│   └── pen-attach-handshake.md   Pen charger handshake and the regional-ROM stylus fix
 └── reference/
     ├── fix-odm-oplus-pad2pro/      jjhitel's module scripts (GPL-3.0), unmodified, with PROVENANCE.md
     └── oplus-global-pen-enabler/   MANIFEST.md: cxzlw's firmware files by path and SHA-256 (binaries not stored)
 ```
 
-`build/` is generated, and `local/` holds files pulled from a tablet (firmware, logs). Git ignores both.
+`build/` is generated, and `local/` holds files pulled from a tablet (firmware, logs). Git ignores both. The on-device workflow that fills `local/` and then updates these records is in [`../PICKUP.md`](../PICKUP.md).
 
 ## Records
 
@@ -67,7 +67,7 @@ python3 research/tools/validate.py --verbose  # also lists one-way "related" lin
 python3 research/tools/build.py               # writes research/build/
 ```
 
-Both tools use only the Python standard library.
+All the tools use only the Python standard library.
 
 The searchable database page (`site/stylus-haptics-db.html`) reads the same records from its own database on claude.ai. `build/seed/` holds them in the shape the page stores: one document per record, keyed by ID. Opened as a local file, the page shows a notice instead of records.
 

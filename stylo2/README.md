@@ -5,8 +5,8 @@ Stylo 2** stylus's advanced haptic feedback, with a minimal Kotlin/Android
 bridge. It targets a **stock, non-rooted OnePlus Pad 3** (OxygenOS, Android 16).
 
 This workspace is the independent, interoperability-focused reworking requested
-in the project specification. It is **separate from** the existing
-root/Magisk-based app at the repository root: nothing here requires root, a
+in the project specification. It is **separate from** the upstream
+root/Magisk-based app in [`../app`](../app): nothing here requires root, a
 privileged (`/system/priv-app`) install, or firmware modification. Where the
 device does not grant an ordinary app the access a route needs, the library
 says so honestly instead of pretending to work.
