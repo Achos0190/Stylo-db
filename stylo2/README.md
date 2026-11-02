@@ -54,10 +54,11 @@ stylo2/
 └── docs/                          deliverables A–F and legal/interoperability notes
 ```
 
-The Kotlin/Android bridge lives at
-[`../android/stylo2-bridge`](../android/stylo2-bridge), and the on-device BLE
-reconnaissance tool (a standalone non-root testing APK) at
-[`../android/stylus-ble-inspector`](../android/stylus-ble-inspector).
+The Android side lives under [`../android`](../android): the Kotlin bridge
+(`stylo2-bridge`), the on-device BLE reconnaissance app (`stylus-ble-inspector`),
+and the minimal **Route-A haptic PoC** (`stylo2-poc`) — the fastest path to a
+verifiable physical result, which doubles as the trust-boundary isolating
+experiment.
 
 ## Build & test
 

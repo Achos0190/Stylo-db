@@ -33,7 +33,7 @@ prevents it and what the least-restrictive legitimate alternative is.
 | 4 | Packet-capture analysis (reproducible action↔traffic) | [`J-capture-plan.md`](J-capture-plan.md) | method + empty tables; fill on device |
 | 5 | Feasibility matrix | [`B-feasibility.md`](B-feasibility.md) | done |
 | 6 | Rust implementation plan | [`D-implementation-plan.md`](D-implementation-plan.md) + layout note below | done |
-| 7 | Minimal Android test app | [`../../android/stylus-ble-inspector`](../../android/stylus-ble-inspector) (recon) + `stylo2-core` example | recon app done; route-validation app once a route is chosen |
+| 7 | Minimal Android test app | [`../../android/stylo2-poc`](../../android/stylo2-poc) (Route-A haptic PoC, 4-control screen) + [`../../android/stylus-ble-inspector`](../../android/stylus-ble-inspector) (BLE recon) | done (source; build + run on device) |
 | 8 | Physical Pad 3 test report | [`E-prototype.md`](E-prototype.md) matrix + `J` tables | **pending hardware** |
 | 9 | Unresolved questions + exact experiment for each | [`I-evidence-ledger.md`](I-evidence-ledger.md) §open questions | done |
 

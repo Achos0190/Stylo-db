@@ -72,28 +72,28 @@ see `docs/G` §5.
   functioning. Non-interference is a required test (`docs/E` 11–12), not
   optional — if your probing disrupts the system link, stop and report.
 
-## First actions (ordered; full commands in `docs/G`)
+## First actions (ordered — fastest verifiable route first)
 
 1. Confirm the host baseline: `cd stylo2 && cargo test --workspace` (expect 26).
-2. Build + install the inspector: in `android/stylus-ble-inspector`,
-   `./gradlew :app:testDebugUnitTest && ./gradlew :app:installDebug`.
-   Fix any real Android compile errors you hit (the modules were authored
-   without an SDK to compile against) — keep fixes minimal and in-scope.
-3. **Device inventory** (`docs/G` §3), especially the **protection level of
-   `com.oplus.permission.safe.IOT`**. That single value decides whether the
-   binder route is even open to an independent app. Then run the four-step
-   isolating experiment in `docs/H-trust-boundaries.md` (discovery → binding →
-   authorization → execution) and record which step first fails.
-4. **One HCI snoop capture** of Notes doing a single stroke + start/stop
-   (`docs/G` §4). This reveals whether haptics are ATT/GATT at all and what the
-   bytes are. Invest further only after this tells you which route is live.
-   Then widen to the nine-scenario protocol + recording schema in
-   `docs/J-capture-plan.md` and fill its correlation tables.
-5. **Independent access + non-interference** test with the inspector
-   (`docs/G` §6): connect, discover, export, and check whether a second
-   connection breaks Notes.
-6. Record every result with a method tag (inspection / static / adb / physical)
-   in the matrix in `docs/E-prototype.md`.
+2. **Route A — the shortest path to a working PoC.** Build and install the
+   minimal PoC on the pad: `cd android/stylo2-poc && ./gradlew :app:installDebug`.
+   Open it, tap **Bind**, pick a profile, tap **Trigger**, and **watch the
+   pen**. If it vibrates, **you are done** — that app is the PoC. Its
+   [`README.md`](android/stylo2-poc/README.md) maps every outcome to the
+   boundary it implicates. (Expect to fix real Android compile errors first —
+   the module was authored without an SDK to build against; keep fixes minimal.)
+3. If Route A is refused: **device inventory** (`docs/G` §3) — especially the
+   **protection level of `com.oplus.permission.safe.IOT`** — and the four-step
+   isolating experiment in `docs/H-trust-boundaries.md` to confirm which
+   boundary blocks (the PoC already stages this; mostly cross-check).
+4. **Route B — direct communication.** One HCI snoop capture of Notes
+   (`docs/G` §4) to learn whether haptics are even GATT and what the bytes are;
+   then the nine-scenario protocol in `docs/J-capture-plan.md`. Use the BLE
+   inspector (`android/stylus-ble-inspector`, `docs/G` §6) for independent-access
+   and non-interference tests.
+5. Record every result with a method tag (inspection / static / adb / physical)
+   in `docs/E-prototype.md`, and promote confirmed claims in
+   `docs/I-evidence-ledger.md`.
 
 ## Three possible outcomes — let the evidence pick, don't force one
 
