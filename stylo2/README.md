@@ -44,14 +44,16 @@ stylo2/
 │   ├── stylo2-core/               portable API, states, profiles, events, caps,
 │   │                              errors, Backend trait, HapticManager policy
 │   ├── stylo2-oplus/              OnePlus accessory-service (binder) adapter
-│   ├── stylo2-ble/                direct-BLE transport scaffold (inert until verified)
+│   ├── stylo2-ble/                direct-BLE transport scaffold (inert until verified) + recon ranker
 │   ├── stylo2-android/            permission/service names, backend-selection, fallback
 │   └── stylo2-ffi/                C ABI + optional JNI entry points
 └── docs/                          deliverables A–F and legal/interoperability notes
 ```
 
 The Kotlin/Android bridge lives at
-[`../android/stylo2-bridge`](../android/stylo2-bridge).
+[`../android/stylo2-bridge`](../android/stylo2-bridge), and the on-device BLE
+reconnaissance tool (a standalone non-root testing APK) at
+[`../android/stylus-ble-inspector`](../android/stylus-ble-inspector).
 
 ## Build & test
 

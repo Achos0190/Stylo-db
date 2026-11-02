@@ -7,6 +7,11 @@
   shows the full command lifecycle and honest error reporting without a device.
 - The Kotlin bridge source (`android/stylo2-bridge`) and the existing app, which
   together form the on-device prototype once built with the Android SDK/NDK.
+- The **Stylo2 BLE Inspector** (`android/stylus-ble-inspector`), a standalone
+  non-root testing APK that performs matrix tests 2–5 (independent BLE
+  discovery, GATT services, independent connection, command access) and exports
+  a GATT table for `stylo2_ble::recon`. Source builds in Android Studio; its
+  pure helpers have JVM unit tests.
 
 ## What the prototype can demonstrate, by access situation
 

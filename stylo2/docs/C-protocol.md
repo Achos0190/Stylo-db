@@ -110,6 +110,12 @@ the device; each is currently HYPOTHETICAL:
 
 ### 2.1 Reconnaissance procedure (on the owner's device)
 
+The **Stylo2 BLE Inspector** app (`android/stylus-ble-inspector`) automates
+steps 3–5 below from an ordinary non-root app: scan (with pen candidates
+flagged), connect, discover the full GATT tree, read / write / subscribe, and
+export the result. Steps 1–2 (observing the system link and capturing its
+traffic) remain `adb` / Wireshark work.
+
 1. **Observe the link:** `adb shell dumpsys bluetooth_manager` — find the pen's
    address and current bonding/connection state.
 2. **Capture traffic:** enable *Bluetooth HCI snoop log* (Developer options),
@@ -126,7 +132,11 @@ the device; each is currently HYPOTHETICAL:
 
 ### 2.2 Where the result goes
 
-A *verified* result populates `stylo2_ble::Stylo2GattProfile`:
+Feed the inspector's exported GATT table into
+`stylo2_ble::recon::candidate_control_characteristics` to rank the writable
+characteristics as candidate control attributes (a vendor/non-SIG UUID with a
+sibling notify channel ranks highest). Then a *verified* result populates
+`stylo2_ble::Stylo2GattProfile`:
 
 ```rust
 Stylo2GattProfile {

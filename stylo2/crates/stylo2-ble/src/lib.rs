@@ -26,6 +26,13 @@
 
 #![forbid(unsafe_code)]
 
+pub mod recon;
+
+pub use recon::{
+    candidate_control_characteristics, is_standard_sig_uuid, ControlCandidate,
+    DiscoveredCharacteristic,
+};
+
 use stylo2_core::{
     BackendId, Capabilities, ConnectionState, EventCallback, HapticBackend, StyloError,
     VibrationProfile,
