@@ -10,6 +10,12 @@ interface), **[H]ypothesis** (open).
 > No claim below is a physical-device result. On-device confirmation lives in
 > `E-prototype.md` (matrix) and `J-capture-plan.md` (captures), tagged by method.
 
+## Scope (owner-confirmed)
+
+| Fact | Status | Implication |
+| --- | --- | --- |
+| On this device everything the stylus does works **except** haptics in third-party apps: detection, pressure, tilt, hover, normal input, the BT bond, and haptics **inside OnePlus Notes** | [V] owner-reported; Notes demonstrably vibrates the pen | The actuator, the haptic command path, and the link are **proven good**. Pen input is an open uplink (standard Android stylus/HID); haptics is a gated downlink control command. The only missing piece is a **third-party app's authorization** to issue that command — an authorization wall on a working capability, **not** a broken transport, unpaired device, or incapable pen. Weight the investigation on **B1/B2** (permission / caller validation); the pen, bond, and actuator are not suspects. Route B narrows to "can a second app reach the same working command path without disrupting the system link," and an HCI snoop of Notes is **guaranteed** to contain the real haptic bytes. Do not touch pen input. |
+
 ## Service, binding, AIDL
 
 | Claim | Status | Source | Upgrade to [V-device] by |

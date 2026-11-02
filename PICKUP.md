@@ -17,6 +17,18 @@ route is available to an ordinary non-root app and say so plainly. This is
 interoperability work on hardware the owner owns; it is not about defeating
 anything.
 
+**Scope — narrow by design, and the asymmetry is a clue.** On this device
+*everything* the stylus does already works **except** haptics in third-party
+apps: detection, pressure, tilt, hover, normal input, the Bluetooth bond — and
+haptics themselves inside OnePlus Notes. Pen *input* is an uplink (pen→tablet)
+carried by Android's standard stylus/HID stack, so it is open to every app;
+*haptics* is a downlink **control** command (tablet→pen) that OnePlus gates
+behind its accessory service. So the actuator, the command path, and the link
+are all proven good — the only missing piece is a third-party app's
+**authorization to issue the control command**. Treat this as an authorization
+wall on a working capability, not a broken transport or an unpaired device, and
+**do not touch or reimplement pen input** (it already works).
+
 ## Where things stand — read before doing anything
 
 - The repo already contains the **implementation scaffold**, host-verified only:

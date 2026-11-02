@@ -63,6 +63,12 @@ app-authenticated. **It is unknown whether B4 even rides GATT** (the service is
 
 ## Which boundary actually blocks? — the isolating experiment
 
+Because OnePlus Notes drives the motor end-to-end today, the actuator, the
+command path, and the link are known-good — so **B1/B2 (authorization) are the
+prime suspects**, and B3/B4 are questions of *sharing or replicating* a path
+that already works, not of whether it works at all. (Pen input is a separate,
+open uplink and is out of scope.)
+
 The mission requires separating **discovery**, **binding**, **authorization**,
 and **execution**. Run these four as distinct tests (binder path) and read the
 result off the *first* one that fails:
