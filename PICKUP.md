@@ -1,151 +1,259 @@
-# PICKUP — on-device testing handoff (OnePlus Stylo 2 / Pad 3)
+# PICKUP: local session with the OnePlus Pad 3
 
-**What this is:** a ready-to-use briefing for a coding agent continuing this
-project on a local machine that has **ADB access to the owner's OnePlus Pad 3 +
-Stylo 2**. Paste it as the agent's opening prompt, or point the agent at this
-file. It is intentionally directive and self-contained; the detailed procedure
-lives in [`stylo2/docs/G-local-continuation.md`](stylo2/docs/G-local-continuation.md).
+The playbook for a Claude Code session on the computer the Pad 3 and Stylo 2 are connected to. It replaces the two earlier handoffs (the firmware read-out prompt and the route-testing brief) with one ordered plan. The project's scope is in [`README.md`](README.md), and the standing rules are in [`CLAUDE.md`](CLAUDE.md).
+
+## For the person: before starting
+
+1. Clone the repository, check out the working branch, and pull.
+2. Install what the session needs:
+   - **Android platform-tools** (`adb`) on `PATH`.
+   - **Python 3**.
+   - **Android Studio** (or JDK 17+ and the Android SDK, API 36).
+   - Optionally **Rust**.
+3. On the tablet, turn on Developer options and USB debugging, then check that `adb devices` lists it as `device`. Wireless debugging (`adb pair`, `adb connect`) frees the tablet for drawing during the tests.
+4. Start Claude Code in the repository root and say:
+
+   > Read `PICKUP.md` and follow it. Ask me before anything that changes the tablet.
 
 ---
 
-## Mission
+## For Claude
 
-Find out how the Stylo 2's haptic feedback is actually driven and connected,
-then light up whichever **custom-implementation route the device genuinely
-permits** behind the existing Rust API — or establish, with evidence, that no
-route is available to an ordinary non-root app and say so plainly. This is
-interoperability work on hardware the owner owns; it is not about defeating
-anything.
+### What is already known
 
-**Scope — narrow by design, and the asymmetry is a clue.** On this device
-*everything* the stylus does already works **except** haptics in third-party
-apps: detection, pressure, tilt, hover, normal input, the Bluetooth bond — and
-haptics themselves inside OnePlus Notes. Pen *input* is an uplink (pen→tablet)
-carried by Android's standard stylus/HID stack, so it is open to every app;
-*haptics* is a downlink **control** command (tablet→pen) that OnePlus gates
-behind its accessory service. So the actuator, the command path, and the link
-are all proven good — the only missing piece is a third-party app's
-**authorization to issue the control command**. Treat this as an authorization
-wall on a working capability, not a broken transport or an unpaired device, and
-**do not touch or reimplement pen input** (it already works).
+The status labels below match the database (`research/data/`).
 
-## Where things stand — read before doing anything
+- Haptics: apps → `com.oplus.ipemanager` (`.btadsorb.CoreService`, action `com.oplus.ipemanager.ACTION.PENCIL_SDK`, permission `com.oplus.permission.safe.IOT`) → Bluetooth → pen. OnePlus Notes holds the permission.
+  - The service, action and permission names are *verified* against the upstream app code. They have not yet been read from this tablet.
+  - The permission's protection level, and what Android does with an unprivileged bind, are *open*. The repo's own client stops at a permission pre-check before binding.
+  - That the Bluetooth leg is LE GATT is *inferred* (the charger log shows a BLE address); the snoop in Step 5 decides it.
+  - That haptics work in Notes on this tablet is the owner's report, *unverified* until Step 3.
+- Before any of that, the pen's magnetic charger chip pairs it. The chip is the **CPS8601**, driven by `oplus_wireless_pen.ko`. On attach, it receives the pen's BLE address over the charging link (`Rx attach!` → `tx wakeup!` → `receive ask pkt!` → `get ble addr` → `report 1`). Write-up: [`research/docs/pen-attach-handshake.md`](research/docs/pen-attach-handshake.md).
+- The chip loads `/odm/firmware/wireless_pen/<ro.boot.prjname>/cps8601_firmware.bin`. After a Chinese-to-global ROM conversion, that folder can be missing, and the pen never pairs. Community modules fix this by copying firmware into the right folder.
+  - Known project numbers: `23926`, `23927`, `23976` and `23978` (Pad Pro / Pad 2), plus `24926` and `24976` (Pad 2 Pro, probably the same family as the Pad 3).
+  - Known firmware builds: `cfac6737…` (the `239xx` folders) and `33a4ab21…` (`24926`). No `24976` copy has been examined yet.
+- **Nothing has been tested on a device.** The Rust tests, Android compilation and database validation are all host-only.
 
-- The repo already contains the **implementation scaffold**, host-verified only:
-  - `stylo2/` — Rust workspace (`cargo test --workspace` → 26 passing; `clippy`
-    clean). Backend-agnostic core + honest backends (`oplus`, `ble`, `android`)
-    that report *unavailable/unauthorized* until a real transport is attached.
-  - `android/stylo2-bridge/` — Kotlin integration layer (source only).
-  - `android/stylus-ble-inspector/` — a **non-root BLE inspector APK** (scan →
-    connect → discover GATT → read/write/subscribe → export). Source only;
-    not yet built or run.
-- **Nothing has been tested on a device.** Every "verified" claim so far is
-  host-only. Your job is the device half.
-- Open work lives on branch **`ccr-9fb81d0a-059pa6`** (PR #1, draft).
-- Canonical brief: `stylo2/docs/MISSION.md`. Then `G-local-continuation.md`
-  (step-by-step), `H-trust-boundaries.md` (the four-step experiment that
-  isolates which boundary blocks), `J-capture-plan.md` (the nine captures +
-  recording schema + tables), `I-evidence-ledger.md` (status + open
-  questions→experiments), with `B-feasibility.md` / `C-protocol.md` /
-  `E-prototype.md` for context and the test matrix.
+**Not established: whether this tablet is rooted, or has a pen-fix module installed.** The two earlier sessions assumed differently. The `check` step settles it. Don't assume either way.
 
-## The one fact that shapes the whole approach
+### Ground rules
 
-Haptics work today only through **OnePlus Notes**, which drives the accessory
-service `com.oplus.ipemanager` over the **system's** Bluetooth link.
+The skills `/pad3-readout` (Steps 1, 2, 2b and 4), `/route-a-poc` (Step 3) and `/record-findings` (Step 6) carry out the steps below. Use them, or follow the steps directly.
 
-- To see **what Notes sends** (the real bytes) you need an **HCI snoop log**
-  (BlueShark + Shizuku, no root). A second app's GATT connection **cannot** see
-  Notes' traffic.
-- The **BLE inspector** answers a different question: can *your own* app connect
-  and write, and does that disrupt Notes?
-- Do not assume the control path is plain GATT — the service is `.btadsorb.*`.
-  **The snoop decides** whether it's GATT, another channel, or service-brokered.
+Everything in `CLAUDE.md` applies. In short:
 
-Use Notes as the known-good oracle; observe, don't modify it. The Pad 3's
-split-screen lets you keep Notes drawing-active while an observer pane captures —
-see `docs/G` §5.
+- The tablet is read-only.
+- Root, if present, is used for reads only.
+- Ask before anything that changes the tablet. That includes installing this repo's own apps, turning on the HCI snoop log, and starting Shizuku.
+- Write to the pen only bytes captured from OnePlus Notes.
+- A route that needs a bypass is a finding, not a task.
+- "Works" means the pen physically vibrated.
 
-## Hard boundaries — non-negotiable, do not "work around"
+### Step 0: host baseline (about 5 minutes)
 
-- **No root, no Magisk, no `/system/priv-app` install, no firmware changes.**
-  This project excludes the privileged route by design. If a route needs it,
-  that is a finding to report, not a thing to do.
-- **Never present an unauthorized or failed call as success.** If a route needs
-  `com.oplus.permission.safe.IOT` and the app can't hold it, report
-  `PermissionDenied` and stop that route.
-- **Interoperability only:** observe the owner's own device and its own app's
-  traffic, then independently reimplement. Do **not** defeat protections or
-  extract/reuse vendor signing keys, certificates, or tokens. See
-  `stylo2/docs/LEGAL.md`.
-- **BLE writes change hardware state:** only ever write bytes you **captured
-  from Notes** (known-safe). No blind fuzzing of the pen.
-- **Keep the device working:** normal stylus input and OnePlus Notes must keep
-  functioning. Non-interference is a required test (`docs/E` 11–12), not
-  optional — if your probing disrupts the system link, stop and report.
+```bash
+git status && git branch --show-current
+python3 research/tools/validate.py                       # OK
+(cd stylo2 && cargo test --workspace)                    # 26 passed (skip if Rust isn't installed)
+./gradlew :stylo2-poc:assembleDebug :stylus-ble-inspector:assembleDebug
+```
 
-## First actions (ordered — fastest verifiable route first)
+On Windows, use `py -3` for `python3` and `.\gradlew` for `./gradlew`.
 
-1. Confirm the host baseline: `cd stylo2 && cargo test --workspace` (expect 26).
-2. **Route A — the shortest path to a working PoC.** Build and install the
-   minimal PoC on the pad: `cd android/stylo2-poc && ./gradlew :app:installDebug`.
-   Open it, tap **Bind**, pick a profile, tap **Trigger**, and **watch the
-   pen**. If it vibrates, **you are done** — that app is the PoC. Its
-   [`README.md`](android/stylo2-poc/README.md) maps every outcome to the
-   boundary it implicates. (Expect to fix real Android compile errors first —
-   the module was authored without an SDK to build against; keep fixes minimal.)
-3. If Route A is refused: **device inventory** (`docs/G` §3) — especially the
-   **protection level of `com.oplus.permission.safe.IOT`** — and the four-step
-   isolating experiment in `docs/H-trust-boundaries.md` to confirm which
-   boundary blocks (the PoC already stages this; mostly cross-check).
-4. **Route B — direct communication.** One HCI snoop capture of Notes
-   (`docs/G` §4) to learn whether haptics are even GATT and what the bytes are;
-   then the nine-scenario protocol in `docs/J-capture-plan.md`. Use the BLE
-   inspector (`android/stylus-ble-inspector`, `docs/G` §6) for independent-access
-   and non-interference tests.
-5. Record every result with a method tag (inspection / static / adb / physical)
-   in `docs/E-prototype.md`, and promote confirmed claims in
-   `docs/I-evidence-ledger.md`.
+### Step 1: tablet check (read-only)
 
-## Three possible outcomes — let the evidence pick, don't force one
+```bash
+python3 research/tools/pad3_readout.py check
+```
 
-1. **Direct BLE works** — the snoop shows a writable characteristic, your app
-   can write a captured value and the pen buzzes, and Notes still works with the
-   inspector connected → fill `stylo2_ble::Stylo2GattProfile` (UUIDs + byte
-   encoder), write a Kotlin `GattTransport`, and set
-   `Availability.ble_protocol_verified`.
-2. **Only the privileged binder path** — control is reachable only via the
-   accessory service (needs `safe.IOT`, ungrantable to an ordinary app) and no
-   independent GATT path works → report that the only legitimate route is
-   **official OnePlus developer authorisation**. Do not root.
-3. **In-between** — e.g. GATT present but encrypted/authenticated, or a second
-   connection kills the system link → document precisely in `docs/C`.
+This reports the model, the project number, the build, the boot state, whether `su` works, and which of the pen service, the PoC, the inspector, the upstream companion app and Shizuku are installed. If a root prompt appears on the tablet, the person approves or denies it. Either answer is fine.
 
-## Feed results back into the code
+### Step 2: read-out and firmware retrieval (read-only, about 5 minutes)
 
-- **BLE:** `stylo2/crates/stylo2-ble` — populate `Stylo2GattProfile`; use
-  `stylo2_ble::recon::candidate_control_characteristics` to rank candidates from
-  the inspector's exported GATT table.
-- **Binder (only if authorised):** implement the Kotlin `BinderTransport` over
-  the existing `StylusVibrationClient`; verify the profile integers empirically
-  (`setVibrationType(0..4)` + feel the pen) and correct
-  `stylo2-oplus::wire::reported_code`.
-- **Docs:** promote confirmed items in `stylo2/docs/C-protocol.md` from
-  *reported/hypothetical* → *verified*; fill the `docs/E` matrix.
+```bash
+python3 research/tools/pad3_readout.py all
+```
 
-## Working conventions
+This runs `identify`, `firmware`, `modules`, `driver`, `service`, `apk` and `bluetooth`. Everything lands in `research/local/pad3/`, which git ignores:
 
-- Work on `ccr-9fb81d0a-059pa6` (PR #1), or a branch off it; follow the repo's
-  existing commit/PR conventions. Do not force-push shared history.
-- The Rust **public API should not need to change** — only the backend seams
-  (`Stylo2GattProfile`, `BinderTransport`/`GattTransport`, the `wire` mapping)
-  get filled in. Keep changes scoped to what a finding requires.
-- Commit device findings as doc updates (`docs/C`, `docs/E`) alongside any code.
+| Step | What it settles |
+| --- | --- |
+| `identify` | `ro.boot.prjname` (24926 or 24976?), model, build, region properties that might tell Chinese from global hardware |
+| `firmware` | Folders under `/odm/firmware/wireless_pen/`, symlinks, whether the `prjname` folder exists. It hashes each file on the tablet, **pulls the firmware**, checks the hashes match, and runs `fwinfo.py` on each file against the known builds. Any `cps8601` file elsewhere on `/odm` or `/vendor` is listed too |
+| `modules` | (root only) installed modules and versions, which ones ship firmware, overlay mounts (jjhitel's `/dev/anyfs/upper/...`) |
+| `driver` | `oplus_wireless_pen.ko`: loaded?, path, `modinfo`, `vermagic`. It also pulls the module and pulls out firmware-path strings (does it contain `wireless_pen/%s/cps8601_firmware.bin`, and what fills `%s`?) |
+| `service` | `com.oplus.ipemanager` version, and whether `CoreService`, `PENCIL_SDK` and `safe.IOT` appear. Also **the protection level of `safe.IOT`**, read two ways, the permission allowlist files, and which pen-client packages (Notes, ...) hold the permission |
+| `apk` | **Pulls the installed `com.oplus.ipemanager` APK(s) from the tablet** (base and splits) into `research/local/pad3/raw/apk/<package>/<version>/`, and records the version, sizes and SHA-256. This version-matched copy is the input for Step 2b, so a mirror download is never used. `--packages a,b` pulls other packages, but only the pen service is cleared for Step 2b |
+| `bluetooth` | Pen bond present (addresses redacted), HCI snoop mode |
 
-## Stop and ask the owner when
+Then:
 
-- A choice is ambiguous or architecturally significant.
-- A route needs access you don't have (a permission, vendor authorisation) —
-  report it, don't improvise around it.
-- Probing disrupts the system link or Notes — stop before continuing.
-- You would need to do anything on the "never" list above to make progress.
+```bash
+python3 research/tools/fwinfo.py --diff <a.bin> <b.bin>   # for each pair of distinct builds
+python3 research/tools/fwinfo.py --strings <file>          # for any unknown build
+```
+
+The `--strings` output goes to the terminal, so keep it out of git. Read `research/local/pad3/summary.md`, which is redacted and safe to quote.
+
+**Reading the `safe.IOT` protection level.** If it includes `signature`, an ordinary app can never be granted it. Route A should then fail at bind, and the only open options are Route B and official authorisation. Note this before Step 3.
+
+### Step 2b: interface check on the tablet's APK (owner-approved)
+
+This checks that the interface the PoC and the upstream app call still matches the installed pen service: the descriptor, the 12 transaction codes, the 4 callbacks, and whether `getSupportFeatureList` has a code. The owner approved it on 2 Nov 2026, under the conditions in `CLAUDE.md`:
+
+- only the copy pulled in Step 2;
+- only the pen-SDK interface classes;
+- the APK and decompiled output stay in `research/local/`;
+- only names, codes and signatures are recorded.
+
+It needs [JADX](https://github.com/skylot/jadx) installed locally. Check its flags with `jadx --help`, since the options below differ between versions.
+
+1. **Decompile just the interface classes,** if your JADX has `--single-class` (1.5 and later):
+   ```bash
+   APK=research/local/pad3/raw/apk/com.oplus.ipemanager/<version>/<base>.apk
+   jadx --single-class com.oplus.ipemanager.sdk.ISdkAidlInterface --single-class-output research/local/pad3/jadx/ "$APK"
+   jadx --single-class com.oplus.ipemanager.sdk.ISDKAidlCallback  --single-class-output research/local/pad3/jadx/ "$APK"
+   ```
+2. **If that flag is missing, or the class isn't found** (it may be renamed in the vendor build), **ask the owner** before falling back to a full decompile into `research/local/`:
+   ```bash
+   jadx --no-res -d research/local/pad3/jadx-full "$APK"
+   ```
+   Even then, open and record only the classes the checker finds by their descriptor string.
+3. **Compare:**
+   ```bash
+   python3 research/tools/aidl_check.py research/local/pad3/jadx --apk-version <versionName>
+   ```
+   (Use `research/local/pad3/jadx-full` if you took step 2.) It prints, method by method, whether each one matches, is renumbered, has a different signature, or is missing or extra. If names are obfuscated, it lines methods up by transaction code. It writes `research/local/pad3/aidl-check.json`, which holds interface facts only and is safe to quote.
+
+Record the result in `gap-aidl-matches-firmware` and `if-oplus-sdk-interface` (with the APK version and SHA-256 from the `apk` step). **Don't change the app's codes or descriptor** until the owner has reviewed a difference. If the descriptor isn't found at all, that is a finding too. The PoC's bind log in Step 3 is an independent, read-only cross-check of the descriptor.
+
+### Step 3: Route A, the PoC app (ask first: it installs an app)
+
+```bash
+./gradlew :stylo2-poc:installDebug
+```
+
+On the tablet:
+
+1. Draw in Notes once to confirm the pen works.
+2. Open **Stylo2 Haptics PoC**.
+3. Tap **1. Bind / probe service**.
+4. Pick a profile and tap **2. Trigger haptic**. **Watch the pen.**
+5. Tap **3. Stop feedback**.
+
+Then:
+
+```bash
+python3 research/tools/pad3_readout.py poc-log    # captures the log and asks whether the pen vibrated
+```
+
+What each outcome means, following [`android/stylo2-poc/README.md`](android/stylo2-poc/README.md) and [`stylo2/docs/H-trust-boundaries.md`](stylo2/docs/H-trust-boundaries.md):
+
+| Log shows | Boundary | Next |
+| --- | --- | --- |
+| Bind and authorisation pass, and **the pen vibrates** | none: Route A works unprivileged | Map the profiles (`setVibrationType` 0–4 and how each feels), then the Kotlin `BinderTransport` |
+| `SecurityException` or `bindService returned false` at BIND | B1: permission enforced | Route B |
+| Bind passes but the AUTHZ query throws | B2: the service checks the caller | Route B, or official SDK |
+| Calls return but there is no vibration | B4: the session or protocol gates the motor | Route B snoop |
+| Service not installed or not found | missing on this build | Re-check Step 2 |
+
+Never record "works" unless the pen physically vibrated.
+
+### Step 4: attach handshake (physical, guided)
+
+```bash
+python3 research/tools/pad3_readout.py handshake
+```
+
+The tool asks the person to detach, attach, detach and re-attach the pen. It then reads `dmesg` (this needs root on most builds; without root the tool says so and uses logcat only) and `logcat`. It compares the sequence with the known markers and keeps the firmware-load lines and the `ipemanager` lines (addresses redacted).
+
+### Step 5: Route B, direct Bluetooth LE (ask first: changes a setting)
+
+Turning on the HCI snoop log is a settings change, and Shizuku and BlueShark are extra apps. Get the person's go-ahead, then follow [`stylo2/docs/G-local-continuation.md`](stylo2/docs/G-local-continuation.md):
+
+- **§4**: one capture of Notes drawing and starting and stopping feedback. This alone shows whether haptic control is ATT/GATT at all.
+- **§5**: split-screen tandem method.
+- **§6**: inspector, independent access and the non-interference test.
+- [`stylo2/docs/J-capture-plan.md`](stylo2/docs/J-capture-plan.md): the nine captures and the recording schema.
+
+Save snoop files in `research/local/pad3/snoop/`. Only write to the pen the values captured from Notes.
+
+### Step 6: record and commit
+
+Record the results in the database (`research/data/`). Set `updated` on every record you change, mark what you read from the tablet as `verified` with a basis like "Read from the Pad 3 (OPD2415, build …) on <date>", and mark conclusions `inferred`.
+
+- `devices.json` → `dev-oneplus-pad3`: project number, model, build, firmware folders and builds, root and fix-module state.
+- `interfaces.json` → `if-cps8601-firmware` (builds, hashes, folders), `if-oplus-wireless-pen-driver` (module info, path format), `if-oplus-ipemanager` (version, confirmed names, `safe.IOT` protection level).
+- `gaps.json`: answer or narrow each open question with direct evidence only. Start with `gap-pen-firmware-directory` and the route gaps listed below.
+- `sources.json`: add `src-pad3-readout`, describing what was read and when, with no identifiers.
+- `research/reference/pad3-firmware/MANIFEST.md`: paths, sizes and hashes, in the style of the cxzlw manifest. No binaries.
+- The pen service APK's version, size and SHA-256, and the interface-check result: `if-oplus-ipemanager`, `if-oplus-sdk-interface`, `gap-aidl-matches-firmware`. Never commit the APK or the decompiled sources.
+- Fill in the Pad 3 row, the firmware table and the handshake section of `research/docs/pen-attach-handshake.md`.
+- Route results go in the `stylo2/docs/E-prototype.md` matrix (with method tags: inspection / static / adb / physical). Promote confirmed protocol facts in `stylo2/docs/C-protocol.md`, and code findings in `stylo2/crates/` (`Stylo2GattProfile`, `wire::reported_code`).
+
+```bash
+python3 research/tools/validate.py && python3 research/tools/build.py
+git status        # nothing under research/local/ or research/build/ may be staged
+git add research stylo2 && git commit -m "Record Pad 3 read-out: firmware, driver, service, handshake"
+```
+
+If the session has the Artifact tools, sync the changed records to the database page as described in `research/README.md`. Otherwise list the changed record IDs in the report.
+
+### Open questions, in the order a device session answers them
+
+These are records in `research/data/gaps.json`. Each one's `details` ends with the exact "Next step" and links its plan.
+
+1. **Step 2 (read-out):** `gap-pen-firmware-directory`, `gap-iot-permission-level`.
+2. **Step 3 (Route A):** `gap-service-discovery-and-bind`, `gap-caller-validation-after-bind`, `gap-unprivileged-execution`, then `gap-profile-integer-feel` (only if the pen vibrated).
+3. **Step 5 (Route B):**
+   - `gap-haptic-over-gatt`
+   - `gap-haptic-command-bytes` and `gap-oneplus-transport` (same captures)
+   - `gap-session-handshake`
+   - `gap-second-gatt-client-access`
+   - `gap-second-gatt-client-disruption`
+   - `gap-captured-write-buzzes-pen`, last, and only once the disruption gap shows a second connection is safe.
+4. **Not device steps:**
+   - `gap-aidl-matches-firmware`: answered by Step 2b, approved by the owner for the tablet's own APK only.
+   - `gap-oneplus-sdk-access`: an enquiry to OnePlus by the owner.
+5. **Narrow along the way:** `gap-oneplus-feature-semantics`.
+
+Close a gap only with direct evidence. Otherwise narrow it and leave it `open`.
+
+### Report back
+
+Give the person a short summary covering:
+
+- the project number and build, root status, and any fix module;
+- the firmware folders and which build each holds;
+- the driver version and path format;
+- the `safe.IOT` protection level;
+- the Route A outcome, and whether the pen vibrated;
+- the handshake result;
+- Route B progress;
+- what was committed and what is still open.
+
+### Stop and ask the owner when
+
+- something would change the tablet;
+- a route needs access the session doesn't have, such as a permission or vendor authorisation;
+- probing disrupts pen input, the Bluetooth link or Notes;
+- progress would need anything on the "no cracking" list.
+
+## Appendix: manual commands
+
+Use these if the tool can't run. All are read-only. In PowerShell, use double quotes outside and single quotes inside, and `Select-String` instead of `grep`.
+
+```powershell
+adb shell getprop ro.boot.prjname
+adb shell ls -lR /odm/firmware/wireless_pen/
+adb shell "su -c 'sha256sum /odm/firmware/wireless_pen/*/*.bin'"
+adb pull /odm/firmware/wireless_pen research/local/pad3/wireless_pen
+adb shell "su -c 'cat /data/adb/modules/*/module.prop'"
+adb shell "su -c 'find /vendor /vendor_dlkm /odm -name oplus_wireless_pen.ko 2>/dev/null'"
+adb shell dumpsys package com.oplus.ipemanager
+adb shell pm list permissions -f -g        # find com.oplus.permission.safe.IOT -> protectionLevel
+adb shell "su -c 'dmesg'" > research/local/pad3/dmesg.txt
+adb logcat -d > research/local/pad3/logcat.txt
+```
+
+If `adb pull` of a protected file is refused on a rooted tablet, copy it to `/sdcard/Download/`, pull it, and delete the copy straight away. The tool does this automatically.
