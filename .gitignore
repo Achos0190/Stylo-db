@@ -18,3 +18,7 @@ local.properties
 /research/build/
 __pycache__/
 /research/local/
+
+# Workstation tooling (local only)
+workstation/.venv/
+/.opencode/

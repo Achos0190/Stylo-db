@@ -46,8 +46,7 @@ Point out to the owner:
 
 Follow PICKUP.md Step 2b exactly:
 
-- JADX runs only on the APK pulled in step 2, and only on the `ISdkAidlInterface` and `ISDKAidlCallback` classes.
-- Ask the owner before any full decompile.
+- JADX runs only on copies pulled from the owner's own devices. A full decompile into `research/local/` is allowed under the 7 Nov 2026 scope in `CLAUDE.md`.
 - Run `python3 research/tools/aidl_check.py <jadx-output> --apk-version <versionName>` and report its table.
 - Never paste decompiled code into chat, commits or records; only names, codes and signatures.
 - Don't change the app's interface on a difference. Report it to the owner.

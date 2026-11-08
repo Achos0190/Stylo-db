@@ -1,0 +1,39 @@
+{
+  // Project-level OpenCode config for this workstation (git-ignored; machine-specific paths).
+  // Template: workstation/config/opencode.project.example.jsonc
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      // APK decompilation. Requires JADX-GUI running with the target APK open (plugin on 127.0.0.1:8650).
+      "jadx": {
+        "type": "local",
+        "command": [
+          "C:\\Users\\Vincent\\AppData\\Local\\Programs\\jadx-mcp-server-6.5.0\\.venv\\Scripts\\python.exe",
+          "C:\\Users\\Vincent\\AppData\\Local\\Programs\\jadx-mcp-server-6.5.0\\jadx_mcp_server.py"
+        ],
+        "timeout": 60000
+      },
+      // ADB diagnostics. Read-only: ANDROID_MCP_ALLOW_WRITE / ALLOW_SHELL deliberately unset (CLAUDE.md).
+      "android": {
+        "type": "local",
+        "command": [
+          "node",
+          "C:\\Users\\Vincent\\AppData\\Local\\Programs\\android-mcp\\node_modules\\@us-all\\android-mcp\\dist\\index.js"
+        ],
+        "environment": {
+          "ADB_PATH": "C:\\Users\\Vincent\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe"
+        }
+      },
+      // Native/firmware analysis, headless. Target = first line of research/local/ghidra-target.txt.
+      "ghidra": {
+        "type": "local",
+        "command": [
+          "C:\\Users\\Vincent\\AppData\\Local\\Programs\\ghidra-mcp-2.0\\.venv\\Scripts\\python.exe",
+          "-I",
+          "C:\\Users\\Vincent\\Stylo\\workstation\\scripts\\ghidra_mcp_launch.py"
+        ],
+        "timeout": 300000
+      }
+    }
+  }
+}

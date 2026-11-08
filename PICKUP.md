@@ -99,12 +99,12 @@ The `--strings` output goes to the terminal, so keep it out of git. Read `resear
 
 ### Step 2b: interface check on the tablet's APK (owner-approved)
 
-This checks that the interface the PoC and the upstream app call still matches the installed pen service: the descriptor, the 12 transaction codes, the 4 callbacks, and whether `getSupportFeatureList` has a code. The owner approved it on 2 Nov 2026, under the conditions in `CLAUDE.md`:
+This checks that the interface the PoC and the upstream app call still matches the installed pen service: the descriptor, the 12 transaction codes, the 4 callbacks, and whether `getSupportFeatureList` has a code. The owner approved it on 2 Nov 2026 and widened the decompiling scope on 7 Nov 2026. The current conditions are in `CLAUDE.md`. In short:
 
-- only the copy pulled in Step 2;
-- only the pen-SDK interface classes;
+- only copies pulled from the owner's own devices;
+- the pen-haptics path only;
 - the APK and decompiled output stay in `research/local/`;
-- only names, codes and signatures are recorded.
+- only findings are recorded (names, codes, signatures and short excerpts), never decompiled code wholesale.
 
 It needs [JADX](https://github.com/skylot/jadx) installed locally. Check its flags with `jadx --help`, since the options below differ between versions.
 
@@ -114,11 +114,11 @@ It needs [JADX](https://github.com/skylot/jadx) installed locally. Check its fla
    jadx --single-class com.oplus.ipemanager.sdk.ISdkAidlInterface --single-class-output research/local/pad3/jadx/ "$APK"
    jadx --single-class com.oplus.ipemanager.sdk.ISDKAidlCallback  --single-class-output research/local/pad3/jadx/ "$APK"
    ```
-2. **If that flag is missing, or the class isn't found** (it may be renamed in the vendor build), **ask the owner** before falling back to a full decompile into `research/local/`:
+2. **If that flag is missing, or the class isn't found** (it may be renamed in the vendor build), fall back to a full decompile into `research/local/`. Since 7 Nov 2026 this no longer needs a separate go-ahead:
    ```bash
    jadx --no-res -d research/local/pad3/jadx-full "$APK"
    ```
-   Even then, open and record only the classes the checker finds by their descriptor string.
+   For the interface check itself, the checker finds the classes by their descriptor string.
 3. **Compare:**
    ```bash
    python3 research/tools/aidl_check.py research/local/pad3/jadx --apk-version <versionName>
