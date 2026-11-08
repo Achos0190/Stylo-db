@@ -409,7 +409,9 @@
         "Not established on any device: whether the service is exported and visible to an ordinary app, whether it has a bind-time permission, the protection level of the permission, and whether it checks callers after a bind. See gap-service-discovery-and-bind, gap-iot-permission-level and gap-caller-validation-after-bind. The README's 'ordinary apps cannot be granted' and 'any other app is refused' are its statements, not test results.",
         "The route notes read the component name .btadsorb as the magnetic attach relationship, so the haptic path to the pen may not be a plain GATT write. Inferred from the name only (gap-haptic-over-gatt).",
         "The Route A PoC (android/stylo2-poc) attempts discovery and bind from an ordinary app and logs, for each service match, whether it is exported and which bind permission it needs.",
-        "Once read from the tablet, record the installed version, the confirmed names and the protection level of the permission here (PICKUP.md Step 6)."
+        "Once read from the tablet, record the installed version, the confirmed names and the protection level of the permission here (PICKUP.md Step 6).",
+        "ROM 2026-11-07: com.oplus.ipemanager 16.13.0 in my_product/priv-app; CoreService protected by com.oplus.permission.safe.IOT (signature|privileged).",
+        "ROM 2026-11-07: OnePlus Notes 16.7.0 holds com.oplus.permission.safe.IOT and references ACTION.PENCIL_SDK and ISdkAidlInterface directly (no OCS); it sits in my_stock/del-app, so it likely qualifies through the signature half (inferred)."
       ],
       "tags": [
         "binder",
@@ -429,10 +431,11 @@
         "plan-pad3-readout",
         "src-stylo2-i-evidence-ledger",
         "src-stylo2-c-protocol",
-        "src-stylo2-a-reconnaissance"
+        "src-stylo2-a-reconnaissance",
+        "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "AndroidManifest.xml, OplusPencilSdkClient.kt and README in this repository. Extended on 2 Nov 2026 from stylo2/docs/I-evidence-ledger.md and H-trust-boundaries.md; the added lines are open questions, not checked on a device.",
-      "updated": "2026-11-02"
+      "basis": "Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: AndroidManifest.xml, OplusPencilSdkClient.kt and README in this repository. Extended on 2 Nov 2026 from stylo2/docs/I-evidence-ledger.md and H-trust-boundaries.md; the added lines are open questions, not checked on a device.",
+      "updated": "2026-11-07"
     },
     {
       "id": "if-oplus-pencilmanagerunitclient",
@@ -491,7 +494,8 @@
         "Scope of verified: this table matches the repository's reconstruction. The files are marked as cleaned, and the route notes call them a community reproduction. They have not been compared with the installed service on any device (gap-aidl-matches-firmware). The route notes label the descriptor, the 12 codes and the callbacks reported for that reason.",
         "The reconstruction has no parameter for intensity, duration, frequency, waveform or custom patterns. Whether the real interface has any is unknown.",
         "The Rust library uses only setVibrationType, startFeedBackVibration, stopFeedBackVibration and the two callback calls (stylo2/docs/C-protocol.md section 1.2).",
-        "Check against the installed service: PICKUP.md Step 2b compares the tablet's own com.oplus.ipemanager with this reconstruction (research/tools/aidl_check.py; gap-aidl-matches-firmware)."
+        "Check against the installed service: PICKUP.md Step 2b compares the tablet's own com.oplus.ipemanager with this reconstruction (research/tools/aidl_check.py; gap-aidl-matches-firmware).",
+        "ROM 2026-11-07: See gap-aidl-matches-firmware for the 16.13.0 transaction table; the PoC's codes differ for 1, 3, 4, 5, 7, 8, 9."
       ],
       "tags": [
         "aidl",
@@ -507,10 +511,11 @@
         "src-stylo2-a-reconnaissance",
         "repo-stylo2-interop-track",
         "gap-profile-integer-feel",
-        "gap-haptic-command-bytes"
+        "gap-haptic-command-bytes",
+        "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "app/src/main/java/com/oplus/ipemanager/sdk/ISdkAidlInterface.java. Extended on 2 Nov 2026 from stylo2/docs/C-protocol.md and I-evidence-ledger.md; the added lines limit what verified covers.",
-      "updated": "2026-11-02"
+      "basis": "Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: app/src/main/java/com/oplus/ipemanager/sdk/ISdkAidlInterface.java. Extended on 2 Nov 2026 from stylo2/docs/C-protocol.md and I-evidence-ledger.md; the added lines limit what verified covers.",
+      "updated": "2026-11-07"
     },
     {
       "id": "if-oplus-vibration-presets",

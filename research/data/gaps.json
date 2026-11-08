@@ -7,11 +7,11 @@
       "title": "Does the reconstructed AIDL match the installed com.oplus.ipemanager?",
       "vendor": "OnePlus",
       "category": "Interface",
-      "status": "open",
+      "status": "inferred",
       "priority": "medium",
       "url": "",
       "links": [],
-      "summary": "The descriptor, 12 transaction codes and 4 callbacks come from a community reconstruction. They have not been compared with the installed service.",
+      "summary": "The reconstructed AIDL does not match ipemanager 16.13.0: same descriptor, but the transaction codes and part of the method set differ.",
       "details": [
         "Known from code: the repository files are marked as cleaned reconstructions.",
         "The route docs label every row of the interface reported until this is checked. The interface records in this database say verified because they match the repository's code, not a device.",
@@ -19,7 +19,12 @@
         "Owner decision, 2 Nov 2026: decompiling is allowed for this one check, on the copy of com.oplus.ipemanager pulled from the owner's own tablet. Only the pen-SDK interface classes are examined, the APK and decompiled output stay in research/local/, and only the descriptor, method names, transaction codes and signatures are recorded (CLAUDE.md). No mirror download is used.",
         "Next step: pull the APK with the apk step of research/tools/pad3_readout.py (it records the version and SHA-256), decompile only ISdkAidlInterface and ISDKAidlCallback with JADX, then run research/tools/aidl_check.py on the output (PICKUP.md Step 2b).",
         "Read-only cross-check: the PoC log prints the binder's interface descriptor at bind. A different descriptor is a finding; do not change the code to match.",
-        "Record: APK version and SHA-256, the aidl_check.py result (match, renumbered, signature differs, missing or extra, per method), and the descriptor seen at bind. The owner reviews any difference before the app's codes change."
+        "Record: APK version and SHA-256, the aidl_check.py result (match, renumbered, signature differs, missing or extra, per method), and the descriptor seen at bind. The owner reviews any difference before the app's codes change.",
+        "ROM 2026-11-07: Descriptor unchanged: com.oplus.ipemanager.sdk.ISdkAidlInterface. getSuportSdkVersion returns 20100.",
+        "ROM 2026-11-07: Installed codes: 1 setISdkAidlCallback, 2 getVibrationSwitchState, 3 getPencilConnectState, 4 setVibrationType(int), 5 startVibration(int), 6 getSuportSdkVersion, 7 getSupportFeatures (List<IpeFeature>), 8 isDemoModeEnable, 9 isFunctionVibrationEnable, 10 unsetISdkAidlCallback, 11 startFeedBackVibration, 12 stopFeedBackVibration, 13 isNewFeatureSupported(String).",
+        "ROM 2026-11-07: Differences from the reconstruction: codes 1, 3, 4, 5, 7, 8, 9 are reassigned; enableDemoMode and getSupportFeatureList are absent; getSupportFeatures and isNewFeatureSupported are new. Codes 2, 6, 10, 11, 12 match.",
+        "ROM 2026-11-07: aidl_check.py could not parse codes from this JADX output (reported '-'); codes above were read from the stub's onTransact switch.",
+        "ROM 2026-11-07: Per CLAUDE.md the app's codes are not changed until the owner reviews this and the tablet's build is checked."
       ],
       "tags": [
         "aidl",
@@ -38,10 +43,11 @@
         "src-stylo2-c-protocol",
         "src-stylo2-a-reconnaissance",
         "src-project-rules",
-        "src-apkmirror-smart-accessories"
+        "src-apkmirror-smart-accessories",
+        "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "Transcribed from stylo2/docs/I-evidence-ledger.md (Q10) on 2 Nov 2026; not checked on a device. The block on the experiment is from CLAUDE.md.",
-      "updated": "2026-11-02"
+      "basis": "Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: Transcribed from stylo2/docs/I-evidence-ledger.md (Q10) on 2 Nov 2026; not checked on a device. The block on the experiment is from CLAUDE.md.",
+      "updated": "2026-11-07"
     },
     {
       "id": "gap-android-hid-haptics",
@@ -77,7 +83,7 @@
       "title": "If an app can bind, does the service accept its calls?",
       "vendor": "OnePlus",
       "category": "Access",
-      "status": "open",
+      "status": "inferred",
       "priority": "high",
       "url": "",
       "links": [],
@@ -88,7 +94,9 @@
         "Why it matters: it separates B2 (caller validation inside the service) from B1 (the Android permission), and B2 from B4 (the protocol).",
         "Only reachable if the bind in gap-service-discovery-and-bind succeeds.",
         "Next step: run step 3 of the isolating experiment: with the binder in hand, call a harmless query such as getPencilConnectState and see whether it returns or throws SecurityException or an auth error. The Route A PoC does this as its AUTHZ line.",
-        "Record: the call, the return value or the exact exception, its message and the layer."
+        "Record: the call, the return value or the exact exception, its message and the layer.",
+        "ROM 2026-11-07: The ISdkAidlInterface implementation (obfuscated btadsorb.ble.g0, stub s3.d) performs no getCallingUid/package/signature checks per call; access control is the bind-time permission plus OCS hand-off (gap-oneplus-sdk-access).",
+        "ROM 2026-11-07: Transaction 0xFFFFFF with interface token com.oplus.ipemanager.PENCIL_CAPABILITY only records OCS auth data (byte, pid, uid, package) as the event event_ocs_auth; it does not gate later calls."
       ],
       "tags": [
         "caller-validation",
@@ -107,10 +115,11 @@
         "src-stylo2-i-evidence-ledger",
         "src-stylo2-h-trust-boundaries",
         "gap-unprivileged-execution",
-        "if-oplus-ipemanager"
+        "if-oplus-ipemanager",
+        "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "Transcribed from stylo2/docs/I-evidence-ledger.md (Q3) on 2 Nov 2026; not checked on a device.",
-      "updated": "2026-11-02"
+      "basis": "Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: Transcribed from stylo2/docs/I-evidence-ledger.md (Q3) on 2 Nov 2026; not checked on a device.",
+      "updated": "2026-11-07"
     },
     {
       "id": "gap-captured-write-buzzes-pen",
@@ -263,11 +272,11 @@
       "title": "What is the protection level of com.oplus.permission.safe.IOT?",
       "vendor": "OnePlus",
       "category": "Access",
-      "status": "open",
+      "status": "inferred",
       "priority": "critical",
       "url": "",
       "links": [],
-      "summary": "The permission that gates the pen service is thought to be privileged or stronger, but nobody has read its protection level.",
+      "summary": "com.oplus.permission.safe.IOT is signature|privileged (protectionLevel 0x12) in the 16.0.10.600 ROM.",
       "details": [
         "Known: the repository's manifest requests it and the client checks it. The README calls it a restricted system permission that ordinary apps cannot be granted. The root module gets it by installing the app to /system/priv-app with a privapp-permissions allowlist.",
         "Reported, not read: the level is at least privileged. Public system-app permission listings show the name on several com.oplus.* packages with no level.",
@@ -275,7 +284,10 @@
         "Why it matters: it decides whether the binder route is possible at all for an independent app.",
         "Next step: run dumpsys package com.oplus.permission.safe.IOT and read protectionLevel from the framework permission XML. The service step of pad3_readout.py reads the level two ways; the raw commands are in plan-pad3-readout.",
         "H also lists a B0 comparison of signers with apksigner verify --print-certs. CLAUDE.md rules out extracting vendor certificates, so ask the owner before that; the level alone answers this question.",
-        "Record: the protectionLevel text, the command or file it came from, and the firmware build. Also put the level in if-oplus-ipemanager."
+        "Record: the protectionLevel text, the command or file it came from, and the firmware build. Also put the level in if-oplus-ipemanager.",
+        "ROM 2026-11-07: system_ext/framework/oplus-framework-res.apk (package 'oplus') declares com.oplus.permission.safe.IOT and com.oppo.permission.safe.IOT with protectionLevel 0x12 = signature|privileged (aapt2 dump xmltree).",
+        "ROM 2026-11-07: Consequence: an ordinary third-party app cannot hold it, so Android refuses an unprivileged bind to CoreService before ipemanager code runs.",
+        "ROM 2026-11-07: Still to do on the device: dumpsys package to confirm the level on the tablet's build."
       ],
       "tags": [
         "permission",
@@ -297,10 +309,11 @@
         "src-stylo2-b-feasibility",
         "plan-route-a-poc-run",
         "c-vendor-service-pattern",
-        "c-observing-on-device"
+        "c-observing-on-device",
+        "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "Transcribed from stylo2/docs/I-evidence-ledger.md (Q1 and the permissions table) on 2 Nov 2026; not checked on a device. Commands from stylo2/docs/G-local-continuation.md section 3.",
-      "updated": "2026-11-02"
+      "basis": "Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: Transcribed from stylo2/docs/I-evidence-ledger.md (Q1 and the permissions table) on 2 Nov 2026; not checked on a device. Commands from stylo2/docs/G-local-continuation.md section 3.",
+      "updated": "2026-11-07"
     },
     {
       "id": "gap-lenovo-lpp",
@@ -367,7 +380,7 @@
       "title": "How does an app join OnePlus's approved pen SDK?",
       "vendor": "OnePlus",
       "category": "Access",
-      "status": "open",
+      "status": "inferred",
       "priority": "critical",
       "url": "",
       "links": [],
@@ -379,7 +392,19 @@
         "Route notes (Q11): the only non-root binder route, if B1 and B2 are closed, is official developer authorisation. Experiment: an enquiry to OnePlus or OPPO developer relations about authorising this app's package and signing certificate for the accessory service, and on what terms.",
         "A desk web search on 2 Nov 2026 found no public official Pencil SDK, AAR or integration docs. That search cannot be repeated from this repository, and finding nothing does not show that none exists.",
         "The route notes say it may need business terms and may not cover the Pad 3 and Stylo 2, and that no endpoint or credentials should be assumed.",
-        "Interoperability rule from the legal notes: use only the app's own signing certificate, never another developer's identity or keys."
+        "Interoperability rule from the legal notes: use only the app's own signing certificate, never another developer's identity or keys.",
+        "ROM 2026-11-07: Third-party access runs through Open Capability Service (com.coloros.ocs.opencapabilityservice 16.0.8) with capability name IPE_PENCIL_CLIENT.",
+        "ROM 2026-11-07: Flow: the app presents an authCode; OCS verifies it; on success (error code 1001) OCS itself binds ipemanager's PENCIL_SDK action, reports the auth via transaction 0xFFFFFF, and hands ipemanager's SDK binder back to the app in a CapabilityInfo.",
+        "ROM 2026-11-07: The authCode is an offline ECDSA (SHA256withECDSA) signature by Oplus over a version byte, the caller's package name plus signing-certificate digest, permission bits and an optional expiry, checked against Oplus public keys on the device and cached locally. No network call in the auth module.",
+        "ROM 2026-11-07: So a valid code can only be issued by Oplus and is bound to one app identity; reusing another app's code is out of scope (CLAUDE.md: no credential reuse). The legitimate route is an IPE_PENCIL_CLIENT authorisation from OnePlus/Oplus.",
+        "HiPaint APK 2026-11-08 (static): corroborates the OCS route from the client side. HiPaint 6.4.2 (signer CN=huion) bundles com.oplus.ocs.base.* and requests capability IPE_PENCIL_CLIENT via AuthenticateCustomerBuilder, binding com.coloros.opencapabilityservice / OpenAuthenticateService (IServiceBroker.handleAuthentication). On success it receives an AuthResult carrying permit bits and a CapabilityInfo holding ipemanager's SDK binder, then calls ISdkAidlInterface directly.",
+        "HiPaint APK 2026-11-08 (static): ERROR_CODE_AUTHENTICATION_EXPIRED and 'incomplete credential' confirm the authCode is identity-bound and can expire. The credential is tied to HiPaint's own signing certificate (SHA-256 57e4c186...90879), so an interoperable app would need its OWN IPE_PENCIL_CLIENT authCode issued by Oplus for its own package and certificate - consistent with the no-credential-reuse rule.",
+        "HiPaint APK 2026-11-08 (full JADX decompile): the authCode is NOT in code - it is declared in the app's AndroidManifest as meta-data name=\"com.oplus.ocs.ipepencil.AUTH_CODE\", value a base64 token (HiPaint's begins 'ATBEAiBc', 79 bytes; not reproduced in full - a vendor-signed token, not reused per CLAUDE.md).",
+        "HiPaint APK 2026-11-08: OCS service side com.oplus.ocs.authenticate.utils.h (PackageUtils) reads the caller's token via context.getPackageManager().getApplicationInfo(pkg, 128).metaData (flag 128 = GET_META_DATA); com.oplus.ocs.authenticate.utils.m verifies its ECDSA (SHA256withECDSA) signature against on-device Oplus public keys. Carried as AuthCodeInfo{authCode, enabled, expireIn}.",
+        "HiPaint APK 2026-11-08: token structure (base64-decoded, 79 bytes) = 0x01 version byte + DER ECDSA P-256 signature (30 44 ... , 70 bytes) + 8-byte permit/expiry trailer. Matches the OCS auth record format (version + signature over package + cert digest + permit bits + optional expiry).",
+        "HiPaint APK 2026-11-08: client side - h8/f BaseClient.getClientName()=\"IPE_PENCIL_CLIENT\"; h8/h (OplusApi) Api \"PencilManagerClient.API\", client version 10000, brand-gated to OPPO/realme/OnePlus/oplus, checkAuthResult success = AuthResult.errorCode 1001 then ISdkAidlInterface.Stub.asInterface(CapabilityInfo.getBinder()); h8/e wraps the SDK (setVibrationType 0-3, getSupportFeatures, getVibrationSwitchState); l6/d is the IServiceBroker proxy (handleAuthentication = txn 1, OCS SDK version string \"1.0.11\").",
+        "HiPaint APK 2026-11-08: CORRECTION to the earlier ROM note - the app DOES present the authCode, but via its own manifest meta-data (read by OCS with GET_META_DATA), not passed over the bind transaction. The credential is bound to the caller's package (com.aige.hipaint) + signing cert (huion 57e4c186...) + permits; it is non-transferable. Interop path: obtain an Oplus-issued AUTH_CODE for OUR package + OUR cert and declare it in our manifest - there is no token to reuse.",
+        "Correction 2026-11-08: an earlier note here floated a possible non-OCS path via the touch node. That was wrong - the node-38 write is gated by oplus.permission.OPLUS_COMPONENT_SAFE (signature), so an ordinary app cannot use it either (see gap-oneplus-transport). Route C (OCS authCode) remains the only confirmed third-party route."
       ],
       "tags": [
         "partner",
@@ -392,10 +417,11 @@
         "plan-route-feasibility",
         "src-stylo2-b-feasibility",
         "src-stylo2-i-evidence-ledger",
-        "src-stylo2-a-reconnaissance"
+        "src-stylo2-a-reconnaissance",
+        "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "Repository README and ReVanced issue. Extended on 2 Nov 2026 from stylo2/docs/I-evidence-ledger.md (Q11), B-feasibility.md and LEGAL.md.",
-      "updated": "2026-11-02"
+      "basis": "Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: Repository README and ReVanced issue. Extended on 2 Nov 2026 from stylo2/docs/I-evidence-ledger.md (Q11), B-feasibility.md and LEGAL.md.",
+      "updated": "2026-11-08"
     },
     {
       "id": "gap-oneplus-transport",
@@ -403,7 +429,7 @@
       "title": "What does the service send to the pen, and when?",
       "vendor": "OnePlus",
       "category": "Protocol",
-      "status": "open",
+      "status": "inferred",
       "priority": "high",
       "url": "",
       "links": [],
@@ -412,7 +438,16 @@
         "The interface shape (set type, start, stop) and the Windows model both suggest the pen plays the texture locally on contact.",
         "Next step: an HCI snoop log of a writing session in OnePlus Notes would show the pattern.",
         "The nine capture scenarios, the recording schema and the tables are in plan-hci-snoop-capture. Scenarios 6 and 7 (feedback on, feedback off) show the command pattern.",
-        "A related question about the channel itself: gap-haptic-over-gatt."
+        "A related question about the channel itself: gap-haptic-over-gatt.",
+        "ROM 2026-11-07: startFeedBackVibration/stopFeedBackVibration do not use Bluetooth: they call OplusTouchNodeManager.writeNodeFileByDevice(0, 38, \"3\") and (0, 38, \"2\"), i.e. touch-panel node 38.",
+        "ROM 2026-11-07: setVibrationType(int) writes a BLE GATT characteristic: a fixed command template with byte[3] = type and byte[4] = feedback level + 1, only when the pen connection state is 2.",
+        "ROM 2026-11-07: startVibration(int) is limited to the second-generation pencil (Stylo 2) and calls an internal routine still to be traced.",
+        "ROM 2026-11-07: Working hypothesis: writing feedback is switched on via the touch controller (digitiser link) while BLE configures pattern and strength.",
+        "Touch-node trace 2026-11-08 (ROM framework jars system/framework/oplus-framework.jar and oplus-services.jar, decompiled from the 16.0.10.600 system image): the full write path for node 38 is OplusTouchNodeManager.writeNodeFileByDevice(0,38,\"3\") [oplus-framework.jar, @hide system API; forwards only, no check] -> OplusActivityTaskManager binder -> ColorTouchNodeManagerService.writeNodeFileByDevice [com.android.server.wm, system_server] -> IOplusTouch HAL vendor.oplus.hardware.touch.IOplusTouch/default .touchWriteNodeFile(0,38,setInfo) -> sysfs node (path mapped inside the vendor HAL, not in the jars).",
+        "Touch-node trace 2026-11-08: node 38 is not one of the public OplusTouchNodeManager constants (those end at 22, plus debug 160-165); it is an internal nodeFlag the vendor HAL maps to a sysfs path. ipemanager has no special privilege for this call - it works because it can reach the hidden API and pass SELinux, not because of a permission.",
+        "Touch-node trace 2026-11-08 (CORRECTION of an earlier note in this record): node 38 IS permission-gated. The binder entry point is OplusActivityTaskManagerServiceEnhance.writeNodeFileByDevice, which calls enforceCallingPermission(\"oplus.permission.OPLUS_COMPONENT_SAFE\", ...) BEFORE delegating to ColorTouchNodeManagerService (whose inner impl has no check). The earlier 'no caller gate' note read only the inner impl, not the Enhance wrapper the binder actually hits.",
+        "Touch-node trace 2026-11-08: oplus.permission.OPLUS_COMPONENT_SAFE is declared in oplus-framework-res.apk (package 'oplus') with protectionLevel 0x00000002 = signature. Only platform/oplus-signed apps can hold it; an ordinary third-party app cannot. So writing touch node 38 is signature-walled - the same class of barrier as the IOT/SDK bind. SELinux does allow an untrusted app to reach the service (activity_task_service is an app_api_service: 'allow untrusted_app_all app_api_service (service_manager (find))') and the @hide API is reflectable, but the signature permission is the hard wall. There is NO simpler non-OCS path for the feedback haptic; Route C (OCS authCode) remains the only third-party route. ipemanager works because it is platform-signed and holds OPLUS_COMPONENT_SAFE.",
+        "BLE command table 2026-11-08 (ipemanager o3/j.java + l0.java, static): pen commands are GATT writes to characteristic f2707l0, all prefixed 0x2C. startVibration (l0.F0) writes f5605p = '2C 92 01 02 FF 02' (fixed), gated only by isFunctionVibrationEnable + pen connected (no app-identity check at this layer because the SDK binder is already reached via the signature/OCS gate). setVibrationType writes f5606q template '2C 94 02 <type> <level+1>' (byte[3]=type, byte[4]=level+1). sendInstructionToPencil toggles '2C 90 01 01 01'/'...00' by the settings_enable_oppo_pencil setting. Pencil-type map includes 2 = OnePlus Pencil 2 Pro (Stylo 2). Recorded as constants; writing them to a pen is a device action needing owner approval and only with bytes captured from Notes (CLAUDE.md)."
       ],
       "tags": [
         "bluetooth",
@@ -425,10 +460,11 @@
         "plan-hci-snoop-capture",
         "gap-haptic-over-gatt",
         "gap-haptic-command-bytes",
-        "src-stylo2-j-capture-plan"
+        "src-stylo2-j-capture-plan",
+        "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "Open question from the research order. Extended on 2 Nov 2026 from stylo2/docs/J-capture-plan.md.",
-      "updated": "2026-11-02"
+      "basis": "Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: Open question from the research order. Extended on 2 Nov 2026 from stylo2/docs/J-capture-plan.md.",
+      "updated": "2026-11-08"
     },
     {
       "id": "gap-pen-firmware-directory",
@@ -446,7 +482,9 @@
         "Known numbers: 23926, 23927, 23976, 23978 (Pad Pro / Pad 2); 24926, 24976 (Pad 2 Pro family).",
         "On the Pad 3: run getprop ro.boot.prjname and ls -lR /odm/firmware/wireless_pen/, hash each cps8601_firmware.bin, and check dmesg | grep cps8601 after attaching the pen. The commands are listed in research/docs/pen-attach-handshake.md.",
         "Also unknown: how 24976's firmware compares with 24926's, and whether KernelSU mounts a module's top-level odm/ folder.",
-        "To settle how the driver builds the path, read the GPL source of oplus_wireless_pen in OnePlus's kernel release."
+        "To settle how the driver builds the path, read the GPL source of oplus_wireless_pen in OnePlus's kernel release.",
+        "ROM 2026-11-07: The 16.0.10.600 GLO ROM ships only odm/firmware/wireless_pen/24976/cps8601_firmware.bin (15360 bytes, SHA-256 33a4ab21db5e92af...1ee4), the same firmware build previously recorded for 24926.",
+        "ROM 2026-11-07: pencil_feature_config.xml lists 'OnePlus Stylo 2' as an alias of 'OPPO Pencil 2 Pro' with stylus_type_vibration, laser_pen and slide_to_copy_paste (pen firmware 5357.01.00.13 / 4D45.03.00.12 or later)."
       ],
       "tags": [
         "firmware",
@@ -457,10 +495,11 @@
         "if-cps8601-firmware",
         "dev-oneplus-pad3",
         "src-jjhitel-fix-odm",
-        "plan-pad3-readout"
+        "plan-pad3-readout",
+        "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "Open question from the 2 Nov 2026 firmware review.",
-      "updated": "2026-11-02"
+      "basis": "Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: Open question from the 2 Nov 2026 firmware review.",
+      "updated": "2026-11-07"
     },
     {
       "id": "gap-pressure-delivered",
@@ -606,7 +645,7 @@
       "title": "Can an ordinary app discover and bind the pen service?",
       "vendor": "OnePlus",
       "category": "Access",
-      "status": "open",
+      "status": "inferred",
       "priority": "high",
       "url": "",
       "links": [],
@@ -617,7 +656,9 @@
         "Unknown: whether the service is exported and visible to an ordinary app, whether it has a bind-time android:permission, and whether bindService returns true, returns false or throws SecurityException.",
         "A failure at discovery points to export or visibility (B2). A SecurityException or false at bind points to B1 or a bind-time permission.",
         "Next step: run steps 1 and 2 of the isolating experiment: queryIntentServices for com.oplus.ipemanager.ACTION.PENCIL_SDK, then bindService and wait for onServiceConnected. The Route A PoC does both and logs exported and the service's bind permission for each match.",
-        "Record: number of matches, exported, bind permission, the bindService result or the exact exception and message, and the descriptor at connect."
+        "Record: number of matches, exported, bind permission, the bindService result or the exact exception and message, and the descriptor at connect.",
+        "ROM 2026-11-07: CoreService (com.oplus.ipemanager.btadsorb.CoreService) is exported, runs in process :ble and is protected by android:permission=com.oplus.permission.safe.IOT (signature|privileged), so an ordinary app's bind is refused by the platform.",
+        "ROM 2026-11-07: CoreService.onBind returns the SDK binder for com.oplus.ipemanager.ACTION.PENCIL_SDK without any further caller check."
       ],
       "tags": [
         "bind-service",
@@ -636,10 +677,11 @@
         "gap-caller-validation-after-bind",
         "src-stylo2-i-evidence-ledger",
         "src-stylo2-h-trust-boundaries",
-        "plan-route-feasibility"
+        "plan-route-feasibility",
+        "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "Transcribed from stylo2/docs/I-evidence-ledger.md (Q2) on 2 Nov 2026; not checked on a device.",
-      "updated": "2026-11-02"
+      "basis": "Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: Transcribed from stylo2/docs/I-evidence-ledger.md (Q2) on 2 Nov 2026; not checked on a device.",
+      "updated": "2026-11-07"
     },
     {
       "id": "gap-session-handshake",
