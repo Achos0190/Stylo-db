@@ -122,21 +122,32 @@ class InspectorViewModel(app: Application) : AndroidViewModel(app) {
         inspector.subscribeAllNotify()
         inspector.note("autotest", "all notifies enabled; waiting for pen init packets (2s)…")
         delay(2000)
-        // Writes use Write-Request (with response) — matching ipemanager's default write type.
+        // Maximal faithful replay: the init/info/config commands ipemanager sends on connect,
+        // THEN the vibration triggers. All Write-Request (ipemanager's default write type).
         val seq = listOf(
+            // --- init / info / config (from ipemanager o3.j command table) ---
+            "i-01" to "2C 01 01 01",
+            "i-08" to "2C 08 01 01",
+            "i-06" to "2C 06 01 05",
+            "i-25" to "2C 25 01 03",
+            "i-26" to "2C 26 01 0B",
+            "i-53" to "2C 53 01",
+            "tog38" to "2C 38 01 01",
+            "tog39" to "2C 39 01 01",
+            "c97" to "2C 97 01 01 01",
+            "c99" to "2C 99 02 00 01",
+            "setVibType" to "2C 94 02 02 03",
+            // --- enable + vibration triggers ---
             "enable" to "2C 90 01 01 01",
             "startVib" to "2C 92 01 02 FF 02",
-            "vib t0" to "2C 94 02 00 01",
-            "vib t1" to "2C 94 02 01 01",
-            "vib t2" to "2C 94 02 02 01",
-            "vib t3" to "2C 94 02 03 01",
             "startVib#2" to "2C 92 01 02 FF 02",
+            "startVib#3" to "2C 92 01 02 FF 02",
         )
         for ((label, hex) in seq) {
             val bytes = HexCodec.parseHex(hex) ?: continue
-            inspector.note("autotest", ">>> $label : $hex (with response)")
+            inspector.note("autotest", ">>> $label : $hex")
             inspector.write(info, bytes, true)
-            delay(1600)
+            delay(1100)
         }
         inspector.note("autotest", "commands sent; capturing pen notifications (4s)…")
         delay(4000)

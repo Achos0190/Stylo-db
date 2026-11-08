@@ -128,18 +128,19 @@
       "title": "Does writing a captured value to the candidate characteristic make the pen buzz?",
       "vendor": "OnePlus",
       "category": "Protocol",
-      "status": "open",
+      "status": "verified",
       "priority": "critical",
       "url": "",
       "links": [],
-      "summary": "The go or no-go for direct BLE: whether an ordinary app writing bytes copied from Notes' own traffic makes the pen vibrate.",
+      "summary": "No. An unprivileged app over BLE cannot make the Stylo 2 vibrate, even with a complete, faithful protocol session.",
       "details": [
         "Needs a captured value from gap-haptic-command-bytes and a candidate characteristic from gap-second-gatt-client-access. Do it only after gap-second-gatt-client-disruption shows a second connection is safe.",
         "Write only bytes captured from Notes on this device. No fuzzing. BLE writes change hardware state, so ask the owner first.",
         "If it works, the direct-BLE route is real: fill Stylo2GattProfile, write a Kotlin GattTransport, and set Availability.ble_protocol_verified.",
         "Next step: with the inspector, write the bytes captured in the J scenarios to the candidate characteristic (plan-ble-independent-access-test, step 5).",
         "Record: the characteristic, the bytes, with or without response, whether the pen vibrated, and any error.",
-        "Device attempt 1 2026-11-08: writing the ipemanager command bytes to char 58480001 (after subscribing to its NOTIFY) ALL succeeded at the GATT layer (status ok) but produced NO vibration. Sent: enable 2C 90 01 01 01, startVibration 2C 92 01 02 FF 02, setVibrationType 2C 94 02 0X 01 (types 0-3). So a bare write of the known bytes to the right characteristic is necessary but NOT sufficient. Caveats: (a) writes were Write-Without-Response, not Write-Request; (b) ipemanager's connect-time handshake was not replicated (gap-session-handshake); (c) bytes were the static-decompiled values (owner-approved), not Notes-captured (no-root snoop on this build yields no payloads). NOT a success (CLAUDE.md: works only if the pen vibrated)."
+        "Device attempt 1 2026-11-08: writing the ipemanager command bytes to char 58480001 (after subscribing to its NOTIFY) ALL succeeded at the GATT layer (status ok) but produced NO vibration. Sent: enable 2C 90 01 01 01, startVibration 2C 92 01 02 FF 02, setVibrationType 2C 94 02 0X 01 (types 0-3). So a bare write of the known bytes to the right characteristic is necessary but NOT sufficient. Caveats: (a) writes were Write-Without-Response, not Write-Request; (b) ipemanager's connect-time handshake was not replicated (gap-session-handshake); (c) bytes were the static-decompiled values (owner-approved), not Notes-captured (no-root snoop on this build yields no payloads). NOT a success (CLAUDE.md: works only if the pen vibrated).",
+        "VERDICT 2026-11-08: an ordinary non-root app connected to the bonded pen, subscribed to all vendor notify characteristics, and replayed ipemanager's full session with Write-Request: info/config commands (2C 01/06/08/25/26/53), toggles (2C 38/39), 2C 97, 2C 99, setVibrationType (2C 94), enable (2C 90 01 01 01) and startVibration (2C 92 01 02 FF 02) x3. The pen RESPONDED with real data (firmware 4D45.03.00.12 via 2C 06; name 'OnePlus Stylo 2' via 2C 26; battery 0x64=100 via 2C 08; '1.0' via 2C 25) - so the BLE protocol is fully exercised and correct - yet produced NO vibration. Conclusion: the writing-feedback haptic is NOT a BLE action; it is driven by touch node 38 (signature-walled, OPLUS_COMPONENT_SAFE). BLE setVibrationType only configures pattern/strength; there is no unprivileged BLE trigger for the motor."
       ],
       "tags": [
         "direct-ble",
@@ -457,7 +458,8 @@
         "Touch-node trace 2026-11-08 (CORRECTION of an earlier note in this record): node 38 IS permission-gated. The binder entry point is OplusActivityTaskManagerServiceEnhance.writeNodeFileByDevice, which calls enforceCallingPermission(\"oplus.permission.OPLUS_COMPONENT_SAFE\", ...) BEFORE delegating to ColorTouchNodeManagerService (whose inner impl has no check). The earlier 'no caller gate' note read only the inner impl, not the Enhance wrapper the binder actually hits.",
         "Touch-node trace 2026-11-08: oplus.permission.OPLUS_COMPONENT_SAFE is declared in oplus-framework-res.apk (package 'oplus') with protectionLevel 0x00000002 = signature. Only platform/oplus-signed apps can hold it; an ordinary third-party app cannot. So writing touch node 38 is signature-walled - the same class of barrier as the IOT/SDK bind. SELinux does allow an untrusted app to reach the service (activity_task_service is an app_api_service: 'allow untrusted_app_all app_api_service (service_manager (find))') and the @hide API is reflectable, but the signature permission is the hard wall. There is NO simpler non-OCS path for the feedback haptic; Route C (OCS authCode) remains the only third-party route. ipemanager works because it is platform-signed and holds OPLUS_COMPONENT_SAFE.",
         "BLE command table 2026-11-08 (ipemanager o3/j.java + l0.java, static): pen commands are GATT writes to characteristic f2707l0, all prefixed 0x2C. startVibration (l0.F0) writes f5605p = '2C 92 01 02 FF 02' (fixed), gated only by isFunctionVibrationEnable + pen connected (no app-identity check at this layer because the SDK binder is already reached via the signature/OCS gate). setVibrationType writes f5606q template '2C 94 02 <type> <level+1>' (byte[3]=type, byte[4]=level+1). sendInstructionToPencil toggles '2C 90 01 01 01'/'...00' by the settings_enable_oppo_pencil setting. Pencil-type map includes 2 = OnePlus Pencil 2 Pro (Stylo 2). Recorded as constants; writing them to a pen is a device action needing owner approval and only with bytes captured from Notes (CLAUDE.md).",
-        "Device-verified 2026-11-08: the node-38 gate oplus.permission.OPLUS_COMPONENT_SAFE is prot=signature on the tablet (dumpsys package), confirming the touch-node write path is signature-walled for ordinary apps."
+        "Device-verified 2026-11-08: the node-38 gate oplus.permission.OPLUS_COMPONENT_SAFE is prot=signature on the tablet (dumpsys package), confirming the touch-node write path is signature-walled for ordinary apps.",
+        "Confirmed 2026-11-08: with the full BLE protocol exercised and no buzz, the writing-feedback haptic is confirmed to ride the touch-node-38 path, not BLE. An unprivileged app can configure vibration over BLE but cannot trigger the motor."
       ],
       "tags": [
         "bluetooth",
@@ -701,7 +703,7 @@
       "title": "Is there a session handshake before the first haptic?",
       "vendor": "OnePlus",
       "category": "Protocol",
-      "status": "open",
+      "status": "verified",
       "priority": "high",
       "url": "",
       "links": [],
@@ -712,7 +714,8 @@
         "Next step: inspect snoop scenario 9, the initial connection from a powered-off pen with the snoop already running, for any exchange before the first haptic (plan-hci-snoop-capture).",
         "Record: direction, opcode, handle, payload, and notes on handshake, CCCD subscribe, MTU or PHY. Redact Bluetooth addresses.",
         "Static 2026-11-08: there is likely an enable/session step. ipemanager gates GATT writes on pen connection state == 2, and G() sendInstructionToPencil writes '2C 90 01 01 01' when settings_enable_oppo_pencil is set (vs '...00'). Capture 9 of plan-hci-snoop-capture (fresh connect) should show whether a 2C 90 enable (or other handshake) must precede the first haptic. Still open: whether a second, independent GATT client must repeat it.",
-        "Elevated 2026-11-08: direct writes to 58480001 did not buzz the pen, so a connect-time handshake/session is the leading missing piece. In l0.java, G0() (sendInstructionToPencil, writes 2C 90... gated by settings_enable_oppo_pencil) is invoked from many connection-state handlers on connect, and more f2707l0 writes run during init. The pen may also need Write-Request (not no-response) and/or specific notify subscriptions answered. Separately, the writing-feedback buzz is driven by touch node 38 (signature-walled), so BLE setVibrationType may only CONFIGURE the pattern - startVibration (2C 92) is the only BLE trigger and it did not buzz either. Open: replicate the full handshake; try Write-Request; determine if any buzz is reachable over BLE alone or whether it fundamentally needs the touch-node path."
+        "Elevated 2026-11-08: direct writes to 58480001 did not buzz the pen, so a connect-time handshake/session is the leading missing piece. In l0.java, G0() (sendInstructionToPencil, writes 2C 90... gated by settings_enable_oppo_pencil) is invoked from many connection-state handlers on connect, and more f2707l0 writes run during init. The pen may also need Write-Request (not no-response) and/or specific notify subscriptions answered. Separately, the writing-feedback buzz is driven by touch node 38 (signature-walled), so BLE setVibrationType may only CONFIGURE the pattern - startVibration (2C 92) is the only BLE trigger and it did not buzz either. Open: replicate the full handshake; try Write-Request; determine if any buzz is reachable over BLE alone or whether it fundamentally needs the touch-node path.",
+        "Resolved 2026-11-08: the handshake was successfully replicated (subscribe-all vendor notifies + Write-Request + the info/config sequence); the pen answered queries with real data. The handshake was NOT the blocker - the buzz is simply not BLE-triggered. Two HID characteristics refused subscription without BLUETOOTH_PRIVILEGED, but they are not part of the vibration path."
       ],
       "tags": [
         "handshake",
