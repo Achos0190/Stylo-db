@@ -20,6 +20,32 @@ class BleScanner(context: Context) {
     private val adapter =
         (context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
 
+    /**
+     * Devices already bonded to the system (e.g. the pen while the system holds
+     * its link). These never appear in a scan — a connected/bonded device stops
+     * advertising — so they are enumerated directly and can be connected by
+     * address. Requires `BLUETOOTH_CONNECT`.
+     */
+    @SuppressLint("MissingPermission")
+    fun bondedDevices(): List<ScannedDevice> {
+        val bonded = adapter?.bondedDevices ?: return emptyList()
+        return bonded.map { dev ->
+            val name = runCatching { dev.name }.getOrNull()
+            val reason = StylusHeuristics.candidateReason(name, emptyList())
+            ScannedDevice(
+                address = dev.address,
+                name = name,
+                rssi = 0,
+                connectable = true,
+                serviceUuids = emptyList(),
+                manufacturerIds = emptyList(),
+                isStylusCandidate = reason != null,
+                candidateReason = reason,
+                bonded = true,
+            )
+        }.sortedByDescending { it.isStylusCandidate }
+    }
+
     @SuppressLint("MissingPermission")
     fun scan(): Flow<List<ScannedDevice>> = callbackFlow {
         val scanner = adapter?.bluetoothLeScanner

@@ -10,12 +10,14 @@ import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
 import android.bluetooth.BluetoothStatusCodes
 import android.content.Context
+import android.util.Log
 import io.github.yeetingwaterbottle.stylo2.bleinspector.model.CharProperties
 import io.github.yeetingwaterbottle.stylo2.bleinspector.model.ConnState
 import io.github.yeetingwaterbottle.stylo2.bleinspector.model.GattCharacteristicInfo
 import io.github.yeetingwaterbottle.stylo2.bleinspector.model.GattServiceInfo
 import io.github.yeetingwaterbottle.stylo2.bleinspector.model.LogEntry
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,11 +48,16 @@ class GattInspector(private val context: Context) {
     private val _log = MutableStateFlow<List<LogEntry>>(emptyList())
     val log: StateFlow<List<LogEntry>> = _log.asStateFlow()
 
+    /** Live feed of inbound notifications/indications from the pen (newest appended last). */
+    private val _notifications = MutableStateFlow<List<LogEntry>>(emptyList())
+    val notifications: StateFlow<List<LogEntry>> = _notifications.asStateFlow()
+
     var connectedAddress: String? = null
         private set
 
     private fun log(tag: String, message: String) {
         _log.update { (it + LogEntry(System.currentTimeMillis(), tag, message)).takeLast(MAX_LOG) }
+        Log.i("StyloInsp", "[$tag] $message")
     }
 
     /** Clear the operation log. */
@@ -128,7 +135,11 @@ class GattInspector(private val context: Context) {
             characteristic: BluetoothGattCharacteristic,
             value: ByteArray,
         ) {
-            log("notify", "${characteristic.uuid} -> ${HexCodec.hex(value)}")
+            val hex = HexCodec.hex(value)
+            _notifications.update {
+                (it + LogEntry(System.currentTimeMillis(), characteristic.uuid.toString(), hex)).takeLast(MAX_NOTIF)
+            }
+            log("notify", "${characteristic.uuid} -> $hex")
         }
 
         override fun onDescriptorWrite(
@@ -160,6 +171,7 @@ class GattInspector(private val context: Context) {
         queue.reopen()
         _state.value = ConnState.CONNECTING
         connectedAddress = address
+        _notifications.value = emptyList()
         log("link", "connecting to $address")
         val deferred = CompletableDeferred<Unit>()
         connectDeferred = deferred
@@ -233,6 +245,20 @@ class GattInspector(private val context: Context) {
         Unit
     }.onFailure { log("notify", "failed: ${it.message}") }
 
+    /**
+     * Enable notifications on EVERY notify/indicate characteristic, serialised through the queue —
+     * mirrors ipemanager's connect-time "enable all notifies" handshake so the pen reaches its
+     * ready state and we capture everything it transmits.
+     */
+    suspend fun subscribeAllNotify() {
+        val targets = _services.value.flatMap { it.characteristics }.filter { it.properties.subscribable }
+        log("notify", "subscribe-all: ${targets.size} notify/indicate characteristics")
+        for (info in targets) {
+            setNotify(info, true)
+            delay(250)
+        }
+    }
+
     /** Close the link and reset discovered state. */
     @SuppressLint("MissingPermission")
     fun disconnect() {
@@ -297,6 +323,7 @@ class GattInspector(private val context: Context) {
 
     companion object {
         private const val MAX_LOG = 2_000
+        private const val MAX_NOTIF = 500
         private const val CONNECT_TIMEOUT_MS = 15_000L
         private val CCCD_UUID: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
     }
