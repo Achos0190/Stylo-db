@@ -127,7 +127,9 @@
         "A converted tablet also needs stylus charger firmware in /odm/firmware/wireless_pen/<prjname>/ before the pen will pair. See the pen attach handshake record.",
         "It appears to be the same hardware family as the OnePlus Pad 2 Pro (China), whose project numbers are 24926 and 24976. The converted Pad 3 probably reports one of them; confirm with adb shell getprop ro.boot.prjname. Inferred.",
         "The route docs describe the test tablet as stock and non-rooted (stylo2/docs/MISSION.md). The upstream README's tablet was converted from OPD2413 to OPD2415, and PICKUP.md says it is not established whether this tablet is rooted or has a pen-fix module. Which applies to the tablet in the device session is not recorded. Check it first with the check step of pad3_readout.py (plan-pad3-readout).",
-        "None of the route experiments has been run on it. See plan-device-test-matrix."
+        "None of the route experiments has been run on it. See plan-device-test-matrix.",
+        "Owner confirmed 2026-11-08: this Pad 3 runs stock firmware with NO Magisk and no root (bootloader not unlocked). Consequence for routes: ordinary-app installs (Route B BLE inspector, Route A PoC) and Shizuku-over-wireless-debugging work as-is; any route needing a /system write (privileged system app, platform signing) is blocked without a larger device change the owner has not made.",
+        "Device-read 2026-11-08: OPD2415 / OP6190L1 / OPD2415EEA, build OPD2415_16.0.10.600(EX01), Android 16 (sdk 36), security patch 2026-09-01, ro.boot.prjname 24976, verified-boot green, bootloader locked, user build, no root. Pen service com.oplus.ipemanager 16.13.0 installed; firmware folder 24976 present; oplus_wireless_pen.ko loaded; no pen currently bonded. This is the same build as the analysed ROM (src-rom-opd2415-16-0-10-600)."
       ],
       "tags": [
         "android-16",
@@ -146,7 +148,7 @@
         "src-stylo2-pickup"
       ],
       "basis": "Repository README. Extended on 2 Nov 2026 from stylo2/docs/MISSION.md and PICKUP.md.",
-      "updated": "2026-11-02"
+      "updated": "2026-11-08"
     },
     {
       "id": "dev-oneplus-stylo2",

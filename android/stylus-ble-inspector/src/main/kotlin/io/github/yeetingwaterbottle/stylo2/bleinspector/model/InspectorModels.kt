@@ -10,6 +10,7 @@ data class ScannedDevice(
     val manufacturerIds: List<Int>,
     val isStylusCandidate: Boolean,
     val candidateReason: String?,
+    val bonded: Boolean = false,
 )
 
 /** Connection lifecycle of the single inspected link. */

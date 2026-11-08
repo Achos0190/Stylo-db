@@ -9,6 +9,7 @@ import io.github.yeetingwaterbottle.stylo2.bleinspector.ui.InspectorTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { InspectorTheme { InspectorApp() } }
+        val autoTest = intent?.getBooleanExtra("autotest", false) ?: false
+        setContent { InspectorTheme { InspectorApp(autoTest = autoTest) } }
     }
 }

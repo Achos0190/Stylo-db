@@ -3,6 +3,7 @@ package io.github.yeetingwaterbottle.stylo2.bleinspector.ui
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,11 +47,24 @@ import io.github.yeetingwaterbottle.stylo2.bleinspector.model.ConnState
 import io.github.yeetingwaterbottle.stylo2.bleinspector.model.GattCharacteristicInfo
 import io.github.yeetingwaterbottle.stylo2.bleinspector.model.ScannedDevice
 
+/** One-tap command presets for the pen's control characteristic (from ipemanager static analysis). */
+private val PEN_PRESETS = listOf(
+    "startVib" to "2C 92 01 02 FF 02",
+    "vib t0" to "2C 94 02 00 01",
+    "vib t1" to "2C 94 02 01 01",
+    "vib t2" to "2C 94 02 02 01",
+    "vib t3" to "2C 94 02 03 01",
+    "enable" to "2C 90 01 01 01",
+)
+
 @Composable
-fun InspectorApp(vm: InspectorViewModel = viewModel()) {
+fun InspectorApp(vm: InspectorViewModel = viewModel(), autoTest: Boolean = false) {
     val perm = rememberBlePermissionState()
     Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         if (!perm.granted) PermissionGate(perm.request) else InspectorScreen(vm)
+        if (perm.granted && autoTest) {
+            LaunchedEffect(Unit) { vm.runHapticTest() }
+        }
     }
 }
 
@@ -97,6 +112,8 @@ private fun ScanPane(vm: InspectorViewModel, modifier: Modifier) {
     val scanning by vm.scanning.collectAsState()
     val devices by vm.devices.collectAsState()
     val error by vm.scanError.collectAsState()
+    val bonded by vm.bonded.collectAsState()
+    LaunchedEffect(Unit) { vm.refreshBonded() }
     Column(modifier.fillMaxWidth()) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Button(onClick = { if (scanning) vm.stopScan() else vm.startScan() }) {
@@ -108,6 +125,8 @@ private fun ScanPane(vm: InspectorViewModel, modifier: Modifier) {
                 Spacer(Modifier.width(8.dp))
             }
             Text("${devices.size} found")
+            Spacer(Modifier.weight(1f))
+            OutlinedButton(onClick = { vm.refreshBonded() }) { Text("Bonded (${bonded.size})") }
         }
         error?.let {
             Spacer(Modifier.height(8.dp))
@@ -115,7 +134,25 @@ private fun ScanPane(vm: InspectorViewModel, modifier: Modifier) {
         }
         Spacer(Modifier.height(8.dp))
         LazyColumn(Modifier.fillMaxSize()) {
-            items(devices, key = { it.address }) { d -> DeviceRow(d) { vm.connect(d.address) } }
+            if (bonded.isNotEmpty()) {
+                item {
+                    Text(
+                        "Bonded devices (connect directly — a connected pen won't advertise)",
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.padding(vertical = 4.dp),
+                    )
+                }
+                items(bonded, key = { "bond:${it.address}" }) { d -> DeviceRow(d) { vm.connect(d.address) } }
+                item {
+                    HorizontalDivider(Modifier.padding(vertical = 8.dp))
+                    Text(
+                        "Scan results",
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier.padding(vertical = 4.dp),
+                    )
+                }
+            }
+            items(devices, key = { "scan:${it.address}" }) { d -> DeviceRow(d) { vm.connect(d.address) } }
         }
     }
 }
@@ -126,7 +163,7 @@ private fun DeviceRow(d: ScannedDevice, onClick: () -> Unit) {
         Column(Modifier.padding(12.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(d.name ?: "(no name)", style = MaterialTheme.typography.titleMedium)
-                Text("${d.rssi} dBm", style = MaterialTheme.typography.bodySmall)
+                Text(if (d.bonded) "bonded" else "${d.rssi} dBm", style = MaterialTheme.typography.bodySmall)
             }
             Text(
                 d.address,
@@ -182,10 +219,33 @@ private fun DevicePane(vm: InspectorViewModel, modifier: Modifier) {
         }
         Spacer(Modifier.height(8.dp))
         Row {
-            Button(onClick = { vm.discover() }) { Text("Discover services") }
+            Button(onClick = { vm.discover() }) { Text("Discover") }
+            Spacer(Modifier.width(8.dp))
+            OutlinedButton(onClick = { vm.subscribeAll() }) { Text("Subscribe all") }
             Spacer(Modifier.width(8.dp))
             OutlinedButton(onClick = { shareReport(context, vm.inspector.buildReport()) }) {
                 Text("Export")
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+        val notifications by vm.inspector.notifications.collectAsState()
+        Card(Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(10.dp)) {
+                Text(
+                    "Pen → phone (live) · ${notifications.size}",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                val feed = remember(notifications) {
+                    notifications.asReversed().take(80)
+                        .joinToString("\n") { "${it.tag.take(8)}  ${it.message}" }
+                }
+                Text(
+                    feed.ifEmpty { "(nothing yet — tap Subscribe all, then interact with the pen)" },
+                    style = MaterialTheme.typography.bodySmall,
+                    fontFamily = FontFamily.Monospace,
+                    modifier = Modifier.fillMaxWidth().height(150.dp).verticalScroll(rememberScrollState()),
+                )
             }
         }
         Spacer(Modifier.height(8.dp))
@@ -259,6 +319,22 @@ private fun CharacteristicRow(vm: InspectorViewModel, c: GattCharacteristicInfo)
                 }
                 if (c.properties.writable) {
                     TextButton(onClick = { showWrite = !showWrite }) { Text("Write…") }
+                }
+            }
+            if (c.properties.writable) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "presets →",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Row(Modifier.horizontalScroll(rememberScrollState())) {
+                    PEN_PRESETS.forEach { (label, hex) ->
+                        OutlinedButton(
+                            onClick = { vm.write(c, hex, c.properties.write) },
+                            modifier = Modifier.padding(end = 6.dp),
+                        ) { Text(label, style = MaterialTheme.typography.labelSmall) }
+                    }
                 }
             }
             if (showWrite && c.properties.writable) {

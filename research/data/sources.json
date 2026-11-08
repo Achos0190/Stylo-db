@@ -499,15 +499,23 @@
       "title": "HiPaint (Aige Studio)",
       "vendor": "OnePlus",
       "category": "Approved third-party app",
-      "status": "unverified",
+      "status": "verified",
       "priority": "critical",
       "url": "https://www.aige-studio.com/",
       "links": [],
-      "summary": "Drawing app that the README names as one of the approved third-party apps with Stylo 2 haptics on stock firmware.",
+      "summary": "Drawing app (Aige Studio / Huion) named by the README as an approved third-party app with Stylo 2 haptics on stock firmware. APK obtained and inspected 2026-11-08: it is a genuine OCS (Open Capability Service) client for capability IPE_PENCIL_CLIENT that drives the Oplus pen SDK.",
       "details": [
         "Verified in the README: approved third-party apps such as HiPaint go through a separate OnePlus developer SDK that authenticates each app with OnePlus.",
         "Unverified: the Reddit investigation reports that HiPaint contains SDK code for haptics and tool switching.",
-        "This is the clearest evidence of an officially supported route for third-party apps."
+        "This is the clearest evidence of an officially supported route for third-party apps.",
+        "APK 2026-11-08: com.aige.hipaint versionName 6.4.2 (versionCode 251), 173976106 bytes, SHA-256 8300e02987dbf171797d68e7d35c1e57d91cbdf8c4d1a1f221dd45654ca60296. minSdk 28, targetSdk 36.",
+        "APK 2026-11-08: signer CN=huion (O=huion), cert SHA-256 57e4c186d31bcb30d1879417ea837a0fdf717d55fe36cbb2321a280f31c90879, SHA-1 0d22f4af3b0f6346d260c1fc16fbd9504338b855; apksigner: verifies, APK Signature Scheme v3, single signer. The OCS authCode is bound to this signing identity.",
+        "APK 2026-11-08: downloaded by the owner from APKMirror (the only mirror CLAUDE.md permits) and moved to research/local/apks/hipaint/ (git-ignored). The APKMirror page path read '4.4.0'; the manifest versionName is 6.4.2, which is the authoritative value recorded here.",
+        "APK 2026-11-08 (static, DEX string analysis; full JADX decompile not completed - background run reaped under memory pressure): bundles the OCS base SDK com.oplus.ocs.base.* (AuthenticateCustomerBuilder, BaseOplusApi, IServiceBroker, IAuthenticationListener, AuthResult, CapabilityInfo) and the pen SDK com.oplus.ipemanager.sdk.* (ISdkAidlInterface, IpeFeature, all haptic methods).",
+        "APK 2026-11-08 (static): requests capability IPE_PENCIL_CLIENT and binds com.coloros.opencapabilityservice / com.oplus.ocs.service.OpenAuthenticateService via IServiceBroker (TRANSACTION_handleAuthentication); error constants ERROR_CODE_AUTHENTICATION_EXPIRED and 'commitRegister reject, incomplete credential' confirm an identity-bound, expirable credential - matching the OCS-side ECDSA authCode in utils/m.java.",
+        "APK 2026-11-08 (static): no reference to OplusTouchNodeManager or writeNodeFileByDevice - HiPaint calls only the SDK; the privileged touch-node write happens server-side in ipemanager. Confirms the ROM access model from the client side.",
+        "APK 2026-11-08 (static): the physical location of the signed authCode bytes (hardcoded blob vs fetched) was not located; it would need the full decompile. HiPaint is multi-vendor (also references a Huawei pen path).",
+        "APK 2026-11-08: full JADX decompile completed (42,374 java files; 696/33,202 classes had decompile errors, normal for obfuscated code). authCode located in the manifest (meta-data com.oplus.ocs.ipepencil.AUTH_CODE, 79-byte ECDSA token); pen client classes h8/f, h8/h, h8/e and OCS proxy l6/d (see gap-oneplus-sdk-access)."
       ],
       "tags": [
         "hipaint",
@@ -516,10 +524,13 @@
       "related": [
         "if-oneplus-partner-sdk",
         "src-reddit-stylo2",
-        "gap-oneplus-sdk-access"
+        "gap-oneplus-sdk-access",
+        "src-rom-opd2415-16-0-10-600",
+        "if-oplus-sdk-interface",
+        "if-oplus-ipemanager"
       ],
-      "basis": "README statement checked. HiPaint package not inspected.",
-      "updated": "2026-11-02"
+      "basis": "APK obtained by the owner from APKMirror and inspected on 2026-11-08: identity hash-/cert-checked with Android build-tools 36.0.0 (aapt2 dump badging, apksigner verify) and DEX string analysis of classes*.dex in research/local/. Behavioural claims are static, not device-observed, so inferred until confirmed on the tablet (CLAUDE.md). Earlier basis: README statement checked; package not inspected.",
+      "updated": "2026-11-08"
     },
     {
       "id": "src-huawei-mpencil",
@@ -1476,6 +1487,77 @@
       ],
       "basis": "Project README read on 2 Nov 2026.",
       "updated": "2026-11-02"
+    },
+    {
+      "id": "src-rom-opd2415-16-0-10-600",
+      "type": "source",
+      "title": "Official OnePlus Pad 3 OTA OPD2415 16.0.10.600(EX01) GLO",
+      "vendor": "OnePlus",
+      "category": "Firmware package",
+      "status": "verified",
+      "priority": "critical",
+      "url": "",
+      "links": [],
+      "summary": "Full A/B OTA for the OnePlus Pad 3 (global), downloaded from OnePlus/Oplus's own CDN and checked against the catalog MD5 and size; source of the static-analysis findings dated 2026-11-07.",
+      "details": [
+        "Fingerprint OnePlus/OPD2415/OP6190L1:16/AP3A.240617.008/V.R4T3.3181121-bb057a-bb0593, security patch 2026-09-01.",
+        "Package SHA-256 db06347524c9c44f00cb8c134f23807100246ea4c68d0cbab63b9f7aea9197ca, MD5 15ec42387ec4224a61abe2af8cf832fb, 6296159437 bytes.",
+        "Resolved via the roms.danielspringer.at catalog (entry f353b2cf027717180f8cd0d4) to gauss-compota-c-fr.allawnofs.com; owner-approved source (CLAUDE.md, 7 Nov 2026).",
+        "Extracted: com.oplus.ipemanager 16.13.0 (my_product/priv-app/IPeManager), com.oneplus.note 16.7.0 (my_stock/del-app/OppoNote2), com.coloros.ocs.opencapabilityservice 16.0.8, com.heytap.accessory 16.35.5, oplus-framework-res (system_ext), odm/firmware/wireless_pen/24976/cps8601_firmware.bin, vendor_dlkm oplus_wireless_pen.ko (SHA-256 ef2f8e25...d44a), my_stock/etc/pencil_feature_config.xml.",
+        "Files and decompiled output stay in research/local/ (git-ignored); only findings are recorded.",
+        "Build may differ from the owner's tablet; device confirmation pending."
+      ],
+      "tags": [
+        "firmware",
+        "ota",
+        "pad3",
+        "static-analysis"
+      ],
+      "related": [
+        "gap-iot-permission-level",
+        "gap-aidl-matches-firmware",
+        "gap-oneplus-sdk-access",
+        "gap-pen-firmware-directory",
+        "gap-oneplus-transport",
+        "gap-caller-validation-after-bind",
+        "gap-service-discovery-and-bind",
+        "if-oplus-ipemanager",
+        "if-oplus-sdk-interface"
+      ],
+      "basis": "Downloaded and hash-checked on 2026-11-07; contents listed with payload-dumper-go 2.1.0, erofs-utils 1.8.10 and 7-Zip 26.05.",
+      "updated": "2026-11-07"
+    },
+    {
+      "id": "src-pad3-readout",
+      "type": "source",
+      "title": "Pad 3 read-only read-out (2026-11-08)",
+      "vendor": "OnePlus",
+      "category": "Device read-out",
+      "status": "verified",
+      "priority": "critical",
+      "url": "",
+      "links": [],
+      "summary": "Read-only read-out of the owner's OnePlus Pad 3 over Wi-Fi ADB on 2026-11-08 with research/tools/pad3_readout.py (identity, firmware folder, driver, pen service + permission levels, pulled pen-service APK, Bluetooth bonds), plus dumpsys reads for permission protection levels. Device build matches the analysed ROM (OPD2415_16.0.10.600, prjname 24976).",
+      "details": [
+        "Device stock and locked: ro.boot.verifiedbootstate green, ro.boot.flash.locked 1, vbmeta locked, ro.build.type user, root (su) no. Kernel 6.6.118-android15. No Magisk/root.",
+        "pad3_readout.py steps run: check, identify, firmware, modules (skipped, needs root), driver, service, apk, bluetooth, summary. Raw output stays in research/local/pad3/ (git-ignored, redacted).",
+        "No device identifiers recorded here (serials, Bluetooth addresses, carrier/region redacted or omitted)."
+      ],
+      "tags": [
+        "pad3",
+        "readout",
+        "device",
+        "adb"
+      ],
+      "related": [
+        "dev-oneplus-pad3",
+        "if-oplus-ipemanager",
+        "gap-iot-permission-level",
+        "gap-aidl-matches-firmware",
+        "src-rom-opd2415-16-0-10-600"
+      ],
+      "basis": "Read from the Pad 3 (OPD2415, build OPD2415_16.0.10.600(EX01), prjname 24976) with pad3_readout.py and CLAUDE.md-allowed dumpsys/pm reads on 2026-11-08.",
+      "updated": "2026-11-08"
     }
   ]
 }

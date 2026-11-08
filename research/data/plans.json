@@ -65,7 +65,12 @@
         "Done means, for direct BLE: the inspector writes a captured value to a characteristic, the pen buzzes, and Notes still works with the inspector connected.",
         "Rows in the E-prototype matrix this covers: 2 independent BLE discovery, 3 GATT services, 4 independent connection, 5 command access, and the non-interference rows 11 and 12 (plan-device-test-matrix).",
         "Where to record: gap-second-gatt-client-access (steps 1 to 3), gap-second-gatt-client-disruption (step 4), gap-captured-write-buzzes-pen (step 5).",
-        "Results: none yet. Not run on a device."
+        "Results: none yet. Not run on a device.",
+        "Static input 2026-11-08: the scan heuristic now has concrete pen BLE names to match - 'Iceland Pencil', 'Iceland-O Pencil', 'Ivy Pencil', 'Ivy-O Pencil' (ipemanager o3/j.java f5590a). Pencil-type 2 = OnePlus Pencil 2 Pro (Stylo 2).",
+        "Static input 2026-11-08: ipemanager drives ALL pen commands through ONE writable characteristic with a 0x2C opcode header, so step 3 should rank the single 0x2C-accepting vendor characteristic (with a sibling notify) highest. Expected control bytes to confirm against the snoop: setVibrationType '2C 94 02 <type> <level+1>', startVibration '2C 92 01 02 FF 02' (see gap-haptic-command-bytes).",
+        "Non-interference (2026-11-08, owner's priority): this route must NOT disturb the system link or Notes. The pen stays bonded to the system; our app opens a SEPARATE GATT client (autoConnect=false, TRANSPORT_LE), never re-bonds or forgets the device, keeps the connection brief, and does not change MTU/PHY/priority aggressively. Step 4 (draw in Notes in split-screen while connected) is a gate, not a formality: if Notes haptics stop or the system link drops (watch dumpsys bluetooth_manager), disconnect and STOP (gap-second-gatt-client-disruption).",
+        "Run 2026-11-08 (device): steps 1-3 PASS - an ordinary app connected to the bonded pen by address and mapped the full GATT (see gap-second-gatt-client-access). Step 5 (replay) attempt 1: writes to 58480001 succeeded but did NOT buzz the pen (gap-captured-write-buzzes-pen); the connect handshake was not replicated. Step 4 (non-interference/coexistence with Notes) was NOT isolated - the inspector's connect likely took the single pen link from the system; released on app stop. Next: replicate the handshake and/or Write-Request.",
+        "VERDICT 2026-11-08: Route B (direct BLE from an unprivileged app) is ruled OUT for the writing-feedback haptic. An ordinary app achieves full two-way BLE with the pen (queries answered with real data) and sends every vibration command, but the pen does not buzz - the trigger is the signature-walled touch node 38. The only remaining paths are Route C (Oplus OCS authCode) or privileged/root (which write node 38). See research/docs/pen-ble-protocol.md."
       ],
       "tags": [
         "route-b",
@@ -86,10 +91,14 @@
         "src-stylo2-g-local-continuation",
         "src-stylo2-pickup",
         "src-project-rules",
-        "plan-research-order"
+        "plan-research-order",
+        "src-rom-opd2415-16-0-10-600",
+        "gap-haptic-command-bytes",
+        "gap-haptic-over-gatt",
+        "gap-session-handshake"
       ],
-      "basis": "Transcribed from android/stylus-ble-inspector (README), stylo2/docs/G-local-continuation.md, PICKUP.md and CLAUDE.md on 2 Nov 2026. Not run on a device.",
-      "updated": "2026-11-02"
+      "basis": "Enriched 2026-11-08 with ipemanager 16.13.0 static findings (characteristic/byte targets, pen names, non-interference). Earlier: Transcribed from android/stylus-ble-inspector (README), stylo2/docs/G-local-continuation.md, PICKUP.md and CLAUDE.md on 2 Nov 2026. Not run on a device.",
+      "updated": "2026-11-08"
     },
     {
       "id": "plan-device-test-matrix",
@@ -176,7 +185,8 @@
         "Reading the result: ATT writes to one characteristic that line up with vibration make it the control attribute. Its UUIDs and encoder would fill stylo2_ble::Stylo2GattProfile, and the per-profile bytes check stylo2-oplus::wire::reported_code. A handshake in capture 9 is B4 session init and would be modelled as an Initialising state. No haptic-correlated ATT traffic at all means haptics are not a plain GATT write from the host: record that. It rules out direct BLE or points to another channel.",
         "Attaching the pen marks when Bluetooth LE pairing should begin (c-pen-attach-handshake), so captures 8 and 9 should show it.",
         "Where to record: gap-haptic-over-gatt (capture 6 and 7 against vibration), gap-haptic-command-bytes (captures 2 to 7), gap-session-handshake (capture 9), gap-oneplus-transport (when the service sends commands).",
-        "Results: none yet. Not run on a device."
+        "Results: none yet. Not run on a device.",
+        "Static targets 2026-11-08: the snoop should show GATT writes to one characteristic prefixed 0x2C. Expected: profile/feedback-config via setVibrationType '2C 94 02 <type> <level+1>'; a discrete buzz via startVibration '2C 92 01 02 FF 02'; an enable toggle via sendInstructionToPencil '2C 90 01 01 01'/'..00'. Capture 9 is the key one: look for a '2C 90' (or other) enable/session write before the first haptic (gap-session-handshake). NOTE writing-feedback on/off (startFeedBackVibration) is NOT BLE - it is touch node 38 via the IOplusTouch HAL, so it will NOT appear as an ATT write; its absence from the snoop is expected, not a dead end (gap-oneplus-transport)."
       ],
       "tags": [
         "route-b",
@@ -199,10 +209,11 @@
         "src-stylo2-g-local-continuation",
         "src-stylo2-pickup",
         "src-project-rules",
-        "plan-research-order"
+        "plan-research-order",
+        "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "Transcribed from stylo2/docs/J-capture-plan.md, G-local-continuation.md, PICKUP.md and CLAUDE.md on 2 Nov 2026. Not run on a device.",
-      "updated": "2026-11-02"
+      "basis": "Enriched 2026-11-08 with ipemanager 16.13.0 static byte targets. Earlier: Transcribed from stylo2/docs/J-capture-plan.md, G-local-continuation.md, PICKUP.md and CLAUDE.md on 2 Nov 2026. Not run on a device.",
+      "updated": "2026-11-08"
     },
     {
       "id": "plan-pad3-readout",
@@ -226,7 +237,8 @@
         "Identify the tablet first. PICKUP.md says it is not established whether it is rooted or has a pen-fix module, and MISSION.md and stylo2/README.md describe it as stock and non-rooted. Root, if present, is for reads only.",
         "G section 8 first-30-minutes order: adb and wireless debugging working so the tablet is free to hold; this read-out; install the inspector and confirm the pen is detectable (ask first); one HCI capture of a single pencil stroke with start and stop (ask first).",
         "Answers: gap-iot-permission-level, gap-pen-firmware-directory, and, with the apk step and research/tools/aidl_check.py (PICKUP.md Step 2b, owner-approved), gap-aidl-matches-firmware. Also feeds if-oplus-ipemanager, dev-oneplus-pad3, if-cps8601-firmware and if-oplus-wireless-pen-driver.",
-        "Results: none yet. Not run on a device."
+        "Results: none yet. Not run on a device.",
+        "Run 2026-11-08 over Wi-Fi ADB: check/identify/firmware/driver/service/apk/bluetooth/summary completed (modules skipped, needs root). Results recorded to dev-oneplus-pad3, if-oplus-ipemanager, gap-iot-permission-level, gap-aidl-matches-firmware, src-pad3-readout. Build matches the analysed ROM."
       ],
       "tags": [
         "adb",
@@ -252,7 +264,7 @@
         "plan-research-order"
       ],
       "basis": "Transcribed from PICKUP.md, CLAUDE.md, stylo2/docs/G-local-continuation.md and research/tools/pad3_readout.py on 2 Nov 2026. Not run on a device.",
-      "updated": "2026-11-02"
+      "updated": "2026-11-08"
     },
     {
       "id": "plan-research-order",
@@ -472,6 +484,80 @@
       ],
       "basis": "Transcribed from stylo2/docs/H-trust-boundaries.md on 2 Nov 2026. Not run on a device.",
       "updated": "2026-11-02"
+    },
+    {
+      "id": "plan-route-shizuku-shell",
+      "type": "plan",
+      "title": "Route: shell-UID (Shizuku/ADB) reach to pen haptics without root",
+      "vendor": "OnePlus",
+      "category": "Experiment",
+      "status": "open",
+      "priority": "high",
+      "url": "",
+      "links": [],
+      "summary": "Test whether the shell UID (2000), reachable via Shizuku over wireless debugging without root, holds the permissions or SELinux reach to trigger pen haptics, so a Shizuku-backed app works without being platform-signed.",
+      "details": [
+        "Rationale: node 38 needs oplus.permission.OPLUS_COMPONENT_SAFE (signature) and the SDK bind needs safe.IOT (signature|privileged); an ordinary app has neither. The shell package is sometimes granted broader permissions and has a wider SELinux domain, so it may reach one of these.",
+        "Checks (read-only, on device): dumpsys package com.android.shell | grep -i permission (does it hold OPLUS_COMPONENT_SAFE or safe.IOT?); whether the shell/adb_shell SELinux domain may find+binder-call activity_task_service (it is app_api_service, so find is allowed) and whether the permission check still blocks it; whether shell may bind com.oplus.ipemanager PENCIL_SDK.",
+        "If shell holds OPLUS_COMPONENT_SAFE: a Shizuku app could call OplusTouchNodeManager.writeNodeFileByDevice(0,38,..) for the writing-feedback haptic. If shell holds safe.IOT: it could bind the SDK for everything.",
+        "Shizuku is started over ADB/wireless debugging and is NOT root, but it IS an extra app + a device change - ask the owner first (CLAUDE.md). If shell holds neither permission, this route is closed.",
+        "Results: none yet. Not tested on a device.",
+        "Device result 2026-11-08: com.android.shell holds NEITHER com.oplus.permission.safe.IOT nor oplus.permission.OPLUS_COMPONENT_SAFE (dumpsys package com.android.shell). So a Shizuku/shell-backed app does not gain the pen-haptics gates through shell's own permissions. This route is CLOSED for the permission-holding approach; only closes if some other shell-reachable mechanism exists, which none was found."
+      ],
+      "tags": [
+        "route-shizuku",
+        "shell",
+        "non-root",
+        "device-test"
+      ],
+      "related": [
+        "gap-iot-permission-level",
+        "gap-oneplus-transport",
+        "gap-oneplus-sdk-access",
+        "plan-route-feasibility",
+        "plan-pad3-readout",
+        "src-rom-opd2415-16-0-10-600",
+        "src-project-rules"
+      ],
+      "basis": "Proposed 2026-11-08 from the signature-gate findings (gap-oneplus-transport, gap-iot-permission-level). Not tested on a device.",
+      "updated": "2026-11-08"
+    },
+    {
+      "id": "plan-route-privileged-iot",
+      "type": "plan",
+      "title": "Route: privileged system app + privapp-permissions allowlist for safe.IOT",
+      "vendor": "OnePlus",
+      "category": "Experiment",
+      "status": "open",
+      "priority": "medium",
+      "url": "",
+      "links": [],
+      "summary": "Because safe.IOT is signature|privileged (0x12), a privileged system app on the privapp-permissions allowlist could be granted it WITHOUT the platform key, bind CoreService and use the pen SDK. Requires owner-authorized system modification; no key extraction, no cracking.",
+      "details": [
+        "Mechanism: a signature|privileged permission is granted to an app that is in a priv-app directory AND allowlisted in /etc/permissions/privapp-permissions*.xml (OR platform-signed). So installing our app as a privileged system app + adding an allowlist entry would grant safe.IOT without the platform key.",
+        "Contrast: OPLUS_COMPONENT_SAFE (touch node 38) is PURE signature (0x2) - NOT grantable this way, only via the platform key. So this route opens the SDK/IOT door, not the raw touch-node door. The SDK covers both haptics anyway (startFeedBackVibration runs server-side in ipemanager; setVibrationType over BLE).",
+        "Cost: requires writing to a system partition (install to priv-app + edit privapp-permissions) - a significant device change, outside the current read-only scope, needing explicit owner authorisation. Not distributable to ordinary users.",
+        "Not cracking: no signature bypass, no key/token extraction - it uses the platform's own allowlist mechanism. Still, confirm on device that the OEM honours a custom privapp-permissions entry for safe.IOT.",
+        "Results: none yet. Not tested on a device.",
+        "Blocker 2026-11-08: this route needs a way to write /system (Magisk module, root, or unlocked bootloader). The owner confirmed the Pad 3 has NO Magisk/root (dev-oneplus-pad3), so this route is not viable without first making that larger, owner-authorised device change. Parked behind Route B and Shizuku."
+      ],
+      "tags": [
+        "route-privileged",
+        "priv-app",
+        "system-mod",
+        "device-test"
+      ],
+      "related": [
+        "gap-iot-permission-level",
+        "gap-oneplus-sdk-access",
+        "if-oplus-ipemanager",
+        "plan-route-feasibility",
+        "src-rom-opd2415-16-0-10-600",
+        "src-project-rules",
+        "dev-oneplus-pad3"
+      ],
+      "basis": "Proposed 2026-11-08 from the safe.IOT = signature|privileged finding (gap-iot-permission-level). Not tested on a device.",
+      "updated": "2026-11-08"
     }
   ]
 }

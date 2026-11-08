@@ -4,14 +4,22 @@ Open Stylo 2 haptics research. The scope is in `README.md`, and the on-device pl
 
 ## Rules that always apply
 
-- **No cracking.** Don't bypass signature, permission or app-authentication checks, or extract or reuse vendor signing keys, certificates or tokens. If a route needs any of that, record it as a finding and stop that route.
+- **No cracking.** Don't bypass signature, permission or app-authentication checks, or extract or reuse vendor signing keys, certificates or tokens. If a route needs any of that, record it as a finding and stop that route. (The owner's legal right to reverse-engineer their own devices for interoperability — see *Legal basis* below — covers the analysis in this repo; it does **not** cover extracting a vendor's private signing key or defeating a protection measure, which are a separate legal question. So this rule holds regardless. The legitimate way past the signature wall is an Oplus-issued OCS authCode, i.e. the vendor signs your app — not self-signing with their key.)
 - **No patching** of OnePlus apps or firmware, ever.
-- **Decompiling: one owner-approved exception (2 Nov 2026).** The owner allowed JADX on the copy of `com.oplus.ipemanager` pulled from their own tablet, only to check the reconstructed interface. The conditions:
-  - Look only at the pen-SDK interface classes (`ISdkAidlInterface`, `ISDKAidlCallback`).
-  - The APK and decompiled output stay in `research/local/`.
-  - Record only the descriptor, method names, transaction codes and signatures, through `research/tools/aidl_check.py`. Never copy code.
-  - The process is PICKUP.md Step 2b. The legal basis is EU Software Directive Art. 6 (see `stylo2/docs/LEGAL.md`).
-  - Nothing else gets decompiled: no other OnePlus app, no mirror download (such as APKMirror), and nothing beyond those classes.
+- **Decompiling: owner-approved scope (widened 7 Nov 2026, replacing the 2 Nov 2026 exception).** The owner allows static analysis of OnePlus software pulled from their own devices (the Pad 3 and the OnePlus 12), to understand the pen-haptics interface for interoperability. The conditions:
+  - **What may be analysed:**
+    - JADX on `com.oplus.ipemanager`, OnePlus Notes and HiPaint, the whole APK and not only the AIDL classes.
+    - Ghidra on the native libraries those apps ship, on the pen-related kernel modules (such as `oplus_wireless_pen.ko`) and on the CPS8601 firmware blob.
+  - **Sources:** copies pulled from the owner's own devices with `adb pull`. The owner added two more sources on 7 Nov 2026:
+    - **Official OnePlus OTA packages** for the owner's device models (such as OPD2415), downloaded from OnePlus/Oplus's own OTA servers (`*.allawnofs.com`, `*.oneplus.com`). Record the URL and SHA-256 next to the file. Third-party re-hosts of firmware images are not allowed.
+    - **HiPaint (Aige Studio) from APKMirror.** This is the only mirror download allowed. Record the version, SHA-256 and signer certificate digest, which may be read for this check. No other mirror downloads.
+    - Evidence from a package whose build differs from the tablet's must name that build in `basis`. It does not verify behaviour on the tablet's own build.
+  - **Purpose:** the pen-haptics path, meaning binding, permission and caller checks, the haptic call chain, the transport to the pen and the firmware layout. Don't go beyond what the haptics question needs.
+  - **Where files stay:** APKs, binaries, decompiled output and Ghidra projects stay in `research/local/`, which git ignores.
+  - **What gets committed:** only findings, such as names, descriptors, signatures, transaction codes, constants, check locations and short excerpts of a few lines as evidence. Never commit decompiled code wholesale or redistribute OnePlus binaries.
+  - **Check logic** (permission, UID, package or signature checks) may be read and documented. It must never be circumvented (see "No cracking").
+  - **Legal basis (owner, 8 Nov 2026).** The owner lawfully owns these devices and is reverse-engineering them for interoperability. This is expressly permitted by the EU Software Directive (2009/24/EC) Art. 6 decompilation-for-interoperability exception, implemented in Dutch law as Auteurswet Art. 45m — a right that cannot be contracted away by an EULA. It grounds the full analysis/decompilation scope above (own devices, official OTAs, the one allowed mirror APK) and the reading of check logic. The exception is limited to what interoperability needs and does **not** authorise extracting the vendor's private signing keys, forging their signature, or circumventing signature/authentication protection measures — those sit outside the interop exception and under separate anti-circumvention rules, so "No cracking" stands. (This is the project's working position, not formal legal advice.) See `stylo2/docs/LEGAL.md`. The AIDL check is still PICKUP.md Step 2b, through `research/tools/aidl_check.py`.
+  - **Runtime instrumentation (Frida or similar)** is not covered by this exception. It changes process state on the device, so it needs the owner's go-ahead each time, like any other tablet change.
   - Reading an APK's public signer fingerprint (`apksigner verify --print-certs`) still needs the owner's go-ahead.
 - **The tablet is read-only.** Only run reads (`getprop`, `ls`, `cat`, `dumpsys`, `pm path`/`pm list`, `logcat -d`, `dmesg`, `modinfo`, `sha256sum`, `find`, `adb pull`, including pulling an installed APK). Use `research/tools/pad3_readout.py` where it covers the step. It enforces this.
 - **Ask the owner first** before anything that changes the tablet: installing or uninstalling an app (including this repo's own apps), changing a setting (including the Bluetooth HCI snoop log), starting Shizuku, or writing to the pen.

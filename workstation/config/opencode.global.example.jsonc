@@ -1,0 +1,17 @@
+// Copy to %USERPROFILE%\.config\opencode\opencode.jsonc (user-level; not read from the repo).
+// OpenCode V2 schema: `providers` (plural) + `settings.baseURL`; MCP lives under `mcp.servers`.
+{
+  "$schema": "https://opencode.ai/config.json",
+  "providers": {
+    // Built-in LM Studio provider; models are auto-discovered from /api/v1/models.
+    "lmstudio": {
+      "settings": { "baseURL": "http://127.0.0.1:1234/v1" }
+    }
+  },
+  // Use the identifier LM Studio reports (`lms ps` / GET /v1/models), prefixed with `lmstudio/`.
+  "model": "lmstudio/qwen3.8-27b"
+  // Claude: not configured here. Run `opencode auth login claude-agent` (reuses the
+  // Claude Code login; requires Claude Code installed and `claude auth login` done), then
+  // pick e.g. `claude-agent/sonnet` or `claude-agent/opus` with `-m` or `/models`.
+}
+
