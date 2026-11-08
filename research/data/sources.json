@@ -1526,6 +1526,38 @@
       ],
       "basis": "Downloaded and hash-checked on 2026-11-07; contents listed with payload-dumper-go 2.1.0, erofs-utils 1.8.10 and 7-Zip 26.05.",
       "updated": "2026-11-07"
+    },
+    {
+      "id": "src-pad3-readout",
+      "type": "source",
+      "title": "Pad 3 read-only read-out (2026-11-08)",
+      "vendor": "OnePlus",
+      "category": "Device read-out",
+      "status": "verified",
+      "priority": "critical",
+      "url": "",
+      "links": [],
+      "summary": "Read-only read-out of the owner's OnePlus Pad 3 over Wi-Fi ADB on 2026-11-08 with research/tools/pad3_readout.py (identity, firmware folder, driver, pen service + permission levels, pulled pen-service APK, Bluetooth bonds), plus dumpsys reads for permission protection levels. Device build matches the analysed ROM (OPD2415_16.0.10.600, prjname 24976).",
+      "details": [
+        "Device stock and locked: ro.boot.verifiedbootstate green, ro.boot.flash.locked 1, vbmeta locked, ro.build.type user, root (su) no. Kernel 6.6.118-android15. No Magisk/root.",
+        "pad3_readout.py steps run: check, identify, firmware, modules (skipped, needs root), driver, service, apk, bluetooth, summary. Raw output stays in research/local/pad3/ (git-ignored, redacted).",
+        "No device identifiers recorded here (serials, Bluetooth addresses, carrier/region redacted or omitted)."
+      ],
+      "tags": [
+        "pad3",
+        "readout",
+        "device",
+        "adb"
+      ],
+      "related": [
+        "dev-oneplus-pad3",
+        "if-oplus-ipemanager",
+        "gap-iot-permission-level",
+        "gap-aidl-matches-firmware",
+        "src-rom-opd2415-16-0-10-600"
+      ],
+      "basis": "Read from the Pad 3 (OPD2415, build OPD2415_16.0.10.600(EX01), prjname 24976) with pad3_readout.py and CLAUDE.md-allowed dumpsys/pm reads on 2026-11-08.",
+      "updated": "2026-11-08"
     }
   ]
 }

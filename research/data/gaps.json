@@ -7,7 +7,7 @@
       "title": "Does the reconstructed AIDL match the installed com.oplus.ipemanager?",
       "vendor": "OnePlus",
       "category": "Interface",
-      "status": "inferred",
+      "status": "verified",
       "priority": "medium",
       "url": "",
       "links": [],
@@ -24,7 +24,8 @@
         "ROM 2026-11-07: Installed codes: 1 setISdkAidlCallback, 2 getVibrationSwitchState, 3 getPencilConnectState, 4 setVibrationType(int), 5 startVibration(int), 6 getSuportSdkVersion, 7 getSupportFeatures (List<IpeFeature>), 8 isDemoModeEnable, 9 isFunctionVibrationEnable, 10 unsetISdkAidlCallback, 11 startFeedBackVibration, 12 stopFeedBackVibration, 13 isNewFeatureSupported(String).",
         "ROM 2026-11-07: Differences from the reconstruction: codes 1, 3, 4, 5, 7, 8, 9 are reassigned; enableDemoMode and getSupportFeatureList are absent; getSupportFeatures and isNewFeatureSupported are new. Codes 2, 6, 10, 11, 12 match.",
         "ROM 2026-11-07: aidl_check.py could not parse codes from this JADX output (reported '-'); codes above were read from the stub's onTransact switch.",
-        "ROM 2026-11-07: Per CLAUDE.md the app's codes are not changed until the owner reviews this and the tablet's build is checked."
+        "ROM 2026-11-07: Per CLAUDE.md the app's codes are not changed until the owner reviews this and the tablet's build is checked.",
+        "Device-verified 2026-11-08: the installed ipemanager (16.13.0, pulled APK SHA-256 086e5d1f...) is byte-identical to the decompiled copy, so the transaction codes recorded here are the device's actual codes. The repo PoC's reconstruction still differs (codes 1,3,4,5,7,8,9) and remains unchanged pending owner review."
       ],
       "tags": [
         "aidl",
@@ -46,8 +47,8 @@
         "src-apkmirror-smart-accessories",
         "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: Transcribed from stylo2/docs/I-evidence-ledger.md (Q10) on 2 Nov 2026; not checked on a device. The block on the experiment is from CLAUDE.md.",
-      "updated": "2026-11-07"
+      "basis": "Read from the Pad 3 (OPD2415, build OPD2415_16.0.10.600(EX01), prjname 24976) with pad3_readout.py and CLAUDE.md-allowed dumpsys/pm reads on 2026-11-08. Earlier: Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: Transcribed from stylo2/docs/I-evidence-ledger.md (Q10) on 2 Nov 2026; not checked on a device. The block on the experiment is from CLAUDE.md.",
+      "updated": "2026-11-08"
     },
     {
       "id": "gap-android-hid-haptics",
@@ -137,7 +138,8 @@
         "Write only bytes captured from Notes on this device. No fuzzing. BLE writes change hardware state, so ask the owner first.",
         "If it works, the direct-BLE route is real: fill Stylo2GattProfile, write a Kotlin GattTransport, and set Availability.ble_protocol_verified.",
         "Next step: with the inspector, write the bytes captured in the J scenarios to the candidate characteristic (plan-ble-independent-access-test, step 5).",
-        "Record: the characteristic, the bytes, with or without response, whether the pen vibrated, and any error."
+        "Record: the characteristic, the bytes, with or without response, whether the pen vibrated, and any error.",
+        "Device attempt 1 2026-11-08: writing the ipemanager command bytes to char 58480001 (after subscribing to its NOTIFY) ALL succeeded at the GATT layer (status ok) but produced NO vibration. Sent: enable 2C 90 01 01 01, startVibration 2C 92 01 02 FF 02, setVibrationType 2C 94 02 0X 01 (types 0-3). So a bare write of the known bytes to the right characteristic is necessary but NOT sufficient. Caveats: (a) writes were Write-Without-Response, not Write-Request; (b) ipemanager's connect-time handshake was not replicated (gap-session-handshake); (c) bytes were the static-decompiled values (owner-approved), not Notes-captured (no-root snoop on this build yields no payloads). NOT a success (CLAUDE.md: works only if the pen vibrated)."
       ],
       "tags": [
         "direct-ble",
@@ -157,7 +159,7 @@
         "src-project-rules"
       ],
       "basis": "Transcribed from stylo2/docs/I-evidence-ledger.md (Q9) on 2 Nov 2026; not checked on a device.",
-      "updated": "2026-11-02"
+      "updated": "2026-11-08"
     },
     {
       "id": "gap-haptic-command-bytes",
@@ -165,7 +167,7 @@
       "title": "What are the exact bytes for each profile, start and stop?",
       "vendor": "OnePlus",
       "category": "Protocol",
-      "status": "open",
+      "status": "inferred",
       "priority": "high",
       "url": "",
       "links": [],
@@ -176,7 +178,9 @@
         "The reconstructed interface has no intensity, duration, frequency or waveform parameter. Richer framing in the snoop would show otherwise (C, part 3).",
         "Feeds: stylo2_ble::Stylo2GattProfile.encode and stylo2-oplus::wire::reported_code.",
         "Next step: snoop scenarios 2 to 7, correlating the markers with the ATT writes (plan-hci-snoop-capture).",
-        "Record: for each scenario the handle, the characteristic UUID if resolvable, the opcode, the payload hex and whether the pen vibrated. Redact Bluetooth addresses."
+        "Record: for each scenario the handle, the characteristic UUID if resolvable, the opcode, the payload hex and whether the pen vibrated. Redact Bluetooth addresses.",
+        "Static 2026-11-08: candidate command bytes read from ipemanager o3/j.java (all GATT writes to one characteristic, prefix 0x2C): startVibration = '2C 92 01 02 FF 02'; setVibrationType = '2C 94 02 <type> <level+1>' (byte[3]=type 0-3, byte[4]=level+1); sendInstructionToPencil enable/disable = '2C 90 01 01 01' / '2C 90 01 01 00'; plus a wider 0x2C family (e.g. 2C 26..=feature, 2C 93/95/96/97..). These are the EXPECTED targets to match in the snoop. Per CLAUDE.md the on-device write must still use the snoop-captured value, not these bytes blindly.",
+        "Device 2026-11-08: target confirmed - the command characteristic is 58480001-5a6a-1122-3300-004095112200 (vendor service 58480000). The 2C-prefixed bytes write cleanly to it from an ordinary app."
       ],
       "tags": [
         "bytes",
@@ -193,10 +197,11 @@
         "if-oplus-sdk-interface",
         "src-stylo2-i-evidence-ledger",
         "src-stylo2-j-capture-plan",
-        "gap-oneplus-transport"
+        "gap-oneplus-transport",
+        "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "Transcribed from stylo2/docs/I-evidence-ledger.md (Q5) on 2 Nov 2026; not checked on a device.",
-      "updated": "2026-11-02"
+      "basis": "Static analysis of ipemanager 16.13.0 (g0.java, l0.java, o3/j.java) from the 16.0.10.600 ROM on 2026-11-08; host-side evidence, to be confirmed by an on-device HCI snoop and device test (CLAUDE.md). Earlier: Transcribed from stylo2/docs/I-evidence-ledger.md (Q5) on 2 Nov 2026; not checked on a device.",
+      "updated": "2026-11-08"
     },
     {
       "id": "gap-haptic-over-gatt",
@@ -204,7 +209,7 @@
       "title": "Is haptic control carried over GATT, or another channel?",
       "vendor": "OnePlus",
       "category": "Protocol",
-      "status": "open",
+      "status": "inferred",
       "priority": "critical",
       "url": "",
       "links": [],
@@ -216,7 +221,8 @@
         "Why it matters: it picks between direct BLE and the other routes (B4).",
         "Next step: HCI snoop of Notes, one pencil stroke plus start and stop; see whether ATT writes line up with vibration (plan-hci-snoop-capture). Ask the owner first, because turning on the snoop log is a settings change.",
         "Absence of a packet does not prove absence of a path.",
-        "Record: yes or no for ATT writes that line up with vibration. If no, what other traffic appears (L2CAP channel or other)."
+        "Record: yes or no for ATT writes that line up with vibration. If no, what other traffic appears (L2CAP channel or other).",
+        "Static 2026-11-08: CONFIRMED (host side) that two of the three haptic calls DO reach the pen by BLE GATT write. setVibrationType (g0.java) and startVibration (l0.F0) write a BluetoothGattCharacteristic. BUT startFeedBackVibration/stop do NOT use GATT - they write touch node 38 via the vendor IOplusTouch HAL. So the transport is split: configurable vibration = BLE; writing-feedback on/off = touch node. Device/snoop still needed to confirm the pen actually buzzes from the GATT write."
       ],
       "tags": [
         "gatt",
@@ -237,10 +243,11 @@
         "src-stylo2-j-capture-plan",
         "src-stylo2-a-reconnaissance",
         "src-stylo2-c-protocol",
-        "gap-session-handshake"
+        "gap-session-handshake",
+        "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "Transcribed from stylo2/docs/I-evidence-ledger.md (Q4) on 2 Nov 2026; not checked on a device.",
-      "updated": "2026-11-02"
+      "basis": "Static analysis of ipemanager 16.13.0 (g0.java, l0.java, o3/j.java) from the 16.0.10.600 ROM on 2026-11-08; host-side evidence, to be confirmed by an on-device HCI snoop and device test (CLAUDE.md). Earlier: Transcribed from stylo2/docs/I-evidence-ledger.md (Q4) on 2 Nov 2026; not checked on a device.",
+      "updated": "2026-11-08"
     },
     {
       "id": "gap-huawei-api",
@@ -272,11 +279,11 @@
       "title": "What is the protection level of com.oplus.permission.safe.IOT?",
       "vendor": "OnePlus",
       "category": "Access",
-      "status": "inferred",
+      "status": "verified",
       "priority": "critical",
       "url": "",
       "links": [],
-      "summary": "com.oplus.permission.safe.IOT is signature|privileged (protectionLevel 0x12) in the 16.0.10.600 ROM.",
+      "summary": "On the Pad 3, com.oplus.permission.safe.IOT is signature|privileged and oplus.permission.OPLUS_COMPONENT_SAFE is signature; neither is held by an ordinary app or by shell.",
       "details": [
         "Known: the repository's manifest requests it and the client checks it. The README calls it a restricted system permission that ordinary apps cannot be granted. The root module gets it by installing the app to /system/priv-app with a privapp-permissions allowlist.",
         "Reported, not read: the level is at least privileged. Public system-app permission listings show the name on several com.oplus.* packages with no level.",
@@ -287,7 +294,8 @@
         "Record: the protectionLevel text, the command or file it came from, and the firmware build. Also put the level in if-oplus-ipemanager.",
         "ROM 2026-11-07: system_ext/framework/oplus-framework-res.apk (package 'oplus') declares com.oplus.permission.safe.IOT and com.oppo.permission.safe.IOT with protectionLevel 0x12 = signature|privileged (aapt2 dump xmltree).",
         "ROM 2026-11-07: Consequence: an ordinary third-party app cannot hold it, so Android refuses an unprivileged bind to CoreService before ipemanager code runs.",
-        "ROM 2026-11-07: Still to do on the device: dumpsys package to confirm the level on the tablet's build."
+        "ROM 2026-11-07: Still to do on the device: dumpsys package to confirm the level on the tablet's build.",
+        "Device-verified 2026-11-08 (dumpsys package): Permission com.oplus.permission.safe.IOT prot=signature|privileged (sourcePackage oplus); Permission oplus.permission.OPLUS_COMPONENT_SAFE prot=signature (sourcePackage oplus). safe.IOT held by com.oneplus.note and com.oplus.ipemanager, not by com.aige.hipaint. com.android.shell holds NEITHER permission - so a Shizuku/shell-backed app cannot hold the pen-haptics gates either."
       ],
       "tags": [
         "permission",
@@ -312,8 +320,8 @@
         "c-observing-on-device",
         "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: Transcribed from stylo2/docs/I-evidence-ledger.md (Q1 and the permissions table) on 2 Nov 2026; not checked on a device. Commands from stylo2/docs/G-local-continuation.md section 3.",
-      "updated": "2026-11-07"
+      "basis": "Read from the Pad 3 (OPD2415, build OPD2415_16.0.10.600(EX01), prjname 24976) with pad3_readout.py and CLAUDE.md-allowed dumpsys/pm reads on 2026-11-08. Earlier: Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: Transcribed from stylo2/docs/I-evidence-ledger.md (Q1 and the permissions table) on 2 Nov 2026; not checked on a device. Commands from stylo2/docs/G-local-continuation.md section 3.",
+      "updated": "2026-11-08"
     },
     {
       "id": "gap-lenovo-lpp",
@@ -404,7 +412,8 @@
         "HiPaint APK 2026-11-08: token structure (base64-decoded, 79 bytes) = 0x01 version byte + DER ECDSA P-256 signature (30 44 ... , 70 bytes) + 8-byte permit/expiry trailer. Matches the OCS auth record format (version + signature over package + cert digest + permit bits + optional expiry).",
         "HiPaint APK 2026-11-08: client side - h8/f BaseClient.getClientName()=\"IPE_PENCIL_CLIENT\"; h8/h (OplusApi) Api \"PencilManagerClient.API\", client version 10000, brand-gated to OPPO/realme/OnePlus/oplus, checkAuthResult success = AuthResult.errorCode 1001 then ISdkAidlInterface.Stub.asInterface(CapabilityInfo.getBinder()); h8/e wraps the SDK (setVibrationType 0-3, getSupportFeatures, getVibrationSwitchState); l6/d is the IServiceBroker proxy (handleAuthentication = txn 1, OCS SDK version string \"1.0.11\").",
         "HiPaint APK 2026-11-08: CORRECTION to the earlier ROM note - the app DOES present the authCode, but via its own manifest meta-data (read by OCS with GET_META_DATA), not passed over the bind transaction. The credential is bound to the caller's package (com.aige.hipaint) + signing cert (huion 57e4c186...) + permits; it is non-transferable. Interop path: obtain an Oplus-issued AUTH_CODE for OUR package + OUR cert and declare it in our manifest - there is no token to reuse.",
-        "Correction 2026-11-08: an earlier note here floated a possible non-OCS path via the touch node. That was wrong - the node-38 write is gated by oplus.permission.OPLUS_COMPONENT_SAFE (signature), so an ordinary app cannot use it either (see gap-oneplus-transport). Route C (OCS authCode) remains the only confirmed third-party route."
+        "Correction 2026-11-08: an earlier note here floated a possible non-OCS path via the touch node. That was wrong - the node-38 write is gated by oplus.permission.OPLUS_COMPONENT_SAFE (signature), so an ordinary app cannot use it either (see gap-oneplus-transport). Route C (OCS authCode) remains the only confirmed third-party route.",
+        "Device-verified 2026-11-08: com.aige.hipaint does NOT request com.oplus.permission.safe.IOT (dumpsys package), consistent with HiPaint reaching the SDK through OCS (authCode) rather than a direct IOT-gated bind."
       ],
       "tags": [
         "partner",
@@ -447,7 +456,8 @@
         "Touch-node trace 2026-11-08: node 38 is not one of the public OplusTouchNodeManager constants (those end at 22, plus debug 160-165); it is an internal nodeFlag the vendor HAL maps to a sysfs path. ipemanager has no special privilege for this call - it works because it can reach the hidden API and pass SELinux, not because of a permission.",
         "Touch-node trace 2026-11-08 (CORRECTION of an earlier note in this record): node 38 IS permission-gated. The binder entry point is OplusActivityTaskManagerServiceEnhance.writeNodeFileByDevice, which calls enforceCallingPermission(\"oplus.permission.OPLUS_COMPONENT_SAFE\", ...) BEFORE delegating to ColorTouchNodeManagerService (whose inner impl has no check). The earlier 'no caller gate' note read only the inner impl, not the Enhance wrapper the binder actually hits.",
         "Touch-node trace 2026-11-08: oplus.permission.OPLUS_COMPONENT_SAFE is declared in oplus-framework-res.apk (package 'oplus') with protectionLevel 0x00000002 = signature. Only platform/oplus-signed apps can hold it; an ordinary third-party app cannot. So writing touch node 38 is signature-walled - the same class of barrier as the IOT/SDK bind. SELinux does allow an untrusted app to reach the service (activity_task_service is an app_api_service: 'allow untrusted_app_all app_api_service (service_manager (find))') and the @hide API is reflectable, but the signature permission is the hard wall. There is NO simpler non-OCS path for the feedback haptic; Route C (OCS authCode) remains the only third-party route. ipemanager works because it is platform-signed and holds OPLUS_COMPONENT_SAFE.",
-        "BLE command table 2026-11-08 (ipemanager o3/j.java + l0.java, static): pen commands are GATT writes to characteristic f2707l0, all prefixed 0x2C. startVibration (l0.F0) writes f5605p = '2C 92 01 02 FF 02' (fixed), gated only by isFunctionVibrationEnable + pen connected (no app-identity check at this layer because the SDK binder is already reached via the signature/OCS gate). setVibrationType writes f5606q template '2C 94 02 <type> <level+1>' (byte[3]=type, byte[4]=level+1). sendInstructionToPencil toggles '2C 90 01 01 01'/'...00' by the settings_enable_oppo_pencil setting. Pencil-type map includes 2 = OnePlus Pencil 2 Pro (Stylo 2). Recorded as constants; writing them to a pen is a device action needing owner approval and only with bytes captured from Notes (CLAUDE.md)."
+        "BLE command table 2026-11-08 (ipemanager o3/j.java + l0.java, static): pen commands are GATT writes to characteristic f2707l0, all prefixed 0x2C. startVibration (l0.F0) writes f5605p = '2C 92 01 02 FF 02' (fixed), gated only by isFunctionVibrationEnable + pen connected (no app-identity check at this layer because the SDK binder is already reached via the signature/OCS gate). setVibrationType writes f5606q template '2C 94 02 <type> <level+1>' (byte[3]=type, byte[4]=level+1). sendInstructionToPencil toggles '2C 90 01 01 01'/'...00' by the settings_enable_oppo_pencil setting. Pencil-type map includes 2 = OnePlus Pencil 2 Pro (Stylo 2). Recorded as constants; writing them to a pen is a device action needing owner approval and only with bytes captured from Notes (CLAUDE.md).",
+        "Device-verified 2026-11-08: the node-38 gate oplus.permission.OPLUS_COMPONENT_SAFE is prot=signature on the tablet (dumpsys package), confirming the touch-node write path is signature-walled for ordinary apps."
       ],
       "tags": [
         "bluetooth",
@@ -572,17 +582,18 @@
       "title": "Can a second app connect to the pen's GATT?",
       "vendor": "OnePlus",
       "category": "Protocol",
-      "status": "open",
+      "status": "verified",
       "priority": "high",
       "url": "",
       "links": [],
-      "summary": "Whether the pen accepts a GATT connection from an app other than the system, while it stays bonded to the system, is not known.",
+      "summary": "An ordinary non-root app CAN connect to the bonded Stylo 2 by its address and discover its full GATT.",
       "details": [
         "Known: nothing. The pen is bonded to the system. A second app opening its own GATT connection may or may not be allowed (B3).",
         "Also unknown: whether an ordinary app sees the pen's advertisement or address at all (matrix tests 1 and 2), and whether Companion Device Manager would help.",
         "Next step: with the inspector, connect while the system is connected and discover services (plan-ble-independent-access-test, steps 1 to 3); export the GATT table.",
         "Ask the owner first: installing the inspector changes the tablet.",
-        "Record: whether the pen was found by scan, whether connect succeeded, the GATT tree (services, characteristics, properties) with Bluetooth addresses redacted, and the ranking from candidate_control_characteristics."
+        "Record: whether the pen was found by scan, whether connect succeeded, the GATT tree (services, characteristics, properties) with Bluetooth addresses redacted, and the ranking from candidate_control_characteristics.",
+        "Device 2026-11-08: the inspector connected to the bonded pen BY ADDRESS (bonded-devices list, not a scan - a connected pen does not advertise) and discovered 10 services, incl. vendor service 58480000-5a6a-1122-3300-004095112200 with command char 58480001 (WRITE|WRITE_NR|NOTIFY), and a Nordic UART service 6e400001-b5a3-f393-e0a9-e50e24dcca9e (6e400002 WRITE, 6e400003/4 NOTIFY). Confirms the static UUIDs (l0.java f2687h1/f2688i1) on the real device. Only BLUETOOTH_CONNECT was needed."
       ],
       "tags": [
         "gatt",
@@ -601,7 +612,7 @@
         "src-stylo2-h-trust-boundaries"
       ],
       "basis": "Transcribed from stylo2/docs/I-evidence-ledger.md (Q6) on 2 Nov 2026; not checked on a device. The address and Companion Device Manager points are from stylo2/docs/A-reconnaissance.md section 4.",
-      "updated": "2026-11-02"
+      "updated": "2026-11-08"
     },
     {
       "id": "gap-second-gatt-client-disruption",
@@ -658,7 +669,8 @@
         "Next step: run steps 1 and 2 of the isolating experiment: queryIntentServices for com.oplus.ipemanager.ACTION.PENCIL_SDK, then bindService and wait for onServiceConnected. The Route A PoC does both and logs exported and the service's bind permission for each match.",
         "Record: number of matches, exported, bind permission, the bindService result or the exact exception and message, and the descriptor at connect.",
         "ROM 2026-11-07: CoreService (com.oplus.ipemanager.btadsorb.CoreService) is exported, runs in process :ble and is protected by android:permission=com.oplus.permission.safe.IOT (signature|privileged), so an ordinary app's bind is refused by the platform.",
-        "ROM 2026-11-07: CoreService.onBind returns the SDK binder for com.oplus.ipemanager.ACTION.PENCIL_SDK without any further caller check."
+        "ROM 2026-11-07: CoreService.onBind returns the SDK binder for com.oplus.ipemanager.ACTION.PENCIL_SDK without any further caller check.",
+        "Device-verified 2026-11-08 (partial): the bind-time gate is confirmed - safe.IOT is signature|privileged and no ordinary app (incl. shell) holds it. The unprivileged-bind OUTCOME itself was not tested (no PoC run), so the 'bind refused' conclusion stays inferred-from-verified, not directly observed."
       ],
       "tags": [
         "bind-service",
@@ -680,8 +692,8 @@
         "plan-route-feasibility",
         "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: Transcribed from stylo2/docs/I-evidence-ledger.md (Q2) on 2 Nov 2026; not checked on a device.",
-      "updated": "2026-11-07"
+      "basis": "Read from the Pad 3 (OPD2415, build OPD2415_16.0.10.600(EX01), prjname 24976) with pad3_readout.py and CLAUDE.md-allowed dumpsys/pm reads on 2026-11-08. Earlier: Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: Transcribed from stylo2/docs/I-evidence-ledger.md (Q2) on 2 Nov 2026; not checked on a device.",
+      "updated": "2026-11-08"
     },
     {
       "id": "gap-session-handshake",
@@ -698,7 +710,9 @@
         "Known: nothing. This is the B4 hypothesis.",
         "If a handshake exists, it is modelled as an Initialising state (the target lifecycle in H) and reproduced before commands. An app-level authentication would make direct BLE unlikely.",
         "Next step: inspect snoop scenario 9, the initial connection from a powered-off pen with the snoop already running, for any exchange before the first haptic (plan-hci-snoop-capture).",
-        "Record: direction, opcode, handle, payload, and notes on handshake, CCCD subscribe, MTU or PHY. Redact Bluetooth addresses."
+        "Record: direction, opcode, handle, payload, and notes on handshake, CCCD subscribe, MTU or PHY. Redact Bluetooth addresses.",
+        "Static 2026-11-08: there is likely an enable/session step. ipemanager gates GATT writes on pen connection state == 2, and G() sendInstructionToPencil writes '2C 90 01 01 01' when settings_enable_oppo_pencil is set (vs '...00'). Capture 9 of plan-hci-snoop-capture (fresh connect) should show whether a 2C 90 enable (or other handshake) must precede the first haptic. Still open: whether a second, independent GATT client must repeat it.",
+        "Elevated 2026-11-08: direct writes to 58480001 did not buzz the pen, so a connect-time handshake/session is the leading missing piece. In l0.java, G0() (sendInstructionToPencil, writes 2C 90... gated by settings_enable_oppo_pencil) is invoked from many connection-state handlers on connect, and more f2707l0 writes run during init. The pen may also need Write-Request (not no-response) and/or specific notify subscriptions answered. Separately, the writing-feedback buzz is driven by touch node 38 (signature-walled), so BLE setVibrationType may only CONFIGURE the pattern - startVibration (2C 92) is the only BLE trigger and it did not buzz either. Open: replicate the full handshake; try Write-Request; determine if any buzz is reachable over BLE alone or whether it fundamentally needs the touch-node path."
       ],
       "tags": [
         "handshake",
@@ -714,10 +728,11 @@
         "c-pen-attach-handshake",
         "src-stylo2-i-evidence-ledger",
         "src-stylo2-j-capture-plan",
-        "src-stylo2-h-trust-boundaries"
+        "src-stylo2-h-trust-boundaries",
+        "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "Transcribed from stylo2/docs/I-evidence-ledger.md (Q8) on 2 Nov 2026; not checked on a device.",
-      "updated": "2026-11-02"
+      "basis": "Static analysis of ipemanager 16.13.0 (g0.java, l0.java, o3/j.java) from the 16.0.10.600 ROM on 2026-11-08; host-side evidence, to be confirmed by an on-device HCI snoop and device test (CLAUDE.md). Earlier: Transcribed from stylo2/docs/I-evidence-ledger.md (Q8) on 2 Nov 2026; not checked on a device.",
+      "updated": "2026-11-08"
     },
     {
       "id": "gap-unprivileged-execution",

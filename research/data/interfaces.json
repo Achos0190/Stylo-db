@@ -411,7 +411,8 @@
         "The Route A PoC (android/stylo2-poc) attempts discovery and bind from an ordinary app and logs, for each service match, whether it is exported and which bind permission it needs.",
         "Once read from the tablet, record the installed version, the confirmed names and the protection level of the permission here (PICKUP.md Step 6).",
         "ROM 2026-11-07: com.oplus.ipemanager 16.13.0 in my_product/priv-app; CoreService protected by com.oplus.permission.safe.IOT (signature|privileged).",
-        "ROM 2026-11-07: OnePlus Notes 16.7.0 holds com.oplus.permission.safe.IOT and references ACTION.PENCIL_SDK and ISdkAidlInterface directly (no OCS); it sits in my_stock/del-app, so it likely qualifies through the signature half (inferred)."
+        "ROM 2026-11-07: OnePlus Notes 16.7.0 holds com.oplus.permission.safe.IOT and references ACTION.PENCIL_SDK and ISdkAidlInterface directly (no OCS); it sits in my_stock/del-app, so it likely qualifies through the signature half (inferred).",
+        "Device-verified 2026-11-08: com.oplus.ipemanager 16.13.0 (16130000) installed; pulled APK IPeManager.apk 75718247 bytes, SHA-256 086e5d1f... (byte-identical to the ROM copy). com.oplus.permission.safe.IOT prot = signature|privileged; held by com.oneplus.note and com.oplus.ipemanager; NOT requested by com.aige.hipaint."
       ],
       "tags": [
         "binder",
@@ -434,8 +435,8 @@
         "src-stylo2-a-reconnaissance",
         "src-rom-opd2415-16-0-10-600"
       ],
-      "basis": "Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: AndroidManifest.xml, OplusPencilSdkClient.kt and README in this repository. Extended on 2 Nov 2026 from stylo2/docs/I-evidence-ledger.md and H-trust-boundaries.md; the added lines are open questions, not checked on a device.",
-      "updated": "2026-11-07"
+      "basis": "Read from the Pad 3 (OPD2415, build OPD2415_16.0.10.600(EX01), prjname 24976) with pad3_readout.py and CLAUDE.md-allowed dumpsys/pm reads on 2026-11-08. Earlier: Static analysis on 2026-11-07 of the official OnePlus full OTA OPD2415_16.0.10.600(EX01) GLO, ota_version OPD2415_11.C.28_1280_202609120012 (src-rom-opd2415-16-0-10-600): files extracted from the ROM, decompiled with JADX 1.5.6 in research/local/. ROM evidence, not yet read on the owner's tablet, so inferred until confirmed on the device (CLAUDE.md). Earlier basis: AndroidManifest.xml, OplusPencilSdkClient.kt and README in this repository. Extended on 2 Nov 2026 from stylo2/docs/I-evidence-ledger.md and H-trust-boundaries.md; the added lines are open questions, not checked on a device.",
+      "updated": "2026-11-08"
     },
     {
       "id": "if-oplus-pencilmanagerunitclient",
